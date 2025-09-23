@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">RatoCalculator</string>
+    <string name="basic_calculator">Basic Calculator</string>
+    <string name="scientific_calculator">Scientific Calculator</string>
+    <string name="physics_calculator">Physics Calculator</string>
+    <string name="components">Components</string>
+    <string name="unit_converter">Unit converter</string>
+    <string name="settings">Settings</string>
+</resources>
