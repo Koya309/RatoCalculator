@@ -1,6 +1,6 @@
 package com.example.ratocalculator.feature.basic
 
-data class CalculatorUiState(
+data class BasicUiStateCalculator(
     val input: String = "",
     val result: String = "",
     val decimalPlaces: Int = 2,

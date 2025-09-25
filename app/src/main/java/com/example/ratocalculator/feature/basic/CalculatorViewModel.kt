@@ -10,8 +10,8 @@ import net.objecthunter.exp4j.ExpressionBuilder
 @HiltViewModel
 class CalculatorViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CalculatorUiState())
-    val uiState: StateFlow<CalculatorUiState> = _uiState
+    private val _uiState = MutableStateFlow(BasicUiStateCalculator())
+    val uiState: StateFlow<BasicUiStateCalculator> = _uiState
 
     // ✅ จัด format ตาม settings
     fun formatResult(
@@ -59,7 +59,7 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
                 }
             }
             "=" -> calculateResult(decimalPlaces, removeTrailingZero)
-            "C" -> _uiState.value = CalculatorUiState()
+            "C" -> _uiState.value = BasicUiStateCalculator()
             "DEL" -> deleteLast()
             "." -> enterDecimal()
             "x10" -> double10()
