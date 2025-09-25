@@ -4,10 +4,12 @@ import android.R.id.tabs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -32,59 +34,89 @@ import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
 fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsState()
-    var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("แท็บ 1", "แท็บ 2", "แท็บ 3")
+    val tabs = UnitCategory.values()
+    var selectedTab by remember { mutableStateOf(uiState.category.ordinal) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Cyan)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-
+    Column(modifier = Modifier.fillMaxSize()) {
         TabRow(selectedTabIndex = selectedTab) {
-            tabs.forEachIndexed { index, title ->
+            tabs.forEachIndexed { index, category ->
                 Tab(
                     selected = selectedTab == index,
-                    onClick = { selectedTab = index },
-                    text = { Text(title) }
+                    onClick = {
+                        selectedTab = index
+                        viewModel.updateCategory(category)
+                    },
+                    text = { Text(category.name) }
                 )
             }
         }
 
-        when (selectedTab) {
-            0 -> {
-                Column {
-                    InputSection(
-                        inputValue = uiState.input,
-                        selectedUnit = uiState.fromUnit,
-                        onUnitChange = { viewModel.updateFromUnit(it) }
-                    )
-                    Spacer(Modifier.height(8.dp))
+        Column(modifier = Modifier.padding(16.dp)) {
+            InputSection(
+                inputValue = uiState.input,
+                selectedUnit = uiState.fromUnit,
+                onUnitChange = { viewModel.updateFromUnit(it) }
+            )
 
-                    SwapButton(onSwap = { viewModel.swapUnits() })
+            Spacer(Modifier.height(8.dp))
 
-                    Spacer(Modifier.height(8.dp))
+            SwapButton(onSwap = { viewModel.swapUnits() })
 
-                    OutputSection(
-                        outputValue = uiState.output,
-                        selectedUnit = uiState.toUnit,
-                        onUnitChange = { viewModel.updateToUnit(it) }
-                    )
+            Spacer(Modifier.height(8.dp))
 
-                    Spacer(Modifier.height(16.dp))
+            OutputSection(
+                outputValue = uiState.output,
+                selectedUnit = uiState.toUnit,
+                onUnitChange = { viewModel.updateToUnit(it) }
+            )
 
-                    NumberPad(onNumberClick = { viewModel.onNumberClick(it) })
-                }
-            }
-            1 -> Text("นี่คือเนื้อหาของแท็บ 2")
-            2 -> Text("นี่คือเนื้อหาของแท็บ 3")
+            Spacer(Modifier.height(16.dp))
+
+            NumberPad(onNumberClick = { viewModel.onNumberClick(it) })
         }
     }
 }
 
+@Composable
+fun InputSection(inputValue: String, selectedUnit: String, onUnitChange: (String) -> Unit) {
+    Column {
+        Text("Input: $inputValue")
+        Text("From Unit: $selectedUnit")
+    }
+}
+
+@Composable
+fun OutputSection(outputValue: String, selectedUnit: String, onUnitChange: (String) -> Unit) {
+    Column {
+        Text("Output: $outputValue")
+        Text("To Unit: $selectedUnit")
+    }
+}
+
+@Composable
+fun SwapButton(onSwap: () -> Unit) {
+    Button(onClick = onSwap) {
+        Text("Swap Units")
+    }
+}
+
+@Composable
+fun NumberPad(onNumberClick: (String) -> Unit) {
+    Row {
+        (0..9).forEach {
+            Button(onClick = { onNumberClick(it.toString()) }) {
+                Text(it.toString())
+            }
+        }
+    }
+}
+
+@Composable
+fun DropdownMenuDemo(x0: String, x1: (String) -> Unit) {
+    TODO("Not yet implemented")
+}
 
 @Preview(showBackground = true)
 @Composable
