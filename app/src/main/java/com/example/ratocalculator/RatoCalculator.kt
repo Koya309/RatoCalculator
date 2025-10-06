@@ -47,7 +47,7 @@ fun RatoCalculator() {
         Scaffold { innerPadding ->
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                //    .fillMaxSize()
                     .padding(innerPadding)
 /*                    .graphicsLayer {
                         clip = true
