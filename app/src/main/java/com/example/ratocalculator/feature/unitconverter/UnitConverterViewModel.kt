@@ -22,24 +22,42 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
         _uiState.update { it.copy(selectedPrefix = prefix) }
     }
 
-    fun onUnitSelected(unit: String) {
-        _uiState.update { it.copy(selectedUnit = unit) }
+    fun onUnitSelected(unit: UnitItem) {
+        _uiState.update {
+            it.copy(selectedUnit = unit)
+        }
     }
 
+
     fun updateCategory(category: UnitCategory) {
-        val units = when (category) {
-            UnitCategory.Length -> listOf("m", "km")
-            UnitCategory.Mass -> listOf("g", "kg")
-            UnitCategory.Volume -> listOf("L", "mL")
-            UnitCategory.Temperature -> listOf("C", "K")
-            UnitCategory.Area -> listOf("m²", "cm²")
+        val newUnits = when (category) {
+            UnitCategory.Mass -> massUnits
+            UnitCategory.Temperature -> temperatureUnits
+            else -> emptyList()
         }
         _uiState.update {
             it.copy(
                 category = category,
-                units = units,
-                selectedUnit = units.first()
+                availableUnits = newUnits,
+                selectedUnit = newUnits.firstOrNull() ?: it.selectedUnit
             )
         }
+    }
+
+    fun toSuperscript(power: Int): String {
+        val superscripts = mapOf(
+            '0' to '⁰',
+            '1' to '¹',
+            '2' to '²',
+            '3' to '³',
+            '4' to '⁴',
+            '5' to '⁵',
+            '6' to '⁶',
+            '7' to '⁷',
+            '8' to '⁸',
+            '9' to '⁹',
+            '-' to '⁻'
+        )
+        return power.toString().map { superscripts[it] ?: it }.joinToString("")
     }
 }

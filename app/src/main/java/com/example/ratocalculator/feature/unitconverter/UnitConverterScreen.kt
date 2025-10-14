@@ -7,14 +7,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -24,6 +29,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,11 +48,15 @@ fun UnitConverterScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val tabs = UnitCategory.values()
-    var selectedTab by remember { mutableStateOf(uiState.category.ordinal) }
+    val maxHeight = 40.dp * 5
+//    var selectedTab by remember { mutableStateOf(uiState.category.ordinal) }
 //    var kgInput by remember { mutableStateOf("7") }
     val state by viewModel.uiState.collectAsState()
 //    val kgValue = (kgInput.toDoubleOrNull() ?: 0.0)
 //    val gramValue = kgValue * 1000
+    var prefixExpanded by remember { mutableStateOf(false) }
+//    var unitExpanded by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableIntStateOf(0) }
 
 
     Column(
@@ -63,7 +73,7 @@ fun UnitConverterScreen(
                         selectedTab = index
                         viewModel.updateCategory(category)
                     },
-                    text = { Text(category.name) }
+                    text = { Text(category.displayName) }
                 )
             }
         }
@@ -95,18 +105,27 @@ fun UnitConverterScreen(
             Spacer(Modifier.width(8.dp))
 
             // 🔹 A = Dropdown SIPrefix
-            var prefixExpanded by remember { mutableStateOf(false) }
             Box {
-                Button(onClick = { prefixExpanded = true }) {
-                    Text(state.selectedPrefix.symbol)
+                OutlinedButton(onClick = { prefixExpanded = true }) {
+                    Text(
+                        if (state.selectedPrefix.symbol.isBlank()) ""
+                        else  "${state.selectedPrefix.symbol}"
+
+                    )
                 }
                 DropdownMenu(
                     expanded = prefixExpanded,
-                    onDismissRequest = { prefixExpanded = false }
+                    onDismissRequest = { prefixExpanded = false },
+                    modifier = Modifier.heightIn(max = maxHeight)
                 ) {
                     state.prefixes.forEach { prefix ->
                         DropdownMenuItem(
-                            text = { Text("${prefix.name} (${prefix.symbol})") },
+                            text = {
+                                val symbolText =
+                                    if (prefix.symbol.isBlank()) ""
+                                    else "${prefix.symbol}    ${prefix.name}     10${viewModel.toSuperscript(prefix.power)}"
+                                Text(symbolText)
+                            },
                             onClick = {
                                 viewModel.onPrefixSelected(prefix)
                                 prefixExpanded = false
@@ -121,16 +140,16 @@ fun UnitConverterScreen(
             // 🔹 B = Dropdown SI Unit (ขึ้นกับ Tab / Category)
             var unitExpanded by remember { mutableStateOf(false) }
             Box {
-                Button(onClick = { unitExpanded = true }) {
-                    Text(state.selectedUnit)
+                OutlinedButton(onClick = { unitExpanded = true }) {
+                    Text(state.selectedUnit.symbol)
                 }
                 DropdownMenu(
                     expanded = unitExpanded,
                     onDismissRequest = { unitExpanded = false }
                 ) {
-                    state.units.forEach { unit ->
+                    state.availableUnits.forEach { unit ->
                         DropdownMenuItem(
-                            text = { Text(unit) },
+                            text = { Text("${unit.symbol} (${unit.name})") },
                             onClick = {
                                 viewModel.onUnitSelected(unit)
                                 unitExpanded = false
@@ -140,42 +159,23 @@ fun UnitConverterScreen(
                 }
             }
         }
-    }
-}
-
-/*        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(8.dp))
 
         // 🔹 แสดงค่าที่กรอก + prefix + unit
         Text(
-            text = "${state.inputValue.toDoubleOrNull() ?: 0.0} ${state.selectedPrefix.symbol}${state.selectedUnit}"
+            text = buildString {
+                append(state.inputValue.toDoubleOrNull() ?: 0.0)
+                append(" ")
+                append(state.selectedPrefix.name)
+                append(state.selectedUnit.name)
+            },
+            style = MaterialTheme.typography.titleMedium
         )
+
     }
-        Spacer(Modifier.height(8.dp))
+}
 
 
-        //Wait do top
-
-
-            Divider(modifier = Modifier.padding(vertical = 16.dp))
-
-            Text(text = "Gram")
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
-            ) {
-                TextField(
-                    value = gramValue.toInt().toString(),
-                    onValueChange = { /* read-only (optional) */ },
-                    label = { Text("g") },
-                    modifier = Modifier.weight(1f),
-                    enabled = false
-                )
-            }
-            Text(text = "${(kgInput.toDoubleOrNull() ?: 0.0) * 1000} gram")
-            }
-
-
-*/
 
 
 @Preview(showBackground = true)
