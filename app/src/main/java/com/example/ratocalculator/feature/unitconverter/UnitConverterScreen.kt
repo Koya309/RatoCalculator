@@ -64,7 +64,6 @@ fun UnitConverterScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // 🔹 Tab ด้านบน
         TabRow(selectedTabIndex = selectedTab) {
             tabs.forEachIndexed { index, category ->
                 Tab(

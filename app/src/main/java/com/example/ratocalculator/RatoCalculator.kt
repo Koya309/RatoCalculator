@@ -5,14 +5,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,47 +49,34 @@ fun RatoCalculator() {
             }
         }
     ) {
-        Scaffold { innerPadding ->
+        Scaffold(
+            // 1. เพิ่ม Top Bar
+            topBar = {
+                TopAppBar(
+                    title = { Text("เครื่องคำนวณ Rato") },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                scope.launch {  } // เปิด Drawer เมื่อกด
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "เมนูหลัก"
+                            )
+                        }
+                    }
+                )
+            },
+            // 2. เพิ่ม Bottom Bar
+        ) { innerPadding ->
+            // ส่วนของเนื้อหาหลัก
             Box(
                 modifier = Modifier
-                //    .fillMaxSize()
-                    .padding(innerPadding)
-/*                    .graphicsLayer {
-                        clip = true
-                        shape = RoundedCornerShape(
-                            topStart = 32.dp,
-                            topEnd = 32.dp,
-                            bottomStart = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    }
-                    .background(Color.DarkGray)
-*/            ) {
-                CalculatorNavHost(
-                    navController = navController,
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) drawerState.open() else drawerState.close()
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(top = 8.dp, start = 8.dp)
-                        .background(
-                            color = Color.LightGray,
-                            shape = CircleShape
-                        )
-                ) {
-/*                    Icon(
-                        Icons.Default.Menu,
-                        contentDescription = "Menu",
-                        tint = Color.Black,
-                        )
-*/
-                }
+                    .fillMaxSize()
+                    .padding(innerPadding) // สำคัญ: ใช้ innerPadding เพื่อไม่ให้เนื้อหาถูกบังโดย Top/Bottom Bar
+            ) {
+                 CalculatorNavHost(navController = navController, modifier = Modifier.fillMaxSize())
             }
         }
     }

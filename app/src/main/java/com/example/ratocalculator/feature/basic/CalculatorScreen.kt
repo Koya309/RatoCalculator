@@ -11,9 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Backspace
+import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -82,11 +88,11 @@ fun CalculatorScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         val buttons = listOf(
-            listOf("C", "⌫", "x10", "÷"),
-            listOf("7", "8", "9", "×"),
-            listOf("4", "5", "6", "-"),
-            listOf("1", "2", "3", "+"),
-            listOf("0", ".", "", "=")
+            listOf("C", "", "x10", "DEL"),
+            listOf("7", "8", "9", "÷"),
+            listOf("4", "5", "6", "×"),
+            listOf("1", "2", "3", "-"),
+            listOf("0", ".", "=", "+")
         )
 
         Column(
@@ -138,11 +144,19 @@ fun CalculatorButton(
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
-        Text(
-            text = label,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
+        if (label == "DEL" || label == "backspace") {
+            Icon(
+                imageVector = Icons.Default.Backspace,
+                contentDescription = "Backspace",
+                modifier = Modifier.size(24.dp)
+            )
+        } else {
+            Text(
+                text = label,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 

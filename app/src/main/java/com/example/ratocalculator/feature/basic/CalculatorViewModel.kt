@@ -13,7 +13,6 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(BasicUiStateCalculator())
     val uiState: StateFlow<BasicUiStateCalculator> = _uiState
 
-    // ✅ จัด format ตาม settings
     fun formatResult(
         result: Double,
         decimalPlaces: Int,
@@ -26,7 +25,6 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // ✅ คำนวณโดยรับค่า settings จากภายนอก
     private fun calculateResult(decimalPlaces: Int, removeTrailingZero: Boolean) {
         try {
             val expression = _uiState.value.input
@@ -42,32 +40,47 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // ✅ ใช้ decimalPlaces + removeTrailingZero ที่ส่งมาจาก Screen
     fun onButtonClick(
         label: String,
         decimalPlaces: Int,
         removeTrailingZero: Boolean
     ) {
         val input = _uiState.value.input
+        val result = _uiState.value.result
         val operators = listOf("+", "-", "*", "/")
         val lastChar = input.lastOrNull()?.toString() ?: ""
 
         when (label) {
             in operators -> {
-                if (lastChar !in operators && input.isNotEmpty()) {
+                if (result.isNotEmpty() && input.isEmpty()) {
+                    _uiState.value = _uiState.value.copy(
+                        input = result + label,
+                        result = ""
+                    )
+                } else if (lastChar !in operators && input.isNotEmpty()) {
                     _uiState.value = _uiState.value.copy(input = input + label)
                 }
             }
-            "=" -> calculateResult(decimalPlaces, removeTrailingZero)
+            "=" -> {
+                calculateResult(decimalPlaces, removeTrailingZero)
+
+                val newResult = _uiState.value.result
+                if (newResult.isNotEmpty()) {
+                    _uiState.value = _uiState.value.copy(
+                        input = newResult,
+                        result = ""
+                    )
+                }
+            }
             "C" -> _uiState.value = BasicUiStateCalculator()
             "DEL" -> deleteLast()
             "." -> enterDecimal()
             "x10" -> double10()
+
             else -> _uiState.value = _uiState.value.copy(input = input + label)
         }
     }
 
-    // ✅ helper functions
     private fun deleteLast() {
         val input = _uiState.value.input
         if (input.isNotEmpty()) {
