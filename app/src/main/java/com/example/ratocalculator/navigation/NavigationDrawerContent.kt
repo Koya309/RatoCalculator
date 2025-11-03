@@ -5,9 +5,11 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.example.ratocalculator.R
 
 @Composable
 fun NavigationDrawerContent(
@@ -17,7 +19,7 @@ fun NavigationDrawerContent(
     ){
     Column {
         NavigationDrawerItem(
-            label = { Text("Basic Calculator") },
+            label = { Text(stringResource(R.string.basic_calculator))},
             selected = false,
             onClick = {
                 navController.navigate("basic")
@@ -25,7 +27,7 @@ fun NavigationDrawerContent(
             }
         )
         NavigationDrawerItem(
-            label = { Text("Scientific Calculator") },
+            label = { Text(stringResource(R.string.scientific_calculator))},
             selected = false,
             onClick = {
                 navController.navigate("scientific")
@@ -33,7 +35,7 @@ fun NavigationDrawerContent(
             }
         )
         NavigationDrawerItem(
-            label = { Text("Unit Converter") },
+            label = { Text(stringResource(R.string.unit_converter))},
             selected = false,
             onClick = {
                 navController.navigate("unit_converter")
@@ -41,7 +43,7 @@ fun NavigationDrawerContent(
             }
         )
         NavigationDrawerItem(
-            label = { Text("Physics") },
+            label = { Text(stringResource(R.string.physics_calculator))},
             selected = false,
             onClick = {
                 navController.navigate("physics")
@@ -49,7 +51,7 @@ fun NavigationDrawerContent(
             }
         )
         NavigationDrawerItem(
-            label = { Text("Settings") },
+            label = { Text(stringResource(R.string.settings))},
             selected = false,
             onClick = {
                 navController.navigate("settings")

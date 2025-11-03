@@ -53,7 +53,7 @@ fun CalculatorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101820))
+        //    .background(Color(0xFF101820))
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
