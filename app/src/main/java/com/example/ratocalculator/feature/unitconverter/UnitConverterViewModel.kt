@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
-import kotlin.math.pow
 
 @HiltViewModel
 class UnitConverterViewModel @Inject constructor() : ViewModel() {

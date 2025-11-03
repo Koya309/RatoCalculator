@@ -1,7 +1,5 @@
 package com.example.ratocalculator.feature.unitconverter
 
-import java.util.Locale
-
 enum class UnitCategory(val displayName: String) {
     Mass("Mass"),
     Length("Length"),
