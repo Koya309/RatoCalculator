@@ -39,7 +39,7 @@ import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
 fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+//    val uiState by viewModel.uiState.collectAsState()
     val tabs = UnitCategory.values()
     val maxHeight = 40.dp * 5
 //    var selectedTab by remember { mutableStateOf(uiState.category.ordinal) }
@@ -163,6 +163,8 @@ fun UnitConverterScreen(
             },
             style = MaterialTheme.typography.titleMedium
         )
+    //    --->
+        // swapButtom()
 
     }
 }
