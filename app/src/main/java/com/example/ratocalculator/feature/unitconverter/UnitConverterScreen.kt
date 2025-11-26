@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,7 +57,7 @@ fun UnitConverterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(8.dp)
     ) {
         TabRow(selectedTabIndex = selectedTab) {
             tabs.forEachIndexed { index, category ->
@@ -83,6 +85,111 @@ fun UnitConverterScreen(
                         viewModel.onInputChanged(newValue, state.selectedPrefix)
                     }
                 },
+                singleLine = true,
+                modifier = Modifier.weight(3f),
+
+                //Keyboard
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { /* ปิดคีย์บอร์ดหรือทำ action อื่น */ }
+                )
+            )
+
+            Spacer(Modifier.width(8.dp))
+
+            // 🔹 A = Dropdown SIPrefix
+            Box {
+                OutlinedButton(onClick = { prefixExpanded = true }) {
+                    Text(
+                        if (state.selectedPrefix.symbol.isBlank()) ""
+                        else  "${state.selectedPrefix.symbol}"
+
+                    )
+                }
+                DropdownMenu(
+                    expanded = prefixExpanded,
+                    onDismissRequest = { prefixExpanded = false },
+                    modifier = Modifier.heightIn(max = maxHeight)
+                ) {
+                    state.prefixes.forEach { prefix ->
+                        DropdownMenuItem(
+                            text = {
+                                val symbolText =
+                                    if (prefix.symbol.isBlank()) ""
+                                    else "${prefix.symbol}    ${prefix.name}     10${viewModel.toSuperscript(prefix.power)}"
+                                Text(symbolText)
+                            },
+                            onClick = {
+                                viewModel.onPrefixSelected(prefix)
+                                prefixExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.width(8.dp))
+
+            // 🔹 B = Dropdown SI Unit (ขึ้นกับ Tab / Category)
+            var unitExpanded by remember { mutableStateOf(false) }
+            Box {
+                OutlinedButton(onClick = { unitExpanded = true }) {
+                    Text(state.selectedUnit.symbol)
+                }
+                DropdownMenu(
+                    expanded = unitExpanded,
+                    onDismissRequest = { unitExpanded = false }
+                ) {
+                    state.availableUnits.forEach { unit ->
+                        DropdownMenuItem(
+                            text = { Text("${unit.symbol} (${unit.name})") },
+                            onClick = {
+                                viewModel.onUnitSelected(unit)
+                                unitExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+            Spacer(Modifier.height(8.dp))
+
+        // 🔹 แสดงค่าที่กรอก + prefix + unit
+            Text(
+                text = buildString {
+                    append(state.inputValue.toDoubleOrNull() ?: 0.0)
+                    append(" ")
+                    append(state.selectedPrefix.name)
+                    append(state.selectedUnit.name)
+                },
+                style = MaterialTheme.typography.titleMedium
+            )
+    //    ---> 24 Nov 25
+
+            Spacer(Modifier.height(16.dp))
+
+        Divider(modifier = Modifier.padding(vertical = 16.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+        ) {
+            // 🔹 Input Value
+            OutlinedTextField(
+                value = state.outputValue,
+                onValueChange =
+                    {
+/*
+                        newValue ->
+                    if (newValue.matches(Regex("""^\d*\.?\d*$"""))) {
+                        viewModel.onInputChanged(newValue, state.selectedPrefix)
+                    }
+*/
+                    }
+                ,
                 singleLine = true,
                 modifier = Modifier.weight(1f),
                 keyboardOptions = KeyboardOptions(
@@ -151,21 +258,16 @@ fun UnitConverterScreen(
                 }
             }
         }
-        Spacer(Modifier.height(8.dp))
 
-        // 🔹 แสดงค่าที่กรอก + prefix + unit
         Text(
             text = buildString {
-                append(state.inputValue.toDoubleOrNull() ?: 0.0)
+                append(state.outputValue.toDoubleOrNull() ?: 0.0)
                 append(" ")
                 append(state.selectedPrefix.name)
                 append(state.selectedUnit.name)
             },
             style = MaterialTheme.typography.titleMedium
         )
-    //    --->
-        // swapButtom()
-
     }
 }
 
