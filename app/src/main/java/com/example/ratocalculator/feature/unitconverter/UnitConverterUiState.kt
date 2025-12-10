@@ -24,23 +24,24 @@ data class UnitItem(
 data class UnitConverterUiState(
     val category: UnitCategory = UnitCategory.Mass,
 
-    val inputValue: String = "",
-
-    // ค่าที่ถูกแปลงแล้ว
-    val outputValue: String = "",
 
     // Prefix / Unit ที่เลือก (บน)
+    val inputValue: String = "",
     val selectedPrefixA: SIPrefix = SIPrefix("", "", 0),
     val selectedUnitA: UnitItem = massUnits.first(),
 
     // Prefix / Unit ที่เลือก (ล่าง)
+    val outputValue: String = "",
     val selectedPrefixB: SIPrefix = SIPrefix("", "", 0),
     val selectedUnitB: UnitItem = massUnits[1],
 
-
     val convertedValue: Double = 0.0,
+
+    //
     val selectedPrefix: SIPrefix = SIPrefix("","",0),
     val prefixes: List<SIPrefix> = allSIPrefixes,
+
+    //
     val numericValue: Double? = null,
     val selectedUnit: UnitItem = massUnits.first(),
     val availableUnits: List<UnitItem> = massUnits

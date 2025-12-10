@@ -17,31 +17,6 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
     private var isUpdating = false
 
-    fun onInputChanged(newValue: String) {
-        _uiState.update { it.copy(inputValue = newValue) }
-        computeConversion()
-    }
-
-    fun onPrefixASelected(prefix: SIPrefix) {
-        _uiState.update { it.copy(selectedPrefixA = prefix) }
-        computeConversion()
-    }
-
-    fun onUnitASelected(unit: UnitItem) {
-        _uiState.update { it.copy(selectedUnitA = unit) }
-        computeConversion()
-    }
-
-    fun onPrefixBSelected(prefix: SIPrefix) {
-        _uiState.update { it.copy(selectedPrefixB = prefix) }
-        computeConversion()
-    }
-
-    fun onUnitBSelected(unit: UnitItem) {
-        _uiState.update { it.copy(selectedUnitB = unit) }
-        computeConversion()
-    }
-
     fun updateCategory(category: UnitCategory) {
         val newUnits = when (category) {
             UnitCategory.Mass -> massUnits
@@ -63,6 +38,40 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
         computeConversion()
     }
 
+    fun onInputAChanged(value: String){
+        if (isUpdating)return
+
+        _uiState.update { it.copy(inputValueA  = value) }
+        computeAtoB()
+    }
+
+    fun onInputBChanged(value: String){
+        if (isUpdating)return
+
+        _uiState.update { it.copy(inputValue = value) }
+        computeBtoA()
+    }
+
+    fun onPrefixASelected(prefix: SIPrefix){
+        _uiState.update { it.copy(selectedPrefixA = prefix) }
+        computeAtoB()
+    }
+
+    fun onUnitASelected(unit: UnitItem){
+        _uiState.update { it.copy(selectedUnitA = unit) }
+        computeAtoB()
+    }
+
+    fun onPrefixBSelected(prefix: SIPrefix){
+        _uiState.update { it.copy(selectedPrefixB = prefix) }
+        computeBtoA()
+    }
+    fun  onUnitBSelected(unit: UnitItem){
+        _uiState.update { it.copy(selectedUnitB = unit) }
+        computeBtoA()
+    }
+
+
     private fun computeConversion() {
         val state = _uiState.value
 
@@ -70,23 +79,23 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
             _uiState.update { it.copy(outputValue = "") }
             return
         }
-/*
-        // A → base (กรัม)
-        val baseValue = input *
-                10.0.pow(state.selectedPrefixA.power) *
-                state.selectedUnitA.multiplier
+    isUpdating = true
 
-        // base → B
+        val baseValue =
+            input *
+                    10.0.pow(state.selectedPrefixA.power) *
+                    state.selectedUnitA.mulitplier
+
         val output =
-            baseValue / state.selectedUnitB.multiplier / 10.0.pow(state.selectedPrefixB.power)
-
-        // เก็บผลลัพธ์เป็น string สวย ๆ
-        val text = output.toString()
+            baseValue /
+                    state.selectedUnitB.mulitplier /
+                    10.0.pow(state.selectedPrefixB.power)
 
         _uiState.update {
-            it.copy(outputValue = text)
+            it.copy(inputValueB = output.toString())
         }
-*/    }
+        isUpdating
+  }
 
     fun onInputChanged(newValue: String, prefix: SIPrefix) {
         _uiState.update { it.copy(inputValue = newValue, selectedPrefix = prefix) }
