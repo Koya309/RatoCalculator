@@ -17,116 +17,129 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
     private var isUpdating = false
 
-    fun updateCategory(category: UnitCategory) {
-        val newUnits = when (category) {
+    fun onCategoryChanged(category: UnitCategory) {
+        val units = when (category) {
             UnitCategory.Mass -> massUnits
-            UnitCategory.Temperature -> temperatureUnits
-            UnitCategory.Length -> temperatureUnits
-            UnitCategory.Volume -> temperatureUnits
-            UnitCategory.Area -> temperatureUnits
-        } //Don't Forget Fix
+            UnitCategory.Length -> lengthUnits
+            UnitCategory.Area -> areaUnits
+            UnitCategory.Volume -> volumeUnits
+        }
 
         _uiState.update {
             it.copy(
                 category = category,
-                availableUnits = newUnits,
-                selectedUnitA = newUnits.first(),
-                selectedUnitB = newUnits.last()
+                availableUnits = units,
+                sideA = it.sideA.copy(unit = units.first()),
+                sideB = it.sideB.copy(unit = units[1])
             )
         }
 
-        computeConversion()
+        convertAtoB()
     }
 
-    fun onInputAChanged(value: String){
-        if (isUpdating)return
+    fun onInputAChanged(value: String) {
+        if (isUpdating) return
 
-        _uiState.update { it.copy(inputValueA  = value) }
-        computeAtoB()
+        _uiState.update {
+            it.copy(sideA = it.sideA.copy(input = value))
+        }
+        convertAtoB()
     }
 
-    fun onInputBChanged(value: String){
-        if (isUpdating)return
-
-        _uiState.update { it.copy(inputValue = value) }
-        computeBtoA()
+    fun onPrefixAChanged(prefix: SIPrefix) {
+        _uiState.update {
+            it.copy(sideA = it.sideA.copy(prefix = prefix))
+        }
+        convertAtoB()
     }
 
-    fun onPrefixASelected(prefix: SIPrefix){
-        _uiState.update { it.copy(selectedPrefixA = prefix) }
-        computeAtoB()
+    fun onUnitAChanged(unit: UnitItem) {
+        _uiState.update {
+            it.copy(sideA = it.sideA.copy(unit = unit))
+        }
+        convertAtoB()
     }
 
-    fun onUnitASelected(unit: UnitItem){
-        _uiState.update { it.copy(selectedUnitA = unit) }
-        computeAtoB()
+    fun onInputBChanged(value: String) {
+        if (isUpdating) return
+
+        _uiState.update {
+            it.copy(sideB = it.sideB.copy(input = value))
+        }
+        convertBtoA()
     }
 
-    fun onPrefixBSelected(prefix: SIPrefix){
-        _uiState.update { it.copy(selectedPrefixB = prefix) }
-        computeBtoA()
-    }
-    fun  onUnitBSelected(unit: UnitItem){
-        _uiState.update { it.copy(selectedUnitB = unit) }
-        computeBtoA()
+    fun onPrefixBChanged(prefix: SIPrefix) {
+        _uiState.update {
+            it.copy(sideB = it.sideB.copy(prefix = prefix))
+        }
+        convertBtoA()
     }
 
+    fun onUnitBChanged(unit: UnitItem) {
+        _uiState.update {
+            it.copy(sideB = it.sideB.copy(unit = unit))
+        }
+        convertBtoA()
+    }
 
-    private fun computeConversion() {
+    private fun convertAtoB() {
         val state = _uiState.value
-
-        val input = state.inputValue.toDoubleOrNull() ?: run {
-            _uiState.update { it.copy(outputValue = "") }
+        val input = state.sideA.input.toDoubleOrNull() ?: run {
+            _uiState.update {
+                it.copy(sideB = it.sideB.copy(input = ""))
+            }
             return
         }
-    isUpdating = true
+
+        isUpdating = true
+
+        // 1️⃣ ไปหน่วยฐาน
+        val baseValue =
+            input *
+                    10.0.pow(state.sideA.prefix.power) *
+                    state.sideA.unit.multiplier
+
+        // 2️⃣ จากฐาน → ปลายทาง
+        val output =
+            baseValue /
+                    state.sideB.unit.multiplier /
+                    10.0.pow(state.sideB.prefix.power)
+
+        _uiState.update {
+            it.copy(
+                sideB = it.sideB.copy(input = output.toString())
+            )
+        }
+
+        isUpdating = false
+    }
+
+    private fun convertBtoA() {
+        val state = _uiState.value
+        val input = state.sideB.input.toDoubleOrNull() ?: return
+
+        isUpdating = true
 
         val baseValue =
             input *
-                    10.0.pow(state.selectedPrefixA.power) *
-                    state.selectedUnitA.mulitplier
+                    10.0.pow(state.sideB.prefix.power) *
+                    state.sideB.unit.multiplier
 
         val output =
             baseValue /
-                    state.selectedUnitB.mulitplier /
-                    10.0.pow(state.selectedPrefixB.power)
+                    state.sideA.unit.multiplier /
+                    10.0.pow(state.sideA.prefix.power)
 
         _uiState.update {
-            it.copy(inputValueB = output.toString())
+            it.copy(
+                sideA = it.sideA.copy(input = output.toString())
+            )
         }
-        isUpdating
-  }
 
-    fun onInputChanged(newValue: String, prefix: SIPrefix) {
-        _uiState.update { it.copy(inputValue = newValue, selectedPrefix = prefix) }
+        isUpdating = false
     }
-
-    fun onPrefixSelected(prefix: SIPrefix) {
-        _uiState.update { it.copy(selectedPrefix = prefix) }
-    }
-
-    fun onUnitSelected(unit: UnitItem) {
-        _uiState.update {
-            it.copy(selectedUnit = unit)
-        }
-    }
+}
 
 
-
-    fun toSuperscript(power: Int): String {
-        val superscripts = mapOf(
-            '0' to '⁰',
-            '1' to '¹',
-            '2' to '²',
-            '3' to '³',
-            '4' to '⁴',
-            '5' to '⁵',
-            '6' to '⁶',
-            '7' to '⁷',
-            '8' to '⁸',
-            '9' to '⁹',
-            '-' to '⁻'
-        )
-        return power.toString().map { superscripts[it] ?: it }.joinToString("")
-    }
 }

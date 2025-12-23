@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
@@ -41,237 +42,171 @@ import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
 fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
-//    val uiState by viewModel.uiState.collectAsState()
+    val state by viewModel.uiState.collectAsState()
     val tabs = UnitCategory.values()
     val maxHeight = 40.dp * 5
-//    var selectedTab by remember { mutableStateOf(uiState.category.ordinal) }
-//    var kgInput by remember { mutableStateOf("7") }
-    val state by viewModel.uiState.collectAsState()
-//    val kgValue = (kgInput.toDoubleOrNull() ?: 0.0)
-//    val gramValue = kgValue * 1000
-    var prefixExpanded by remember { mutableStateOf(false) }
-//    var unitExpanded by remember { mutableStateOf(false) }
-    var selectedTab by remember { mutableIntStateOf(0) }
 
+    var selectedTab by remember { mutableIntStateOf(state.category.ordinal) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
+
+        // =========================
+        // 🔹 TAB BAR
+        // =========================
         TabRow(selectedTabIndex = selectedTab) {
             tabs.forEachIndexed { index, category ->
                 Tab(
                     selected = selectedTab == index,
                     onClick = {
                         selectedTab = index
-                        viewModel.updateCategory(category)
+                        viewModel.onCategoryChanged(category)
                     },
                     text = { Text(category.displayName) }
                 )
             }
         }
 
+        Spacer(Modifier.height(12.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
-        ) {
-            // 🔹 Input Value
-            OutlinedTextField(
-                value = state.inputValue,
-                onValueChange = { newValue ->
-                    if (newValue.matches(Regex("""^\d*\.?\d*$"""))) {
-                        viewModel.onInputChanged(newValue, state.selectedPrefix)
-                    }
-                },
-                singleLine = true,
-                modifier = Modifier.weight(3f),
+        // =========================
+        // 🔹 SIDE A (ต้นทาง)
+        // =========================
+        ConverterRow(
+            side = state.sideA,
+            prefixes = allSIPrefixes,
+            units = state.availableUnits,
+            maxHeight = maxHeight,
+            onValueChange = viewModel::onInputAChanged,
+            onPrefixSelected = viewModel::onPrefixASelected,
+            onUnitSelected = viewModel::onUnitASelected
+        )
 
-                //Keyboard
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { /* ปิดคีย์บอร์ดหรือทำ action อื่น */ }
-                )
-            )
+        Spacer(Modifier.height(12.dp))
+        Divider()
+        Spacer(Modifier.height(12.dp))
 
-            Spacer(Modifier.width(8.dp))
-
-            // 🔹 A = Dropdown SIPrefix
-            Box {
-                OutlinedButton(onClick = { prefixExpanded = true }) {
-                    Text(
-                        if (state.selectedPrefix.symbol.isBlank()) ""
-                        else  "${state.selectedPrefix.symbol}"
-
-                    )
-                }
-                DropdownMenu(
-                    expanded = prefixExpanded,
-                    onDismissRequest = { prefixExpanded = false },
-                    modifier = Modifier.heightIn(max = maxHeight)
-                ) {
-                    state.prefixes.forEach { prefix ->
-                        DropdownMenuItem(
-                            text = {
-                                val symbolText =
-                                    if (prefix.symbol.isBlank()) ""
-                                    else "${prefix.symbol}    ${prefix.name}     10${viewModel.toSuperscript(prefix.power)}"
-                                Text(symbolText)
-                            },
-                            onClick = {
-                                viewModel.onPrefixSelected(prefix)
-                                prefixExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.width(8.dp))
-
-            // 🔹 B = Dropdown SI Unit (ขึ้นกับ Tab / Category)
-            var unitExpanded by remember { mutableStateOf(false) }
-            Box {
-                OutlinedButton(onClick = { unitExpanded = true }) {
-                    Text(state.selectedUnit.symbol)
-                }
-                DropdownMenu(
-                    expanded = unitExpanded,
-                    onDismissRequest = { unitExpanded = false }
-                ) {
-                    state.availableUnits.forEach { unit ->
-                        DropdownMenuItem(
-                            text = { Text("${unit.symbol} (${unit.name})") },
-                            onClick = {
-                                viewModel.onUnitSelected(unit)
-                                unitExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-            Spacer(Modifier.height(8.dp))
-
-        // 🔹 แสดงค่าที่กรอก + prefix + unit
-            Text(
-                text = buildString {
-                    append(state.inputValue.toDoubleOrNull() ?: 0.0)
-                    append(" ")
-                    append(state.selectedPrefix.name)
-                    append(state.selectedUnit.name)
-                },
-                style = MaterialTheme.typography.titleMedium
-            )
-    //    ---> 24 Nov 25
-
-            Spacer(Modifier.height(16.dp))
-
-        Divider(modifier = Modifier.padding(vertical = 16.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
-        ) {
-            // 🔹 Input Value
-            OutlinedTextField(
-                value = state.outputValue,
-                onValueChange =
-                    {
-/*
-                        newValue ->
-                    if (newValue.matches(Regex("""^\d*\.?\d*$"""))) {
-                        viewModel.onInputChanged(newValue, state.selectedPrefix)
-                    }
-*/
-                    }
-                ,
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { /* ปิดคีย์บอร์ดหรือทำ action อื่น */ }
-                )
-            )
-
-            Spacer(Modifier.width(8.dp))
-
-            // 🔹 A = Dropdown SIPrefix
-            Box {
-                OutlinedButton(onClick = { prefixExpanded = true }) {
-                    Text(
-                        if (state.selectedPrefix.symbol.isBlank()) ""
-                        else  "${state.selectedPrefix.symbol}"
-
-                    )
-                }
-                DropdownMenu(
-                    expanded = prefixExpanded,
-                    onDismissRequest = { prefixExpanded = false },
-                    modifier = Modifier.heightIn(max = maxHeight)
-                ) {
-                    state.prefixes.forEach { prefix ->
-                        DropdownMenuItem(
-                            text = {
-                                val symbolText =
-                                    if (prefix.symbol.isBlank()) ""
-                                    else "${prefix.symbol}    ${prefix.name}     10${viewModel.toSuperscript(prefix.power)}"
-                                Text(symbolText)
-                            },
-                            onClick = {
-                                viewModel.onPrefixSelected(prefix)
-                                prefixExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.width(8.dp))
-
-            // 🔹 B = Dropdown SI Unit (ขึ้นกับ Tab / Category)
-            var unitExpanded by remember { mutableStateOf(false) }
-            Box {
-                OutlinedButton(onClick = { unitExpanded = true }) {
-                    Text(state.selectedUnit.symbol)
-                }
-                DropdownMenu(
-                    expanded = unitExpanded,
-                    onDismissRequest = { unitExpanded = false }
-                ) {
-                    state.availableUnits.forEach { unit ->
-                        DropdownMenuItem(
-                            text = { Text("${unit.symbol} (${unit.name})") },
-                            onClick = {
-                                viewModel.onUnitSelected(unit)
-                                unitExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
-        Text(
-            text = buildString {
-                append(state.outputValue.toDoubleOrNull() ?: 0.0)
-                append(" ")
-                append(state.selectedPrefix.name)
-                append(state.selectedUnit.name)
-            },
-            style = MaterialTheme.typography.titleMedium
+        // =========================
+        // 🔹 SIDE B (ปลายทาง)
+        // =========================
+        ConverterRow(
+            side = state.sideB,
+            prefixes = allSIPrefixes,
+            units = state.availableUnits,
+            maxHeight = maxHeight,
+            onValueChange = viewModel::onInputBChanged,
+            onPrefixSelected = viewModel::onPrefixBSelected,
+            onUnitSelected = viewModel::onUnitBSelected
         )
     }
 }
 
+@Composable
+fun ConverterRow(
+    side: ConverterSideState,
+    prefixes: List<SIPrefix>,
+    units: List<UnitItem>,
+    maxHeight: Dp,
+    onValueChange: (String) -> Unit,
+    onPrefixSelected: (SIPrefix) -> Unit,
+    onUnitSelected: (UnitItem) -> Unit
+) {
+    var prefixExpanded by remember { mutableStateOf(false) }
+    var unitExpanded by remember { mutableStateOf(false) }
 
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            // 🔹 Input
+            OutlinedTextField(
+                value = side.input,
+                onValueChange = { value ->
+                    if (value.matches(Regex("""^\d*\.?\d*$"""))) {
+                        onValueChange(value)
+                    }
+                },
+                singleLine = true,
+                modifier = Modifier.weight(3f),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                )
+            )
+
+            Spacer(Modifier.width(8.dp))
+
+            // 🔹 Prefix Dropdown
+            Box {
+                OutlinedButton(onClick = { prefixExpanded = true }) {
+                    Text(side.prefix.symbol.ifBlank { "—" })
+                }
+
+                DropdownMenu(
+                    expanded = prefixExpanded,
+                    onDismissRequest = { prefixExpanded = false },
+                    modifier = Modifier.heightIn(max = maxHeight)
+                ) {
+                    prefixes.forEach { prefix ->
+                        DropdownMenuItem(
+                            text = {
+                                if (prefix.symbol.isBlank())
+                                    Text("— (no prefix)")
+                                else
+                                    Text("${prefix.symbol}  ${prefix.name}  10${toSuperscript(prefix.power)}")
+                            },
+                            onClick = {
+                                onPrefixSelected(prefix)
+                                prefixExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.width(8.dp))
+
+            // 🔹 Unit Dropdown
+            Box {
+                OutlinedButton(onClick = { unitExpanded = true }) {
+                    Text(side.unit.symbol)
+                }
+
+                DropdownMenu(
+                    expanded = unitExpanded,
+                    onDismissRequest = { unitExpanded = false }
+                ) {
+                    units.forEach { unit ->
+                        DropdownMenuItem(
+                            text = { Text("${unit.symbol} (${unit.name})") },
+                            onClick = {
+                                onUnitSelected(unit)
+                                unitExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(4.dp))
+
+        // 🔹 Text แสดงผลแบบเต็ม
+        Text(
+            text = buildString {
+                append(side.input.ifBlank { "0" })
+                append(" ")
+                append(side.prefix.name)
+                append(" ")
+                append(side.unit.name)
+            },
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
 
 
 @Preview(showBackground = true)

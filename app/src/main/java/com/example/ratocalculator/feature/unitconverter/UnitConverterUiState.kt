@@ -9,42 +9,41 @@ enum class UnitCategory(val displayName: String) {
 }
 
 data class SIPrefix(
-    val name: String,        // เช่น kilo
-    val symbol: String,      // เช่น k
-    val power: Int           // เช่น 3 (10^3)
-)
+    val name: String,
+    val symbol: String,
+    val power: Int
+) {
+    companion object {
+        val NONE = SIPrefix("", "", 0)
+    }
+}
 
 data class UnitItem(
-    val name: String,     // gram, pound, ounce, etc.
-    val symbol: String,   // g, lb, oz, etc.
-    val toBase: (Double) -> Double,   // ฟังก์ชันแปลงเป็นหน่วยฐาน (เช่น g)
-    val fromBase: (Double) -> Double  // ฟังก์ชันแปลงจากหน่วยฐาน
+    val name: String,
+    val symbol: String,
+
+    // เทียบกับหน่วยฐานของหมวด (kg, m, s ฯลฯ)
+    val multiplier: Double
+)
+
+data class ConverterSideState(
+    val input: String = "",
+    val prefix: SIPrefix = SIPrefix.NONE,
+    val unit: UnitItem
 )
 
 data class UnitConverterUiState(
+
     val category: UnitCategory = UnitCategory.Mass,
+    val availableUnits: List<UnitItem> = massUnits,
 
+    val sideA: ConverterSideState = ConverterSideState(
+        unit = massUnits.first()
+    ),
 
-    // Prefix / Unit ที่เลือก (บน)
-    val inputValue: String = "",
-    val selectedPrefixA: SIPrefix = SIPrefix("", "", 0),
-    val selectedUnitA: UnitItem = massUnits.first(),
-
-    // Prefix / Unit ที่เลือก (ล่าง)
-    val outputValue: String = "",
-    val selectedPrefixB: SIPrefix = SIPrefix("", "", 0),
-    val selectedUnitB: UnitItem = massUnits[1],
-
-    val convertedValue: Double = 0.0,
-
-    //
-    val selectedPrefix: SIPrefix = SIPrefix("","",0),
-    val prefixes: List<SIPrefix> = allSIPrefixes,
-
-    //
-    val numericValue: Double? = null,
-    val selectedUnit: UnitItem = massUnits.first(),
-    val availableUnits: List<UnitItem> = massUnits
+    val sideB: ConverterSideState = ConverterSideState(
+        unit = massUnits[1]
+    )
 )
 
 val allSIPrefixes = listOf(
@@ -78,7 +77,52 @@ val massUnits = listOf(
     UnitItem("tonne", "t", { it * 1_000_000 }, { it / 1_000_000 })
 )
 
+val lengthUnits = listOf(
+    UnitItem("Celsius", "°C",
+        toBase = { it },                   // ฐานคือ °C
+        fromBase = { it }
+    ),
+    UnitItem("Fahrenheit", "°F",
+        toBase = { (it - 32) * 5 / 9 },
+        fromBase = { it * 9 / 5 + 32 }
+    ),
+    UnitItem("Kelvin", "K",
+        toBase = { it - 273.15 },
+        fromBase = { it + 273.15 }
+    )
+)
+
+val volumeUnits = listOf(
+    UnitItem("Celsius", "°C",
+        toBase = { it },                   // ฐานคือ °C
+        fromBase = { it }
+    ),
+    UnitItem("Fahrenheit", "°F",
+        toBase = { (it - 32) * 5 / 9 },
+        fromBase = { it * 9 / 5 + 32 }
+    ),
+    UnitItem("Kelvin", "K",
+        toBase = { it - 273.15 },
+        fromBase = { it + 273.15 }
+    )
+)
+
 val temperatureUnits = listOf(
+    UnitItem("Celsius", "°C",
+        toBase = { it },                   // ฐานคือ °C
+        fromBase = { it }
+    ),
+    UnitItem("Fahrenheit", "°F",
+        toBase = { (it - 32) * 5 / 9 },
+        fromBase = { it * 9 / 5 + 32 }
+    ),
+    UnitItem("Kelvin", "K",
+        toBase = { it - 273.15 },
+        fromBase = { it + 273.15 }
+    )
+)
+
+val areaUnits = listOf(
     UnitItem("Celsius", "°C",
         toBase = { it },                   // ฐานคือ °C
         fromBase = { it }
