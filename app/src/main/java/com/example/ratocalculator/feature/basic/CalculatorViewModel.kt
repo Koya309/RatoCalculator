@@ -1,14 +1,17 @@
 package com.example.ratocalculator.feature.basic
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import net.objecthunter.exp4j.ExpressionBuilder
 
 @HiltViewModel
-class CalculatorViewModel @Inject constructor() : ViewModel() {
+class CalculatorViewModel @Inject constructor(
+    private val _savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BasicUiStateCalculator())
     val uiState: StateFlow<BasicUiStateCalculator> = _uiState
@@ -100,4 +103,15 @@ class CalculatorViewModel @Inject constructor() : ViewModel() {
             _uiState.value = _uiState.value.copy(input = input + "*10")
         }
     }
+
+    init {
+        _uiState.value = _uiState.value.copy(
+            input = _savedStateHandle["lastInput"] ?: ""
+        )
+    }
+
+    fun saveInput() {
+        _savedStateHandle["lastInput"] = _uiState.value.input
+    }
+
 }

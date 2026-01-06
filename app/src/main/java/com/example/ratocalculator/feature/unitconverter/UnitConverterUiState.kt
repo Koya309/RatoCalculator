@@ -21,9 +21,11 @@ data class SIPrefix(
 data class UnitItem(
     val name: String,
     val symbol: String,
+    val toBase: (Double) -> Double,
+    val fromBase: (Double) -> Double
 
     // เทียบกับหน่วยฐานของหมวด (kg, m, s ฯลฯ)
-    val multiplier: Double
+    // val multiplier: Double
 )
 
 data class ConverterSideState(

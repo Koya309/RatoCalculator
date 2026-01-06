@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.dagger.hilt.android")
-    kotlin("kapt")
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -56,9 +56,9 @@ dependencies {
     implementation(libs.compose.icons.extended)
 
     // Hilt
-    implementation(libs.hilt.android)
+    implementation(libs.hilt.android) //----
     implementation(libs.androidx.room.ktx)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
     //exp4j

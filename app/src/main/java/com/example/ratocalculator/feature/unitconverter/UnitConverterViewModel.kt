@@ -1,6 +1,5 @@
 package com.example.ratocalculator.feature.unitconverter
 
-import android.location.Location.convert
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +21,9 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
             UnitCategory.Mass -> massUnits
             UnitCategory.Length -> lengthUnits
             UnitCategory.Area -> areaUnits
+            UnitCategory.Temperature -> temperatureUnits
             UnitCategory.Volume -> volumeUnits
+            else -> emptyList()
         }
 
         _uiState.update {
@@ -97,14 +98,11 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
         // 1️⃣ ไปหน่วยฐาน
         val baseValue =
             input *
-                    10.0.pow(state.sideA.prefix.power) *
-                    state.sideA.unit.multiplier
+                    10.0.pow(state.sideB.prefix.power) // apply prefix
+                        .let { prefixed -> state.sideB.unit.toBase(prefixed) } // convert to base unit
 
         // 2️⃣ จากฐาน → ปลายทาง
-        val output =
-            baseValue /
-                    state.sideB.unit.multiplier /
-                    10.0.pow(state.sideB.prefix.power)
+        val output = state.sideA.unit.fromBase(baseValue) / 10.0.pow(state.sideA.prefix.power)
 
         _uiState.update {
             it.copy(
@@ -123,13 +121,12 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
         val baseValue =
             input *
-                    10.0.pow(state.sideB.prefix.power) *
-                    state.sideB.unit.multiplier
+                    10.0.pow(state.sideB.prefix.power) // apply prefix
+                        .let { prefixed -> state.sideB.unit.toBase(prefixed) } // convert to base unit
+
 
         val output =
-            baseValue /
-                    state.sideA.unit.multiplier /
-                    10.0.pow(state.sideA.prefix.power)
+            state.sideA.unit.fromBase(baseValue) / 10.0.pow(state.sideA.prefix.power)
 
         _uiState.update {
             it.copy(
@@ -139,7 +136,4 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
         isUpdating = false
     }
-}
-
-
 }
