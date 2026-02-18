@@ -103,7 +103,7 @@ fun UnitConverterScreen(
 
 @Composable
 fun ConverterRow(
-    side: ConverterSideState,
+    side: SideState,
     prefixes: List<SIPrefix>,
     units: List<UnitItem>,
     maxHeight: Dp,

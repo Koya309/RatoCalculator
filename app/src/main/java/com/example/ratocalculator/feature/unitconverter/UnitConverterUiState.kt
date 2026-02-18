@@ -28,24 +28,17 @@ data class UnitItem(
     // val multiplier: Double
 )
 
-data class ConverterSideState(
+data class SideState(
     val input: String = "",
-    val prefix: SIPrefix = SIPrefix.NONE,
-    val unit: UnitItem
+    val unit: UnitItem = massUnits.first(),
+    val prefix: SIPrefix = SIPrefix.NONE
 )
 
 data class UnitConverterUiState(
-
     val category: UnitCategory = UnitCategory.Mass,
     val availableUnits: List<UnitItem> = massUnits,
-
-    val sideA: ConverterSideState = ConverterSideState(
-        unit = massUnits.first()
-    ),
-
-    val sideB: ConverterSideState = ConverterSideState(
-        unit = massUnits[1]
-    )
+    val sideA: SideState = SideState(),
+    val sideB: SideState = SideState()
 )
 
 val allSIPrefixes = listOf(
