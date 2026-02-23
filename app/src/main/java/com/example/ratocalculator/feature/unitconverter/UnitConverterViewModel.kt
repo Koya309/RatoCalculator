@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.pow
+import com.example.ratocalculator.feature.unitconverter.toSuperscript
 
 @HiltViewModel
 class UnitConverterViewModel @Inject constructor() : ViewModel() {
@@ -132,9 +133,8 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
         if (exponent == 0) return mantissa
 
-        val superExponent = exponent.toString()
-
-        return "$mantissa × 10^$superExponent"
+        val superExponent = toSuperscript(exponent)
+        return "$mantissa × 10$superExponent"
     }
 
 }
