@@ -47,7 +47,7 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
     fun onInputBChanged(value: String) {
         if (isUpdating) return
         _uiState.update { it.copy(sideB = it.sideB.copy(input = value)) }
-        performConversion(fromA = true)
+        performConversion(fromA = false)
     }
 
     fun onUnitAChanged(unit: UnitItem) {

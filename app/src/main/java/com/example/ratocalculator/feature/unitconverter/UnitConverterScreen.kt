@@ -77,7 +77,7 @@ fun UnitConverterScreen(
             prefixes = allSIPrefixes,
             units = state.availableUnits,
             maxHeight = maxHeight,
-            onValueChange = viewModel::onInputAChanged,
+            onValueChange = {viewModel.onInputAChanged(it)},
             onPrefixSelected = viewModel::onPrefixAChanged,
             onUnitSelected = viewModel::onUnitAChanged
         )
@@ -94,7 +94,7 @@ fun UnitConverterScreen(
             prefixes = allSIPrefixes,
             units = state.availableUnits,
             maxHeight = maxHeight,
-            onValueChange = viewModel::onInputBChanged,
+            onValueChange = { viewModel.onInputBChanged(it) },
             onPrefixSelected = viewModel::onPrefixBChanged,
             onUnitSelected = viewModel::onUnitBChanged
         )
