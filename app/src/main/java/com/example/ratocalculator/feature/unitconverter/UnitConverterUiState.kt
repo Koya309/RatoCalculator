@@ -26,11 +26,20 @@ data class UnitItem(
 
     // เทียบกับหน่วยฐานของหมวด (kg, m, s ฯลฯ)
     // val multiplier: Double
-)
+){
+    companion object{
+        val DEFAULT = UnitItem(
+            name = "Select Unit",
+            symbol = "",
+            toBase = { it },
+            fromBase = { it }
+        )
+    }
+}
 
 data class SideState(
     val input: String = "",
-    val unit: UnitItem = massUnits.first(),
+    val unit: UnitItem = UnitItem.DEFAULT,
     val prefix: SIPrefix = SIPrefix.NONE
 )
 
@@ -66,39 +75,71 @@ val allSIPrefixes = listOf(
 )
 
 val massUnits = listOf(
-    UnitItem("gram", "g", { it }, { it }),
-    UnitItem("pound", "lb", { it * 453.592 }, { it / 453.592 }),
-    UnitItem("ounce", "oz", { it * 28.3495 }, { it / 28.3495 }),
-    UnitItem("tonne", "t", { it * 1_000_000 }, { it / 1_000_000 })
+    UnitItem("gram", "g",
+        { it }, { it }
+    ),
+    UnitItem("pound", "lb",
+        { it * 453.592 }, { it / 453.592 }
+    ),
+    UnitItem("ounce", "oz",
+        { it * 28.3495 }, { it / 28.3495 }
+    ),
+    UnitItem("tonne", "t",
+        { it * 1_000_000 }, { it / 1_000_000 }
+    )
 )
 
 val lengthUnits = listOf(
-    UnitItem("Celsius", "°C",
-        toBase = { it },                   // ฐานคือ °C
+    UnitItem("Meter", "m",
+        toBase = { it },                    // หน่วยฐาน
         fromBase = { it }
     ),
-    UnitItem("Fahrenheit", "°F",
-        toBase = { (it - 32) * 5 / 9 },
-        fromBase = { it * 9 / 5 + 32 }
+    UnitItem("Inch", "in",
+        toBase = { it * 0.0254 },           // 1 inch = 0.0254 m
+        fromBase = { it / 0.0254 }
     ),
-    UnitItem("Kelvin", "K",
-        toBase = { it - 273.15 },
-        fromBase = { it + 273.15 }
+    UnitItem("Foot", "ft",
+        toBase = { it * 0.3048 },           // 1 foot = 0.3048 m
+        fromBase = { it / 0.3048 }
+    ),
+    UnitItem("Yard", "yd",
+        toBase = { it * 0.9144 },           // 1 yard = 0.9144 m
+        fromBase = { it / 0.9144 }
+    ),
+    UnitItem("Mile", "mi",
+        toBase = { it * 1609.344 },         // 1 mile = 1609.344 m
+        fromBase = { it / 1609.344 }
     )
 )
 
 val volumeUnits = listOf(
-    UnitItem("Celsius", "°C",
-        toBase = { it },                   // ฐานคือ °C
+    UnitItem("Liter", "L",
+        toBase = { it },                    // หน่วยฐาน
         fromBase = { it }
     ),
-    UnitItem("Fahrenheit", "°F",
-        toBase = { (it - 32) * 5 / 9 },
-        fromBase = { it * 9 / 5 + 32 }
+    UnitItem("Cubic Meter", "m³",
+        toBase = { it * 1000.0 },           // 1 m³ = 1000 L
+        fromBase = { it / 1000.0 }
     ),
-    UnitItem("Kelvin", "K",
-        toBase = { it - 273.15 },
-        fromBase = { it + 273.15 }
+    UnitItem("US Gallon", "gal",
+        toBase = { it * 3.78541 },          // 1 gal ≈ 3.785 L
+        fromBase = { it / 3.78541 }
+    ),
+    UnitItem("US Quart", "qt",
+        toBase = { it * 0.94635 },          // 1 qt ≈ 0.946 L
+        fromBase = { it / 0.94635 }
+    ),
+    UnitItem("US Pint", "pt",
+        toBase = { it * 0.47318 },          // 1 pt ≈ 0.473 L
+        fromBase = { it / 0.47318 }
+    ),
+    UnitItem("US Cup", "c",
+        toBase = { it * 0.23659 },          // 1 cup ≈ 237 mL หรือ 0.236 L
+        fromBase = { it / 0.23659 }
+    ),
+    UnitItem("Fluid Ounce", "fl oz",
+        toBase = { it * 0.02957 },          // 1 fl oz ≈ 29.57 mL
+        fromBase = { it / 0.02957 }
     )
 )
 
@@ -118,16 +159,28 @@ val temperatureUnits = listOf(
 )
 
 val areaUnits = listOf(
-    UnitItem("Celsius", "°C",
-        toBase = { it },                   // ฐานคือ °C
+    UnitItem("Square Meter", "m²",
+        toBase = { it },                    // หน่วยฐาน
         fromBase = { it }
     ),
-    UnitItem("Fahrenheit", "°F",
-        toBase = { (it - 32) * 5 / 9 },
-        fromBase = { it * 9 / 5 + 32 }
+    UnitItem("Hectare", "ha",
+        toBase = { it * 10_000.0 },         // 1 ha = 10_000 m²
+        fromBase = { it / 10_000.0 }
     ),
-    UnitItem("Kelvin", "K",
-        toBase = { it - 273.15 },
-        fromBase = { it + 273.15 }
+    UnitItem("Acre", "ac",
+        toBase = { it * 4046.856 },         // 1 acre ≈ 4046.86 m²
+        fromBase = { it / 4046.856 }
+    ),
+    UnitItem("Square Mile", "mi²",
+        toBase = { it * 2_589_988.11 },     // 1 mi² ≈ 2.59 km²
+        fromBase = { it / 2_589_988.11 }
+    ),
+    UnitItem("Square Foot", "ft²",
+        toBase = { it * 0.092903 },         // 1 ft² ≈ 0.0929 m²
+        fromBase = { it / 0.092903 }
+    ),
+    UnitItem("Square Inch", "in²",
+        toBase = { it * 0.00064516 },       // 1 in² = 6.4516 cm²
+        fromBase = { it / 0.00064516 }
     )
 )
