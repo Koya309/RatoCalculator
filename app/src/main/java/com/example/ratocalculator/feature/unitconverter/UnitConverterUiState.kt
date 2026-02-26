@@ -24,8 +24,6 @@ data class UnitItem(
     val toBase: (Double) -> Double,
     val fromBase: (Double) -> Double
 
-    // เทียบกับหน่วยฐานของหมวด (kg, m, s ฯลฯ)
-    // val multiplier: Double
 ){
     companion object{
         val DEFAULT = UnitItem(
@@ -90,7 +88,7 @@ val massUnits = listOf(
 )
 
 val lengthUnits = listOf(
-    UnitItem("Meter", "m",
+    UnitItem("meter", "m",
         toBase = { it },                    // หน่วยฐาน
         fromBase = { it }
     ),
