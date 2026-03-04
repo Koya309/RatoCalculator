@@ -65,7 +65,7 @@ fun CalculatorScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = uiState.input.ifEmpty { "0" },
+                text = uiState.input.ifEmpty { "" }, // เปลี่ยนเป็น input
                 fontSize = 28.sp,
                 color = Color.LightGray,
                 textAlign = TextAlign.End,
@@ -75,8 +75,8 @@ fun CalculatorScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = uiState.result.ifEmpty { "0" },
-                fontSize = 40.sp,
+                text = uiState.result.ifEmpty { "0" }, // เปลี่ยนเป็น result
+                fontSize = 48.sp, // เน้นตัวใหญ่ๆ
                 color = Color.White,
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()
@@ -86,7 +86,7 @@ fun CalculatorScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         val buttons = listOf(
-            listOf("C", "", "x10", "DEL"),
+            listOf("C", "+/-", "x10", "DEL"),
             listOf("7", "8", "9", "÷"),
             listOf("4", "5", "6", "×"),
             listOf("1", "2", "3", "-"),
@@ -134,7 +134,7 @@ fun CalculatorButton(
         modifier = modifier,
         shape = RoundedCornerShape(50),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (label in listOf("÷", "×", "-", "+", "="))
+            containerColor = if (label in listOf("÷", "×", "-", "+", "=", "+/-"))
                 colorResource(id = R.color.clear_button)
             else
                 colorResource(id = R.color.operator_button),
