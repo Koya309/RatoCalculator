@@ -33,9 +33,6 @@ class CalculatorViewModel @Inject constructor(
     private fun calculateResult(decimalPlaces: Int, removeTrailingZero: Boolean) {
         val currentInput = _uiState.value.input
 
-
-        Log.d("CalculatorDebug", "Step 1: Input is '$currentInput'")
-
         if (currentInput.isBlank()){
             _uiState.update { it.copy(result = "") }
             return
@@ -47,18 +44,14 @@ class CalculatorViewModel @Inject constructor(
                 .replace("÷", "/")
                 .replace(",", "")
 
-            Log.d("CalculatorDebug", "Step 2: Cleaned Expression is '$expression'")
-
             val result = ExpressionBuilder(expression).build().evaluate()
 
             val formatted = formatResult(result, decimalPlaces , removeTrailingZero)
 
-            Log.d("CalculatorDebug", "Step 3: Calculated Result is '$formatted'")
             _uiState.update {
                 it.copy(result = formatted)
             }
         } catch (e: Exception) {
-            Log.e("CalculatorDebug", "Error: ${e.message}")
             _uiState.update { it.copy(result = "") }
         }
     }
@@ -74,42 +67,43 @@ class CalculatorViewModel @Inject constructor(
 
         when (label) {
             in operators -> {
-                val input = _uiState.value.input
-                val lastChar = input.lastOrNull()?.toString() ?: ""
-                if (input.isEmpty()){
-                    if (label == "-") _uiState.value = _uiState.value.copy(input = "-")
+                val currentInput = _uiState.value.input
+                val currentResult = _uiState.value.result
+                val lastChar = currentInput.lastOrNull()?.toString() ?: ""
+                if (currentInput.isEmpty() && currentInput.isNotEmpty() ){
+                    if (label == "-") {
+                        _uiState.update { it.copy(input = "-") }
+                    }
                 }
-                else if (result.isNotEmpty() && input.isEmpty()) {
-                    _uiState.value = _uiState.value.copy(
-                        input = result + label,
+                else if (currentResult.isNotEmpty() && currentInput.isEmpty()) {
+                    _uiState.update { it.copy(
+                        input = currentResult + label,
                         result = ""
-                    )
+                    ) }
                 }
                 else if (lastChar in listOf("+", "*", "/", "×", "÷") && label == "-"){
-                    _uiState.value = _uiState.value.copy(input = input + label)
+                    _uiState.update { it.copy(input = currentInput + label) }
                 }
-                else if (lastChar !in operators && input.isNotEmpty()){
-                    _uiState.value = _uiState.value.copy(input = input + label)
+                else if (lastChar !in operators && currentInput.isNotEmpty()){
+                    _uiState.update { it.copy(input = currentInput + label) }
                 }
             }
             "=" -> {
                 calculateResult(decimalPlaces, removeTrailingZero)
-
-                val newResult = _uiState.value.result
-                if (newResult.isNotEmpty()) {
-                    _uiState.value = _uiState.value.copy(
-                        input = newResult,
-                        result = ""
-                    )
-                }
             }
             "C" -> _uiState.value = BasicUiStateCalculator()
-            "DEL" -> deleteLast()
+            "DEL" -> {
+                deleteLast()
+                calculateResult(decimalPlaces, removeTrailingZero)
+            }
             "." -> enterDecimal()
             "x10" -> double10()
             "+/-" -> toggleSign()
 
-            else -> _uiState.value = _uiState.value.copy(input = input + label)
+            else -> {
+                val newInput = _uiState.value.input + label
+                _uiState.value = _uiState.value.copy(input = input + label)
+            }
         }
     }
 
@@ -132,6 +126,7 @@ class CalculatorViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(input = input + "*10")
         }
     }
+
     private fun toggleSign() {
         val input = _uiState.value.input
         if (input.isEmpty()) return
@@ -146,7 +141,7 @@ class CalculatorViewModel @Inject constructor(
             val prefix = input.substring(0, lastOperatorIndex + 1)
             val lastNumber = input.substring(lastOperatorIndex + 1)
 
-            if (lastNumber.isEmpty()) input // ถ้ากด +/- หลังเครื่องหมายพอดี ไม่ต้องทำอะไร
+            if (lastNumber.isEmpty()) input
             else prefix + "-" + lastNumber
         }
         _uiState.value = _uiState.value.copy(input = updatedInput)
