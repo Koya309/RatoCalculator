@@ -70,12 +70,14 @@ class CalculatorViewModel @Inject constructor(
                 val currentInput = _uiState.value.input
                 val currentResult = _uiState.value.result
                 val lastChar = currentInput.lastOrNull()?.toString() ?: ""
+
+
                 if (currentInput.isEmpty() && currentInput.isNotEmpty() ){
                     if (label == "-") {
                         _uiState.update { it.copy(input = "-") }
                     }
                 }
-                else if (currentResult.isNotEmpty() && currentInput.isEmpty()) {
+                else if (currentResult.isNotEmpty()) {
                     _uiState.update { it.copy(
                         input = currentResult + label,
                         result = ""
@@ -84,9 +86,10 @@ class CalculatorViewModel @Inject constructor(
                 else if (lastChar in listOf("+", "*", "/", "×", "÷") && label == "-"){
                     _uiState.update { it.copy(input = currentInput + label) }
                 }
-                else if (lastChar !in operators && currentInput.isNotEmpty()){
+                else if (lastChar !in operators){
                     _uiState.update { it.copy(input = currentInput + label) }
                 }
+                calculateResult(decimalPlaces, removeTrailingZero)
             }
             "=" -> {
                 calculateResult(decimalPlaces, removeTrailingZero)

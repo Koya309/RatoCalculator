@@ -65,7 +65,7 @@ fun CalculatorScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = uiState.input.ifEmpty { "" }, // เปลี่ยนเป็น input
+                text = uiState.input.ifEmpty { "" },
                 fontSize = 28.sp,
                 color = Color.LightGray,
                 textAlign = TextAlign.End,
@@ -75,9 +75,10 @@ fun CalculatorScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = uiState.result.ifEmpty { "0" }, // เปลี่ยนเป็น result
-                fontSize = 48.sp, // เน้นตัวใหญ่ๆ
+                text = if (uiState.result.isNotEmpty()) "Ans  ${uiState.result} " else "0" ,
+                fontSize = 48.sp,
                 color = Color.White,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()
             )
