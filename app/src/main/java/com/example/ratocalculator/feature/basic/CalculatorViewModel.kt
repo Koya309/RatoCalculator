@@ -69,28 +69,41 @@ class CalculatorViewModel @Inject constructor(
             in operators -> {
                 val currentInput = _uiState.value.input
                 val currentResult = _uiState.value.result
+                val state =_uiState.value
                 val lastChar = currentInput.lastOrNull()?.toString() ?: ""
 
+                when {
+                    // เคส 1: มีผลลัพธ์เก่าอยู่ (Ans) แล้วกดเครื่องหมายต่อ ให้ดึงผลลัพธ์มาเป็นตัวตั้ง
+                    state.result.isNotEmpty() -> {
+                        _uiState.update { it.copy(
+                            input = state.result + label,
+                            result = ""
+                        ) }
+                    }
 
-                if (currentInput.isEmpty() && currentInput.isNotEmpty() ){
-                    if (label == "-") {
+                    // เคส 2: หน้าจอว่าง แต่อยากพิมพ์เลขติดลบ (เช่น -5)
+                    state.input.isEmpty() && label == "-" -> {
                         _uiState.update { it.copy(input = "-") }
                     }
+
+                    // เคส 3: ตัวสุดท้ายเป็นเครื่องหมายอยู่แล้ว แต่อยากใส่ลบเพื่อทำเลขติดลบ (เช่น 5 * -)
+                    lastChar in listOf("+", "*", "/", "×", "÷") && label == "-" -> {
+                        _uiState.update { it.copy(input = state.input + label) }
+                    }
+
+                    // เคส 4: ตัวสุดท้ายไม่ใช่เครื่องหมาย (เป็นตัวเลข) ก็ใส่เครื่องหมายต่อท้ายได้เลย
+                    lastChar.isNotEmpty() && lastChar !in operators -> {
+                        _uiState.update { it.copy(input = state.input + label) }
+                    }
                 }
-                else if (currentResult.isNotEmpty()) {
-                    _uiState.update { it.copy(
-                        input = currentResult + label,
-                        result = ""
-                    ) }
+
+                // สำคัญ: เรียกคำนวณทันทีหลังจาก Update Input เพื่อให้ Result แสดง Auto
+                if (_uiState.value.input.isNotEmpty()) {
+                    calculateResult(decimalPlaces, removeTrailingZero)
                 }
-                else if (lastChar in listOf("+", "*", "/", "×", "÷") && label == "-"){
-                    _uiState.update { it.copy(input = currentInput + label) }
-                }
-                else if (lastChar !in operators){
-                    _uiState.update { it.copy(input = currentInput + label) }
-                }
-                calculateResult(decimalPlaces, removeTrailingZero)
             }
+
+
             "=" -> {
                 calculateResult(decimalPlaces, removeTrailingZero)
             }

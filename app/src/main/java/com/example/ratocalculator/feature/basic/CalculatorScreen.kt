@@ -51,7 +51,7 @@ fun CalculatorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-        //    .background(Color(0xFF101820))
+            //    .background(Color(0xFF101820))
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -65,7 +65,7 @@ fun CalculatorScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = uiState.input.ifEmpty { "" },
+                text = uiState.input.ifEmpty { " " },
                 fontSize = 28.sp,
                 color = Color.LightGray,
                 textAlign = TextAlign.End,
@@ -75,7 +75,12 @@ fun CalculatorScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = if (uiState.result.isNotEmpty()) "Ans  ${uiState.result} " else "0" ,
+                text = when {
+                    uiState.result.isNotEmpty() -> "Ans ${uiState.result}"
+                    uiState.input.isNotEmpty() -> uiState.input
+                    else -> "0"
+
+                } ,
                 fontSize = 48.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
