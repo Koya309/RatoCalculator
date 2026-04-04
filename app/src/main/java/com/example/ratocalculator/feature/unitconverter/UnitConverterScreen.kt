@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.ratocalculator.UnitState.toSuperscript
 import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
 
 @Composable

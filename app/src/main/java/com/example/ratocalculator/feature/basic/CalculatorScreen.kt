@@ -42,11 +42,31 @@ fun CalculatorScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
     // Pull value SettingsViewModel
+    val uiState by calculatorViewModel.uiState.collectAsState()
     val decimalPlaces by settingsViewModel.decimalPlaces.collectAsState(initial = 2)
     val removeTrailingZero by settingsViewModel.removeTrailingZero.collectAsState(initial = true)
 
-    // pull uiState from CalculatorViewModel
-    val uiState by calculatorViewModel.uiState.collectAsState()
+    CalculatorContent(
+        uiState = uiState,
+        decimalPlaces = decimalPlaces,
+        removeTrailingZero = removeTrailingZero,
+        onButtonClick = { label ->
+            calculatorViewModel.onButtonClick(
+                label = label,
+                decimalPlaces = decimalPlaces,
+                removeTrailingZero = removeTrailingZero
+            )
+        }
+    )
+}
+
+@Composable
+fun CalculatorContent(
+    uiState: CalculatorState,
+    decimalPlaces: Int,
+    removeTrailingZero: Boolean,
+    onButtonClick: (String) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -72,11 +92,19 @@ fun CalculatorScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = uiState.result.takeIf { it.isNotEmpty() }?.let { "Ans" } ?: "" ,
+                fontSize = 15.sp,
+                color = Color.LightGray,
+                textAlign = TextAlign.Left,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Text(
                 text = when {
-                    uiState.result.isNotEmpty() -> "Ans ${uiState.result}"
+                    uiState.result.isNotEmpty() -> "${uiState.result}"
                     uiState.input.isNotEmpty() -> uiState.input
                     else -> "0"
 
@@ -115,11 +143,7 @@ fun CalculatorScreen(
                                 .weight(if (label == "0" && row.size == 1) 4f else 4f)
                                 .aspectRatio(1f),
                             onClick = {
-                                calculatorViewModel.onButtonClick(
-                                    label = label,
-                                    decimalPlaces = decimalPlaces,
-                                    removeTrailingZero = removeTrailingZero
-                                )
+                                onButtonClick(label)
                             }
                         )
                     }
@@ -164,11 +188,16 @@ fun CalculatorButton(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun RatoCalculatorApp() {
+fun RatoCalculatorAppPreview() {
     RatoCalculatorTheme {
-        CalculatorScreen()
+        // เรา "จำลอง" ข้อมูลส่งให้มันดื้อๆ เลย ไม่ผ่าน ViewModel
+        CalculatorContent(
+            uiState = CalculatorState(input = "10+5", result = "15"),
+            decimalPlaces = 2,
+            removeTrailingZero = true,
+            onButtonClick = {} // Preview ไม่ต้องมีการทำงานจริง
+        )
     }
 }

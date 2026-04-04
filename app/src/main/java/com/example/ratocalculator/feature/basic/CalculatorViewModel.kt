@@ -15,8 +15,8 @@ class CalculatorViewModel @Inject constructor(
     private val _savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(BasicUiStateCalculator())
-    val uiState: StateFlow<BasicUiStateCalculator> = _uiState
+    private val _uiState = MutableStateFlow(CalculatorState())
+    val uiState: StateFlow<CalculatorState> = _uiState
 
     fun formatResult(
         result: Double,
@@ -107,7 +107,7 @@ class CalculatorViewModel @Inject constructor(
             "=" -> {
                 calculateResult(decimalPlaces, removeTrailingZero)
             }
-            "C" -> _uiState.value = BasicUiStateCalculator()
+            "C" -> _uiState.value = CalculatorState()
             "DEL" -> {
                 deleteLast()
                 calculateResult(decimalPlaces, removeTrailingZero)
