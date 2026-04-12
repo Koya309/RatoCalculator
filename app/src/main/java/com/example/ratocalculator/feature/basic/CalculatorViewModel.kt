@@ -16,7 +16,112 @@ class CalculatorViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CalculatorState())
+    private val operators = listOf("+", "-", "*", "/")
     val uiState: StateFlow<CalculatorState> = _uiState
+
+    fun onButtonClick(
+        label: String,
+        decimalPlaces: Int,
+        removeTrailingZero: Boolean
+    ){
+        when(label){
+            "C" -> {
+                _uiState.update { CalculatorState() }
+            }
+
+            "DEL" -> {
+                val currentInput = _uiState.value.input
+                if (currentInput.isNotEmpty()) {
+                    val newInput = currentInput.dropLast(1)
+                    _uiState.update { it.copy(input = newInput) }
+                    calculateResult(decimalPlaces, removeTrailingZero)
+                }
+            }
+
+            in operators -> {
+                handleOperator(label, decimalPlaces, removeTrailingZero)
+            }
+
+            "=" -> {
+                // กดเท่ากับ: เอา Result ปัจจุบันมาเป็น Input และล้าง Result ทิ้ง
+                val currentResult = _uiState.value.result
+                if (currentResult.isNotEmpty()) {
+                    _uiState.update { it.copy(
+                        input = currentResult,
+                        result = ""
+                    ) }
+                }
+            }
+
+            "." -> enterDecimal()
+            "x10" -> double10()
+            "+/-" -> toggleSign()
+
+        else -> {
+            val currentInput = _uiState.value.input
+            val newInput = currentInput + label
+            _uiState.update { it.copy(input = newInput) }
+
+            // ทุกครั้งที่กดเลข ให้พยายามคำนวณหาผลลัพธ์ทันที
+            calculateResult(decimalPlaces, removeTrailingZero)
+            }
+        }
+    }
+    private fun handleOperator(
+        label: String,
+        decimalPlaces: Int,
+        removeTrailingZero: Boolean
+    ){
+        val state = _uiState.value
+        val lastChar = state.input.lastOrNull()?.toString() ?: ""
+
+        when {
+            state.result.isNotEmpty() -> {
+                _uiState.update { it.copy(input = state.result + label, result = "") }
+            }
+
+            state.input.isEmpty() && label == "-" -> {
+                _uiState.update { it.copy(input = "-") }
+            }
+
+            lastChar in operators && label != "-" -> {
+                _uiState.update { it.copy(input = state.input.dropLast(1) + label) }
+            }
+
+            lastChar.isNotEmpty() && lastChar !in operators -> {
+                _uiState.update { it.copy(input = state.input + label) }
+            }
+        }
+    }
+
+    private fun calculateResult(
+        decimalPlaces: Int,
+        removeTrailingZero: Boolean
+    ){
+        val currentInput = _uiState.value.input
+        if (currentInput.isEmpty()){
+            _uiState.update { it.copy(result = "") }
+            return
+        }
+
+        val lastChar = currentInput.last().toString()
+        if (lastChar in operators || lastChar == ".") return
+
+        try {
+            val expressionStr = currentInput
+                .replace("×", "*")
+                .replace("÷", "/")
+                .replace(",", "")
+
+            val expression = ExpressionBuilder(expressionStr).build()
+            val result = expression.evaluate()
+
+            val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
+            _uiState.update { it.copy(result = formatted) }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(result = "") }
+        }
+    }
 
     fun formatResult(
         result: Double,
@@ -27,106 +132,6 @@ class CalculatorViewModel @Inject constructor(
             result.toInt().toString()
         } else {
             "%.${decimalPlaces}f".format(result)
-        }
-    }
-
-    private fun calculateResult(decimalPlaces: Int, removeTrailingZero: Boolean) {
-        val currentInput = _uiState.value.input
-
-        if (currentInput.isBlank()){
-            _uiState.update { it.copy(result = "") }
-            return
-        }
-
-        try {
-            val expression = currentInput
-                .replace("×", "*")
-                .replace("÷", "/")
-                .replace(",", "")
-
-            val result = ExpressionBuilder(expression).build().evaluate()
-
-            val formatted = formatResult(result, decimalPlaces , removeTrailingZero)
-
-            _uiState.update {
-                it.copy(result = formatted)
-            }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(result = "") }
-        }
-    }
-
-    fun onButtonClick(
-        label: String,
-        decimalPlaces: Int,
-        removeTrailingZero: Boolean
-    ) {
-        val input = _uiState.value.input
-        val result = _uiState.value.result
-        val operators = listOf("+", "-", "*", "/")
-
-        when (label) {
-            in operators -> {
-                val currentInput = _uiState.value.input
-                val currentResult = _uiState.value.result
-                val state =_uiState.value
-                val lastChar = currentInput.lastOrNull()?.toString() ?: ""
-
-                when {
-                    // เคส 1: มีผลลัพธ์เก่าอยู่ (Ans) แล้วกดเครื่องหมายต่อ ให้ดึงผลลัพธ์มาเป็นตัวตั้ง
-                    state.result.isNotEmpty() -> {
-                        _uiState.update { it.copy(
-                            input = state.result + label,
-                            result = ""
-                        ) }
-                    }
-
-                    // เคส 2: หน้าจอว่าง แต่อยากพิมพ์เลขติดลบ (เช่น -5)
-                    state.input.isEmpty() && label == "-" -> {
-                        _uiState.update { it.copy(input = "-") }
-                    }
-
-                    // เคส 3: ตัวสุดท้ายเป็นเครื่องหมายอยู่แล้ว แต่อยากใส่ลบเพื่อทำเลขติดลบ (เช่น 5 * -)
-                    lastChar in listOf("+", "*", "/", "×", "÷") && label == "-" -> {
-                        _uiState.update { it.copy(input = state.input + label) }
-                    }
-
-                    // เคส 4: ตัวสุดท้ายไม่ใช่เครื่องหมาย (เป็นตัวเลข) ก็ใส่เครื่องหมายต่อท้ายได้เลย
-                    lastChar.isNotEmpty() && lastChar !in operators -> {
-                        _uiState.update { it.copy(input = state.input + label) }
-                    }
-                }
-
-                // สำคัญ: เรียกคำนวณทันทีหลังจาก Update Input เพื่อให้ Result แสดง Auto
-                if (_uiState.value.input.isNotEmpty()) {
-                    calculateResult(decimalPlaces, removeTrailingZero)
-                }
-            }
-
-
-            "=" -> {
-                calculateResult(decimalPlaces, removeTrailingZero)
-            }
-            "C" -> _uiState.value = CalculatorState()
-            "DEL" -> {
-                deleteLast()
-                calculateResult(decimalPlaces, removeTrailingZero)
-            }
-            "." -> enterDecimal()
-            "x10" -> double10()
-            "+/-" -> toggleSign()
-
-            else -> {
-                val newInput = _uiState.value.input + label
-                _uiState.value = _uiState.value.copy(input = input + label)
-            }
-        }
-    }
-
-    private fun deleteLast() {
-        val input = _uiState.value.input
-        if (input.isNotEmpty()) {
-            _uiState.value = _uiState.value.copy(input = input.dropLast(1))
         }
     }
 

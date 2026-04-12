@@ -105,9 +105,8 @@ fun CalculatorContent(
             Text(
                 text = when {
                     uiState.result.isNotEmpty() -> "${uiState.result}"
-                    uiState.input.isNotEmpty() -> uiState.input
-                    else -> "0"
-
+                    uiState.input.isEmpty() -> "0"
+                    else -> ""
                 } ,
                 fontSize = 48.sp,
                 color = Color.White,
