@@ -1,6 +1,6 @@
 package com.example.ratocalculator.feature.basic
 
-import android.util.Log
+
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,18 +43,22 @@ class CalculatorViewModel @Inject constructor(
             }
 
             "=" -> {
-                // กดเท่ากับ: เอา Result ปัจจุบันมาเป็น Input และล้าง Result ทิ้ง
                 val currentResult = _uiState.value.result
-                if (currentResult.isNotEmpty()) {
+                if (currentResult.isNotEmpty()){
                     _uiState.update { it.copy(
                         input = currentResult,
                         result = ""
                     ) }
                 }
+
+            }
+
+            "( )" -> {
+                handleParentheses()
             }
 
             "." -> enterDecimal()
-            "x10" -> double10()
+
             "+/-" -> toggleSign()
 
         else -> {
@@ -62,7 +66,6 @@ class CalculatorViewModel @Inject constructor(
             val newInput = currentInput + label
             _uiState.update { it.copy(input = newInput) }
 
-            // ทุกครั้งที่กดเลข ให้พยายามคำนวณหาผลลัพธ์ทันที
             calculateResult(decimalPlaces, removeTrailingZero)
             }
         }
@@ -108,10 +111,7 @@ class CalculatorViewModel @Inject constructor(
         if (lastChar in operators || lastChar == ".") return
 
         try {
-            val expressionStr = currentInput
-                .replace("×", "*")
-                .replace("÷", "/")
-                .replace(",", "")
+            val expressionStr = prepareExpression(currentInput)
 
             val expression = ExpressionBuilder(expressionStr).build()
             val result = expression.evaluate()
@@ -121,6 +121,46 @@ class CalculatorViewModel @Inject constructor(
         } catch (e: Exception) {
             _uiState.update { it.copy(result = "") }
         }
+    }
+
+    private fun handleParentheses(){
+        val currentInput = _uiState.value.input
+
+        val openBrackets = currentInput.count { it == '(' }
+        val closeBrackets = currentInput.count { it == ')' }
+
+        val lastChar = currentInput.lastOrNull()
+        val operators = listOf('+', '-', '*', '/', '×', '÷')
+
+        val charToAdd = when {
+            currentInput.isEmpty() || lastChar in operators || lastChar == '(' -> "("
+
+            openBrackets > closeBrackets && (lastChar?.isDigit() == true || lastChar == ')') -> ")"
+
+            lastChar?.isDigit() == true -> "("
+
+            else -> "("
+        }
+        _uiState.update { it.copy(input = currentInput + charToAdd) }
+    }
+
+    private fun prepareExpression(rawInput: String): String{
+        var prepared = rawInput
+            .replace("×", "*")
+            .replace("÷", "/")
+            .replace(",", "")
+            .replace(Regex("(\\d)\\("), "$1*(") // 5( เป็น 5*(
+            .replace(Regex("\\)(\\d)"), ")*$1") // )5 เป็น )*5
+            .replace(Regex("\\)\\("), ")*(")
+
+        val openCount = prepared.count{it == '('}
+        val closeCount = prepared.count{it == ')'}
+        if (openCount > closeCount){
+            repeat(openCount - closeCount) {
+                prepared += ")"
+            }
+        }
+        return prepared
     }
 
     fun formatResult(

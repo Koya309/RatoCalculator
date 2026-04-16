@@ -119,7 +119,7 @@ fun CalculatorContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         val buttons = listOf(
-            listOf("C", "+/-", "x10", "DEL"),
+            listOf("C", "+/-", "( )", "DEL"),
             listOf("7", "8", "9", "÷"),
             listOf("4", "5", "6", "×"),
             listOf("1", "2", "3", "-"),
