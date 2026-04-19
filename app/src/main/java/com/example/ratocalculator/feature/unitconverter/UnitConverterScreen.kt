@@ -10,14 +10,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,7 +42,7 @@ fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
-    val tabs = UnitCategory.values()
+    val tabs = UnitCategory.entries
     val maxHeight = 40.dp * 5
 
     var selectedTab by remember { mutableIntStateOf(state.category.ordinal) }
@@ -55,18 +56,29 @@ fun UnitConverterScreen(
         // =========================
         // 🔹 TAB BAR
         // =========================
-        TabRow(selectedTabIndex = selectedTab) {
-            tabs.forEachIndexed { index, category ->
-                Tab(
-                    selected = selectedTab == index,
-                    onClick = {
-                        selectedTab = index
-                        viewModel.onCategoryChanged(category)
-                    },
-                    text = { Text(category.displayName) }
+        SecondaryTabRow(
+            selectedTabIndex = selectedTab,
+            modifier = Modifier,
+            containerColor = TabRowDefaults.primaryContainerColor,
+            contentColor = TabRowDefaults.primaryContentColor,
+            indicator = {
+                TabRowDefaults.SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(selectedTab)
                 )
-            }
-        }
+            },
+            @Composable { HorizontalDivider() },
+            {
+                tabs.forEachIndexed { index, category ->
+                    Tab(
+                        selected = selectedTab == index,
+                        onClick = {
+                            selectedTab = index
+                            viewModel.onCategoryChanged(category)
+                        },
+                        text = { Text(category.displayName) }
+                    )
+                }
+            })
 
         Spacer(Modifier.height(12.dp))
 
@@ -84,7 +96,7 @@ fun UnitConverterScreen(
         )
 
         Spacer(Modifier.height(12.dp))
-        Divider()
+        HorizontalDivider()
         Spacer(Modifier.height(12.dp))
 
         // =========================

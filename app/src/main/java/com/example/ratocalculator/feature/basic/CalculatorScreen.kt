@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.R
 import com.example.ratocalculator.settings.SettingsViewModel
 import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
@@ -60,6 +60,7 @@ fun CalculatorScreen(
     )
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun CalculatorContent(
     uiState: CalculatorState,
@@ -104,7 +105,7 @@ fun CalculatorContent(
 
             Text(
                 text = when {
-                    uiState.result.isNotEmpty() -> "${uiState.result}"
+                    uiState.result.isNotEmpty() -> uiState.result
                     uiState.input.isEmpty() -> "0"
                     else -> ""
                 } ,
@@ -173,7 +174,7 @@ fun CalculatorButton(
     ) {
         if (label == "DEL" || label == "backspace") {
             Icon(
-                imageVector = Icons.Default.Backspace,
+                imageVector = Icons.AutoMirrored.Filled.Backspace,
                 contentDescription = "Backspace",
                 modifier = Modifier.size(24.dp)
             )

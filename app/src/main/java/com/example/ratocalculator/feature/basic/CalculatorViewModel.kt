@@ -12,7 +12,7 @@ import net.objecthunter.exp4j.ExpressionBuilder
 
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
-    private val _savedStateHandle: SavedStateHandle
+     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CalculatorState())
@@ -70,6 +70,7 @@ class CalculatorViewModel @Inject constructor(
             }
         }
     }
+    @Suppress("UNUSED_PARAMETER")
     private fun handleOperator(
         label: String,
         decimalPlaces: Int,
@@ -118,7 +119,8 @@ class CalculatorViewModel @Inject constructor(
 
             val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
             _uiState.update { it.copy(result = formatted) }
-        } catch (e: Exception) {
+            // for try If error
+        } catch (_: Exception) {
             _uiState.update { it.copy(result = "") }
         }
     }
@@ -178,13 +180,7 @@ class CalculatorViewModel @Inject constructor(
     private fun enterDecimal() {
         val input = _uiState.value.input
         if (input.isNotEmpty() && input.last() != '.') {
-            _uiState.value = _uiState.value.copy(input = input + ".")
-        }
-    }
-    private fun double10() {
-        val input = _uiState.value.input
-        if (input.isNotEmpty() && !input.endsWith("*10")) {
-            _uiState.value = _uiState.value.copy(input = input + "*10")
+            _uiState.value = _uiState.value.copy(input = "$input.")
         }
     }
 
@@ -203,14 +199,14 @@ class CalculatorViewModel @Inject constructor(
             val lastNumber = input.substring(lastOperatorIndex + 1)
 
             if (lastNumber.isEmpty()) input
-            else prefix + "-" + lastNumber
+            else "$prefix-$lastNumber"
         }
         _uiState.value = _uiState.value.copy(input = updatedInput)
     }
 
     init {
         _uiState.value = _uiState.value.copy(
-            input = _savedStateHandle["lastInput"] ?: ""
+            input = savedStateHandle["lastInput"] ?: ""
         )
     }
 }

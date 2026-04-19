@@ -25,7 +25,6 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
             UnitCategory.Area -> areaUnits
             UnitCategory.Temperature -> temperatureUnits
             UnitCategory.Volume -> volumeUnits
-            else -> emptyList()
         }
 
         _uiState.update {
@@ -116,7 +115,7 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
         val absValue = abs(value)
 
         // ถ้าเลขอยู่ในช่วงที่อ่านง่าย (0.001 ถึง 1,000,000) ให้แสดงเลขปกติ
-        return if (absValue >= 1e-3 && absValue < 1e6) {
+        return if (absValue in 1e-3..<1e6) {
             "%.6f".format(value).trimEnd('0').trimEnd('.')
         } else {
             formatToPowerOfTen(value)
