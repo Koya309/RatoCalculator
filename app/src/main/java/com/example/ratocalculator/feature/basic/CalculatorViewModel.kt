@@ -157,9 +157,15 @@ class CalculatorViewModel @Inject constructor(
 
         val openCount = prepared.count{it == '('}
         val closeCount = prepared.count{it == ')'}
+
         if (openCount > closeCount){
-            repeat(openCount - closeCount) {
-                prepared += ")"
+            val lastChar = prepared.lastOrNull()
+            val operators = listOf('+', '-', '*', '/')
+
+            if (lastChar != null && lastChar !in  operators && lastChar != '(') {
+                repeat(openCount - closeCount){
+                    prepared += ")"
+                }
             }
         }
         return prepared

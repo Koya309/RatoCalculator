@@ -96,14 +96,6 @@ fun CalculatorContent(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = uiState.result.takeIf { it.isNotEmpty() }?.let { "Ans" } ?: "" ,
-                fontSize = 15.sp,
-                color = Color.LightGray,
-                textAlign = TextAlign.Left,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Text(
                 text = when {
                     uiState.result.isNotEmpty() -> uiState.result
                     uiState.input.isEmpty() -> "0"
