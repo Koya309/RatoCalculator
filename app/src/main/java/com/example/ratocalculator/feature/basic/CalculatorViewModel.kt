@@ -43,14 +43,13 @@ class CalculatorViewModel @Inject constructor(
             }
 
             "=" -> {
-                val currentResult = _uiState.value.result
-                if (currentResult.isNotEmpty()){
+                val finalResult = performCalculation()
+                if (finalResult.isNotEmpty()) {
                     _uiState.update { it.copy(
-                        input = currentResult,
+                        input = finalResult,
                         result = ""
                     ) }
                 }
-
             }
 
             "( )" -> {
@@ -66,7 +65,7 @@ class CalculatorViewModel @Inject constructor(
             val newInput = currentInput + label
             _uiState.update { it.copy(input = newInput) }
 
-            calculateResult(decimalPlaces, removeTrailingZero)
+            performCalculation()
             }
         }
     }
@@ -80,10 +79,6 @@ class CalculatorViewModel @Inject constructor(
         val lastChar = state.input.lastOrNull()?.toString() ?: ""
 
         when {
-            state.result.isNotEmpty() -> {
-                _uiState.update { it.copy(input = state.result + label, result = "") }
-            }
-
             state.input.isEmpty() && label == "-" -> {
                 _uiState.update { it.copy(input = "-") }
             }
@@ -103,27 +98,50 @@ class CalculatorViewModel @Inject constructor(
         removeTrailingZero: Boolean
     ){
         val currentInput = _uiState.value.input
-        if (currentInput.isEmpty()){
+
+        if (currentInput.isEmpty() || currentInput.last() in listOf('+', '-', '*', '/', '×', '÷', '.', '(')) {
             _uiState.update { it.copy(result = "") }
             return
         }
 
-        val lastChar = currentInput.last().toString()
-        if (lastChar in operators || lastChar == ".") return
-
         try {
             val expressionStr = prepareExpression(currentInput)
 
+            if (expressionStr.count { it == '(' } != expressionStr.count { it == ')'}) {
+                _uiState.update { it.copy(result = "") }
+                return
+            }
+
             val expression = ExpressionBuilder(expressionStr).build()
             val result = expression.evaluate()
-
             val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
+
             _uiState.update { it.copy(result = formatted) }
-            // for try If error
         } catch (_: Exception) {
             _uiState.update { it.copy(result = "") }
         }
     }
+
+    private fun performCalculation(): String {
+        val currentInput = _uiState.value.input
+        if (currentInput.isEmpty()) return ""
+
+        try {
+            val expressionStr = prepareExpression(currentInput)
+
+            // เช็คความสมบูรณ์ของวงเล็บก่อนคำนวณ
+            if (expressionStr.count { it == '(' } != expressionStr.count { it == ')' }) return ""
+
+            val expression = ExpressionBuilder(expressionStr).build()
+            val result = expression.evaluate()
+
+            // ใช้ formatResult ที่คุณมีอยู่แล้ว (อาจจะต้องส่ง Parameter เพิ่มเข้าไป)
+            return formatResult(result, 2, true)
+        } catch (_: Exception) {
+            return ""
+        }
+    }
+
 
     private fun handleParentheses(){
         val currentInput = _uiState.value.input
