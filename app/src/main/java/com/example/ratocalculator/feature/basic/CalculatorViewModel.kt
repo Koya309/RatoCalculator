@@ -43,12 +43,16 @@ class CalculatorViewModel @Inject constructor(
             }
 
             "=" -> {
-                val finalResult = performCalculation()
-                if (finalResult.isNotEmpty()) {
-                    _uiState.update { it.copy(
-                        input = finalResult,
-                        result = ""
-                    ) }
+                try {
+                    val expressionStr = prepareExpression(_uiState.value.input)
+                    val expression = ExpressionBuilder(expressionStr).build()
+                    val result = expression.evaluate()
+
+                    val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
+                    _uiState.update { it.copy(input = formatted, result = "") }
+                } catch ( _: Exception){
+                    _uiState.update { it.copy(result = "") }
+
                 }
             }
 
@@ -75,21 +79,19 @@ class CalculatorViewModel @Inject constructor(
         decimalPlaces: Int,
         removeTrailingZero: Boolean
     ){
-        val state = _uiState.value
-        val lastChar = state.input.lastOrNull()?.toString() ?: ""
+        val currentInput = _uiState.value.input
+        val lastChar = currentInput.lastOrNull()?.toString() ?: ""
+        val operators = listOf("+", "-", "*", "/", "×", "÷")
 
-        when {
-            state.input.isEmpty() && label == "-" -> {
-                _uiState.update { it.copy(input = "-") }
-            }
+        if (currentInput.isEmpty() && label == "-"){
+            _uiState.update { it.copy(input = "-") }
+            return
+        }
 
-            lastChar in operators && label != "-" -> {
-                _uiState.update { it.copy(input = state.input.dropLast(1) + label) }
-            }
-
-            lastChar.isNotEmpty() && lastChar !in operators -> {
-                _uiState.update { it.copy(input = state.input + label) }
-            }
+        if (lastChar in operators){
+            _uiState.update { it.copy(input = currentInput.dropLast(1) + label) }
+        } else if (currentInput.isNotEmpty() || label == "-"){
+            _uiState.update { it.copy(input = currentInput + label) }
         }
     }
 
@@ -117,7 +119,7 @@ class CalculatorViewModel @Inject constructor(
             val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
 
             _uiState.update { it.copy(result = formatted) }
-        } catch (_: Exception) {
+        } catch (_: ArithmeticException) {
             _uiState.update { it.copy(result = "") }
         }
     }
@@ -204,7 +206,14 @@ class CalculatorViewModel @Inject constructor(
     private fun enterDecimal() {
         val input = _uiState.value.input
         if (input.isNotEmpty() && input.last() != '.') {
-            _uiState.value = _uiState.value.copy(input = "$input.")
+            _uiState.update { it.copy(input = "0.") }
+        }
+
+        val lastOperatorIndex = input.lastIndexOfAny(charArrayOf('+', '-', '*', '/', '×', '÷', '(', ')'))
+        val lastNumberSegment = if (lastOperatorIndex == -1) input else input.substring(lastOperatorIndex +1)
+
+        if (!lastNumberSegment.contains('.')){
+            _uiState.update { it.copy(input = "$input.")}
         }
     }
 
