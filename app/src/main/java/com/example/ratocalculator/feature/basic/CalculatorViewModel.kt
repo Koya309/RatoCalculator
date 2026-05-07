@@ -16,15 +16,15 @@ class CalculatorViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CalculatorState())
-    private val operators = listOf("+", "-", "*", "/")
+    private val operators = listOf("+", "-", "×", "÷")
     val uiState: StateFlow<CalculatorState> = _uiState
 
     fun onButtonClick(
         label: String,
         decimalPlaces: Int,
         removeTrailingZero: Boolean
-    ){
-        when(label){
+    ) {
+        when (label) {
             "C" -> {
                 _uiState.update { CalculatorState() }
             }
@@ -43,16 +43,12 @@ class CalculatorViewModel @Inject constructor(
             }
 
             "=" -> {
-                try {
-                    val expressionStr = prepareExpression(_uiState.value.input)
-                    val expression = ExpressionBuilder(expressionStr).build()
-                    val result = expression.evaluate()
+                val currentResult = _uiState.value.result
+                if (currentResult.isNotEmpty()) {
 
-                    val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
-                    _uiState.update { it.copy(input = formatted, result = "") }
-                } catch ( _: Exception){
-                    _uiState.update { it.copy(result = "") }
+                    _uiState.update { it.copy(input = currentResult, result = "") }
 
+                    //Room (History)
                 }
             }
 
@@ -69,7 +65,7 @@ class CalculatorViewModel @Inject constructor(
             val newInput = currentInput + label
             _uiState.update { it.copy(input = newInput) }
 
-            performCalculation()
+            calculateResult(decimalPlaces, removeTrailingZero)
             }
         }
     }
@@ -84,24 +80,17 @@ class CalculatorViewModel @Inject constructor(
             if (label == "-") _uiState.update { it.copy(input = "-") }
             return
         }
+        val lastChar = currentInput.last().toString()
+        val allOps = listOf("+", "-", "×", "÷", "*", "/")
 
-        val lastChar = currentInput.last()
-        val isLastCharOperator = lastChar in listOf('+', '-', '*', '/', '×', '÷')
-        when {
-            lastChar.toString() == label -> return
-
-            (lastChar == '*' || lastChar == '/') && (label == "+" || label == "-") -> {
-                _uiState.update { it.copy(input = currentInput + label) }
-            }
-
-            isLastCharOperator -> {
-                _uiState.update { it.copy(input = currentInput.dropLast(1) + label) }
-            }
-
-            else -> {
-                _uiState.update { it.copy(input = currentInput + label) }
-            }
+        if (lastChar in allOps) {
+            _uiState.update { it.copy(input = currentInput.dropLast(1) + label) }
+        } else {
+            _uiState.update { it.copy(input = currentInput + label) }
         }
+
+        // สำคัญ: ทุกครั้งที่กดเครื่องหมาย ให้ลองสั่งคำนวณ Preview ด้วย
+        calculateResult(decimalPlaces, removeTrailingZero)
     }
 
     private fun calculateResult(
@@ -110,7 +99,8 @@ class CalculatorViewModel @Inject constructor(
     ){
         val currentInput = _uiState.value.input
 
-        if (currentInput.isEmpty() || currentInput.last() in listOf('+', '-', '*', '/', '×', '÷', '.', '(')) {
+        val lastChar = currentInput.lastOrNull()
+        if (currentInput.isEmpty() || lastChar in listOf('+', '-', '×', '÷', '.', '(')) {
             _uiState.update { it.copy(result = "") }
             return
         }
@@ -118,17 +108,12 @@ class CalculatorViewModel @Inject constructor(
         try {
             val expressionStr = prepareExpression(currentInput)
 
-            if (expressionStr.count { it == '(' } != expressionStr.count { it == ')'}) {
-                _uiState.update { it.copy(result = "") }
-                return
-            }
-
             val expression = ExpressionBuilder(expressionStr).build()
             val result = expression.evaluate()
             val formatted = formatResult(result, decimalPlaces, removeTrailingZero)
 
             _uiState.update { it.copy(result = formatted) }
-        } catch (_: ArithmeticException) {
+        } catch (_: Exception) {
             _uiState.update { it.copy(result = "") }
         }
     }
@@ -140,13 +125,11 @@ class CalculatorViewModel @Inject constructor(
         try {
             val expressionStr = prepareExpression(currentInput)
 
-            // เช็คความสมบูรณ์ของวงเล็บก่อนคำนวณ
             if (expressionStr.count { it == '(' } != expressionStr.count { it == ')' }) return ""
 
             val expression = ExpressionBuilder(expressionStr).build()
             val result = expression.evaluate()
 
-            // ใช้ formatResult ที่คุณมีอยู่แล้ว (อาจจะต้องส่ง Parameter เพิ่มเข้าไป)
             return formatResult(result, 2, true)
         } catch (_: Exception) {
             return ""
@@ -214,8 +197,9 @@ class CalculatorViewModel @Inject constructor(
 
     private fun enterDecimal() {
         val input = _uiState.value.input
-        if (input.isNotEmpty() && input.last() != '.') {
-            _uiState.update { it.copy(input = "0.") }
+        if (input.isEmpty() || input.last() in listOf('+', '-', '×', '÷', '(')) {
+            _uiState.update { it.copy(input = input + "0.") }
+            return
         }
 
         val lastOperatorIndex = input.lastIndexOfAny(charArrayOf('+', '-', '*', '/', '×', '÷', '(', ')'))
@@ -230,20 +214,25 @@ class CalculatorViewModel @Inject constructor(
         val input = _uiState.value.input
         if (input.isEmpty()) return
 
-        val lastOperatorIndex = input.lastIndexOfAny(charArrayOf('+', '-', '*', '/', '×', '÷'))
+        val lastOpIndex = input.lastIndexOfAny(charArrayOf('+', '×', '÷', '(', ')'))
 
-        val updatedInput = if (lastOperatorIndex == -1) {
-            if (input.startsWith("-")) input.removePrefix("-") else "-$input"
-        } else if (lastOperatorIndex == 0 && input.startsWith("-")) {
-            input.removePrefix("-")
+        val actualOpIndex = if (lastOpIndex == -1 && input.startsWith("-")) -1 else lastOpIndex
+
+        val prefix = if (actualOpIndex == -1) "" else input.substring(0, actualOpIndex + 1)
+        val lastPart = if (actualOpIndex == -1) input else input.substring(actualOpIndex + 1)
+
+        if (lastPart.isEmpty()) return
+
+        // 🚩 หัวใจสำคัญ: สลับเครื่องหมาย (Toggle)
+        val updatedLastPart = if (lastPart.startsWith("-")) {
+            lastPart.removePrefix("-")
         } else {
-            val prefix = input.substring(0, lastOperatorIndex + 1)
-            val lastNumber = input.substring(lastOperatorIndex + 1)
-
-            if (lastNumber.isEmpty()) input
-            else "$prefix-$lastNumber"
+            "-$lastPart"
         }
-        _uiState.value = _uiState.value.copy(input = updatedInput)
+
+        _uiState.update { it.copy(input = prefix + updatedLastPart) }
+
+        calculateResult(2, true)
     }
 
     init {

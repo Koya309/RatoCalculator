@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
@@ -81,7 +83,7 @@ fun CalculatorContent(
                 .fillMaxWidth()
                 .weight(1f)
                 .background(Color(0xFF1C1C1E), RoundedCornerShape(16.dp))
-                .padding(32.dp),
+                .padding(horizontal = 32.dp, vertical = 24.dp), // ปรับ padding ให้พอดี
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -90,6 +92,7 @@ fun CalculatorContent(
                 fontSize = 28.sp,
                 color = Color.LightGray,
                 textAlign = TextAlign.End,
+                maxLines = 2,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -98,14 +101,14 @@ fun CalculatorContent(
             Text(
                 text = when {
                     uiState.result.isNotEmpty() -> uiState.result
-                    uiState.input.isEmpty() -> "0"
+                    uiState.input.isEmpty() -> ""
                     else -> ""
-                } ,
-                fontSize = 48.sp,
+                },
+                fontSize = 48.sp, // ฟอนต์ใหญ่
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.End,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().height(60.dp)
             )
         }
 
