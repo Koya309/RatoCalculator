@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
 
     //exp4j
     implementation(libs.exp4j)

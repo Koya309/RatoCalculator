@@ -3,16 +3,21 @@ package com.example.ratocalculator.feature.basic
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.ratocalculator.core.database.HistoryDao
+import com.example.ratocalculator.core.database.HistoryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import net.objecthunter.exp4j.ExpressionBuilder
 
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
-     savedStateHandle: SavedStateHandle
+    private val historyDao: HistoryDao,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CalculatorState())
@@ -43,8 +48,16 @@ class CalculatorViewModel @Inject constructor(
             }
 
             "=" -> {
+                val currentInput = _uiState.value.input
                 val currentResult = _uiState.value.result
                 if (currentResult.isNotEmpty()) {
+
+                    viewModelScope.launch {
+                        historyDao.insert(
+                            HistoryEntity(expression = currentInput, result = currentResult)
+                        )
+                    }
+
 
                     _uiState.update { it.copy(input = currentResult, result = "") }
 
@@ -115,24 +128,6 @@ class CalculatorViewModel @Inject constructor(
             _uiState.update { it.copy(result = formatted) }
         } catch (_: Exception) {
             _uiState.update { it.copy(result = "") }
-        }
-    }
-
-    private fun performCalculation(): String {
-        val currentInput = _uiState.value.input
-        if (currentInput.isEmpty()) return ""
-
-        try {
-            val expressionStr = prepareExpression(currentInput)
-
-            if (expressionStr.count { it == '(' } != expressionStr.count { it == ')' }) return ""
-
-            val expression = ExpressionBuilder(expressionStr).build()
-            val result = expression.evaluate()
-
-            return formatResult(result, 2, true)
-        } catch (_: Exception) {
-            return ""
         }
     }
 
