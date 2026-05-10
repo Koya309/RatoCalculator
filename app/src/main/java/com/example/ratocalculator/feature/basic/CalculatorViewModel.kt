@@ -9,7 +9,10 @@ import com.example.ratocalculator.core.database.HistoryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.objecthunter.exp4j.ExpressionBuilder
@@ -24,6 +27,12 @@ class CalculatorViewModel @Inject constructor(
     private val operators = listOf("+", "-", "×", "÷")
     val uiState: StateFlow<CalculatorState> = _uiState
 
+    val historyList: StateFlow<List<HistoryEntity>> = historyDao.getAllHistory()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
     fun onButtonClick(
         label: String,
         decimalPlaces: Int,
@@ -82,6 +91,36 @@ class CalculatorViewModel @Inject constructor(
             }
         }
     }
+
+    fun clearHistory(){
+        viewModelScope.launch {
+            historyDao.clearAll()
+        }
+    }
+
+    fun onHistoryItemClick(item: HistoryEntity) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                // 🚩 ดึงผลลัพธ์ (result) จากประวัติมาใส่ในช่อง input
+                input = item.result,
+                // ล้างช่อง result Preview ให้ว่างเพื่อเริ่มคำนวณใหม่
+                result = ""
+            )
+        }
+    }
+
+    fun formatResult(
+        result: Double,
+        decimalPlaces: Int,
+        removeTrailingZero: Boolean
+    ): String {
+        return if (removeTrailingZero && result % 1.0 == 0.0) {
+            result.toInt().toString()
+        } else {
+            "%.${decimalPlaces}f".format(result)
+        }
+    }
+
     @Suppress("UNUSED_PARAMETER")
     private fun handleOperator(
         label: String,
@@ -176,18 +215,6 @@ class CalculatorViewModel @Inject constructor(
             }
         }
         return prepared
-    }
-
-    fun formatResult(
-        result: Double,
-        decimalPlaces: Int,
-        removeTrailingZero: Boolean
-    ): String {
-        return if (removeTrailingZero && result % 1.0 == 0.0) {
-            result.toInt().toString()
-        } else {
-            "%.${decimalPlaces}f".format(result)
-        }
     }
 
     private fun enterDecimal() {
