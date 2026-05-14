@@ -1,4 +1,4 @@
-package com.example.ratocalculator.ui.theme
+package com.example.ratocalculator.core.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

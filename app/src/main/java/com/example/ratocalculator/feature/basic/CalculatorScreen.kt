@@ -25,6 +25,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
@@ -46,7 +47,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.R
 import com.example.ratocalculator.core.database.HistoryEntity
 import com.example.ratocalculator.settings.SettingsViewModel
-import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
+import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,7 +69,7 @@ fun CalculatorScreen(
 
             ModalDrawerSheet(
                 modifier = Modifier.fillMaxWidth(0.75f),
-                drawerContainerColor = Color(0xFF1C1C1E)
+                drawerContainerColor = MaterialTheme.colorScheme.secondaryContainer
             ) {
                 HistorySection(
                     historyItems = historyItems,

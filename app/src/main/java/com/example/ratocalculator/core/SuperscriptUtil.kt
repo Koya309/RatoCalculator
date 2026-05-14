@@ -1,5 +1,4 @@
-package com.example.ratocalculator.UnitState
-
+package com.example.ratocalculator.core
 
 fun toSuperscript(power: Int): String {
     val superscripts = mapOf(

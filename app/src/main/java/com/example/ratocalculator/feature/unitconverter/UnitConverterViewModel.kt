@@ -1,7 +1,7 @@
 package com.example.ratocalculator.feature.unitconverter
 
 import androidx.lifecycle.ViewModel
-import com.example.ratocalculator.UnitState.toSuperscript
+import com.example.ratocalculator.core.toSuperscript
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

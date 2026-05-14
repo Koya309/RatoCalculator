@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ratocalculator.R
-import com.example.ratocalculator.ui.theme.RatoCalculatorTheme
+import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 
 @Composable
 fun ScientificCalculatorScreen() {

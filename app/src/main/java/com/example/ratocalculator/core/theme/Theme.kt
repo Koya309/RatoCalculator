@@ -1,4 +1,4 @@
-package com.example.ratocalculator.ui.theme
+package com.example.ratocalculator.core.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -19,7 +19,8 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
+    secondaryContainer = DigitButtonColorDark
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

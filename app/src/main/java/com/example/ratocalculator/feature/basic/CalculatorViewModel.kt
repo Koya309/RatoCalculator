@@ -101,9 +101,9 @@ class CalculatorViewModel @Inject constructor(
     fun onHistoryItemClick(item: HistoryEntity) {
         _uiState.update { currentState ->
             currentState.copy(
-                // 🚩 ดึงผลลัพธ์ (result) จากประวัติมาใส่ในช่อง input
+                // pull result from input
                 input = item.result,
-                // ล้างช่อง result Preview ให้ว่างเพื่อเริ่มคำนวณใหม่
+                // clear result Preview
                 result = ""
             )
         }
@@ -141,7 +141,6 @@ class CalculatorViewModel @Inject constructor(
             _uiState.update { it.copy(input = currentInput + label) }
         }
 
-        // สำคัญ: ทุกครั้งที่กดเครื่องหมาย ให้ลองสั่งคำนวณ Preview ด้วย
         calculateResult(decimalPlaces, removeTrailingZero)
     }
 
