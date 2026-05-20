@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.datastore.preferences)
 
     //exp4j
     implementation(libs.exp4j)

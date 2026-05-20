@@ -83,10 +83,10 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
         isUpdating = true
 
-        // 1. คำนวณค่าผลลัพธ์ (Logic: Input -> Base -> Output)
+        // 1. Show Result (Logic: Input -> Base -> Output)
         val result = calculateConversion(inputDouble, sourceSide, targetSide)
 
-        // 2. จัดรูปแบบการแสดงผล (Normal หรือ Power of Ten)
+        // 2. Logic Display Result (Normal or Power of Ten)
         val formattedResult = formatDisplayValue(result)
 
         updateTargetInput(fromA, formattedResult)
@@ -95,12 +95,12 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun calculateConversion(input: Double, from: SideState, to: SideState): Double {
-        // ขั้นตอนที่ 1: แปลงจากหน่วยต้นทางเข้าสู่หน่วยฐาน (Base Unit)
-        // (ค่า x 10^prefixPower) แล้วส่งเข้า toBase ของหน่วยนั้นๆ
+        // Step 1: Convert from source unit to base unit
+        // (x 10^prefixPower value) and send to the toBase of that unit.
         val baseValue = from.unit.toBase(input * 10.0.pow(from.prefix.power))
 
-        // ขั้นตอนที่ 2: แปลงจากหน่วยฐานไปยังหน่วยปลายทาง
-        // (ส่งเข้า fromBase ของหน่วยนั้นๆ) แล้วหารด้วย 10^prefixPower ของปลายทาง
+        // Step 2: Convert from base unit to destination unit
+        // (Pass to the base unit's `fromBase`) and divide by 10^prefixPower of the destination unit.
         return to.unit.fromBase(baseValue) / 10.0.pow(to.prefix.power)
     }
 
@@ -114,7 +114,7 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
         if (value == 0.0) return "0"
         val absValue = abs(value)
 
-        // ถ้าเลขอยู่ในช่วงที่อ่านง่าย (0.001 ถึง 1,000,000) ให้แสดงเลขปกติ
+        // If the number is within a readable range (0.001 to 1,000,000), display the normal number.
         return if (absValue in 1e-3..<1e6) {
             "%.6f".format(value).trimEnd('0').trimEnd('.')
         } else {

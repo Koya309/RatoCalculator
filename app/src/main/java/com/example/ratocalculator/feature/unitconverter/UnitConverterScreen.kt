@@ -83,7 +83,7 @@ fun UnitConverterScreen(
         Spacer(Modifier.height(12.dp))
 
         // =========================
-        // 🔹 SIDE A (ต้นทาง)
+        // 🔹 SIDE A (TOP)
         // =========================
         ConverterRow(
             side = state.sideA,
@@ -100,7 +100,7 @@ fun UnitConverterScreen(
         Spacer(Modifier.height(12.dp))
 
         // =========================
-        // 🔹 SIDE B (ปลายทาง)
+        // 🔹 SIDE B (Bottom)
         // =========================
         ConverterRow(
             side = state.sideB,
@@ -204,7 +204,7 @@ fun ConverterRow(
 
         Spacer(Modifier.height(4.dp))
 
-        // 🔹 Text แสดงผลแบบเต็ม
+        // 🔹 Text Show Result
         Text(
             text = buildString {
                 append(side.input.ifBlank { "0" })
