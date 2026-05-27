@@ -1,8 +1,10 @@
 package com.example.ratocalculator.feature.basic
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -99,52 +101,100 @@ fun CalculatorScreen(
     }
 }
 
-@Suppress("UNUSED_PARAMETER")
 @Composable
 fun CalculatorContent(
     uiState: CalculatorState,
-    decimalPlaces: Int,
-    removeTrailingZero: Boolean,
+    decimalPlaces: Int,          // รับเข้ามาใช้งานโชว์บน Dashboard
+    removeTrailingZero: Boolean, // รับเข้ามาใช้งานโชว์บน Dashboard
     onButtonClick: (String) -> Unit,
     onHistoryClick: () -> Unit
 ) {
+    // 👑 ใช้ Column หลักอันเดียวคุม Layout ทั้งหน้าจอให้อยู่หมัด
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF101820))
+            .background(Color.White)
             .padding(16.dp)
     ) {
-        // Display
+
+        // 1️⃣ [TOP ROW] แถวบนสุด: ปุ่ม History + กล่องสถานะคู่ (FIX และ TZ)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onHistoryClick) {
+                Icon(
+                    imageVector = Icons.Default.History,
+                    contentDescription = "History",
+                    tint = Color.Black
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // กล่องรายงานจำนวนตำแหน่งทศนิยม
+                Box(
+                    modifier = Modifier
+                        .border(1.dp, Color(0xFFDEFF9A), RoundedCornerShape(6.dp))
+                        .background(Color(0xFF1A241F))
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "FIX: $decimalPlaces",
+                        color = Color(0xFFDEFF9A),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // กล่องรายงานสถานะการลบเลขศูนย์ท้าย
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = if (removeTrailingZero) Color(0xFFDEFF9A) else Color.Gray,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .background(if (removeTrailingZero) Color(0xFF1A241F) else Color.Transparent)
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (removeTrailingZero) "TZ: ON" else "TZ: OFF",
+                        color = if (removeTrailingZero) Color(0xFFDEFF9A) else Color.Gray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        // 2️⃣ [DISPLAY BLOCK] หน้าต่างแสดงตัวเลขผลลัพธ์ (ดึงเอา Row ปุ่มประวัติซ้ำซ้อนออกแล้ว)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-                .background(Color(0xFF1C1C1E), RoundedCornerShape(16.dp))
+                .weight(1f) // จัดสัดส่วนดันให้แป้นพิมพ์อยู่ขอบล่างพอดีอย่างนิ่งสนิท
+                .background(Color.Gray , RoundedCornerShape(16.dp))
                 .padding(horizontal = 32.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Bottom
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                IconButton(onClick = onHistoryClick) {
-                    Icon(
-                        Icons.Default.History,
-                        contentDescription = "History",
-                        tint = Color.White
-                    )
-                }
-            }
-
             Text(
                 text = uiState.input.ifEmpty { " " },
                 fontSize = 28.sp,
-                color = Color.LightGray,
+                color = Color.Gray,
                 textAlign = TextAlign.End
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = uiState.result,
                 fontSize = 48.sp,
-                color = Color.White,
+                color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.End
             )
@@ -152,7 +202,7 @@ fun CalculatorContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Grid
+        // 3️⃣ [KEYBOARD GRID] แผงปุ่มกดเครื่องคิดเลข
         val buttons = listOf(
             listOf("C", "+/-", "( )", "DEL"),
             listOf("7", "8", "9", "÷"),
@@ -173,14 +223,16 @@ fun CalculatorContent(
                     row.forEach { label ->
                         CalculatorButton(
                             label = label,
-                            modifier = Modifier.weight(1f).aspectRatio(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f),
                             onClick = { onButtonClick(label) }
                         )
                     }
                 }
             }
         }
-    }
+    } // ปีกกาปิด Column หลัก (ช่วยดักจับ Error Expecting an expression บรรทัด 316)
 }
 
 @Composable
@@ -257,7 +309,7 @@ fun RatoCalculatorAppPreview() {
             decimalPlaces = 2,
             removeTrailingZero = true,
             onButtonClick = {},
-            onHistoryClick = {} // เพิ่มตรงนี้เพื่อให้ Preview ทำงานได้
+            onHistoryClick = {}
         )
     }
 }
