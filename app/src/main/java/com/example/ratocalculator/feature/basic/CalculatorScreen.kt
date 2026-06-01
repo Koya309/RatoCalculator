@@ -3,6 +3,7 @@ package com.example.ratocalculator.feature.basic
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
@@ -39,6 +41,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -104,12 +109,23 @@ fun CalculatorScreen(
 @Composable
 fun CalculatorContent(
     uiState: CalculatorState,
-    decimalPlaces: Int,          // รับเข้ามาใช้งานโชว์บน Dashboard
-    removeTrailingZero: Boolean, // รับเข้ามาใช้งานโชว์บน Dashboard
+    decimalPlaces: Int,
+    removeTrailingZero: Boolean,
     onButtonClick: (String) -> Unit,
     onHistoryClick: () -> Unit
 ) {
-    // 👑 ใช้ Column หลักอันเดียวคุม Layout ทั้งหน้าจอให้อยู่หมัด
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+
+    val screenWidth = with(density) { windowInfo.containerSize.width.toDp().value }
+    val screenHeight = with(density) { windowInfo.containerSize.height.toDp().value }
+
+    val inputFontSize = (screenWidth * 0.080f).sp
+    val resultFontSize = (screenWidth * 0.14f).sp
+
+    val verticalPadding = if (screenHeight < 650) 12.dp else 20.dp
+
+    // Column for Layout all on display
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -117,7 +133,7 @@ fun CalculatorContent(
             .padding(16.dp)
     ) {
 
-        // 1️⃣ [TOP ROW] แถวบนสุด: ปุ่ม History + กล่องสถานะคู่ (FIX และ TZ)
+        //  [TOP ROW]  History + Report FIX  TZ
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -136,7 +152,7 @@ fun CalculatorContent(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // กล่องรายงานจำนวนตำแหน่งทศนิยม
+                // Box for report decimalPlaces
                 Box(
                     modifier = Modifier
                         .border(1.dp, Color(0xFFDEFF9A), RoundedCornerShape(6.dp))
@@ -152,7 +168,7 @@ fun CalculatorContent(
                     )
                 }
 
-                // กล่องรายงานสถานะการลบเลขศูนย์ท้าย
+                // Box for report removeTrailingZero
                 Box(
                     modifier = Modifier
                         .border(
@@ -174,35 +190,43 @@ fun CalculatorContent(
             }
         }
 
-        // 2️⃣ [DISPLAY BLOCK] หน้าต่างแสดงตัวเลขผลลัพธ์ (ดึงเอา Row ปุ่มประวัติซ้ำซ้อนออกแล้ว)
+        // 2️ [DISPLAY BLOCK]
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f) // จัดสัดส่วนดันให้แป้นพิมพ์อยู่ขอบล่างพอดีอย่างนิ่งสนิท
+                .weight(1f)
                 .background(Color.Gray , RoundedCornerShape(16.dp))
-                .padding(horizontal = 32.dp, vertical = 24.dp),
+                .padding(horizontal = 24.dp, vertical = verticalPadding),
             horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.Bottom
         ) {
             Text(
                 text = uiState.input.ifEmpty { " " },
-                fontSize = 28.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.End
+                fontSize = inputFontSize,
+                color = Color.Black,
+                textAlign = TextAlign.End,
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.weight(1f))
+
             Text(
-                text = uiState.result,
-                fontSize = 48.sp,
+                text = uiState.result.ifEmpty { " " },
+                fontSize = resultFontSize,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.End
+                textAlign = TextAlign.End,
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(if (screenHeight < 650) 8.dp else 16.dp))
 
-        // 3️⃣ [KEYBOARD GRID] แผงปุ่มกดเครื่องคิดเลข
+        // 3️ [KEYBOARD GRID]
         val buttons = listOf(
             listOf("C", "+/-", "( )", "DEL"),
             listOf("7", "8", "9", "÷"),
@@ -232,7 +256,7 @@ fun CalculatorContent(
                 }
             }
         }
-    } // ปีกกาปิด Column หลัก (ช่วยดักจับ Error Expecting an expression บรรทัด 316)
+    }
 }
 
 @Composable
