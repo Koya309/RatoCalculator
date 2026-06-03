@@ -38,8 +38,8 @@ fun SettingsScreen(
         // If no sub-menu is selected, the main screen will display all sections according to the paper structure.
         if (currentSubScreen == null) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                modifier = Modifier.fillMaxSize().padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 item { Text("Settings", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold) }
 

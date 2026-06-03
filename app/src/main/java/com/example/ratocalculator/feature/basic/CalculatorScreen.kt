@@ -41,7 +41,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
@@ -53,8 +52,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.R
 import com.example.ratocalculator.core.database.HistoryEntity
-import com.example.ratocalculator.settings.SettingsViewModel
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
+import com.example.ratocalculator.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 
 @Composable

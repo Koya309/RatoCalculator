@@ -54,7 +54,7 @@ fun RatoCalculator() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.app_name)) },
+                    title = {},
                     navigationIcon = {
                         IconButton(
                             onClick = {

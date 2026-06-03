@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import jakarta.inject.Inject
 
-
 private val Context.dataStore by preferencesDataStore(name = "settings_pref")
 
 class SettingRepository @Inject constructor(
