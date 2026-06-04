@@ -1,7 +1,5 @@
 package com.example.ratocalculator.settings.Section
 
-import android.R
-import android.icu.number.NumberFormatter
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -38,13 +37,17 @@ import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 fun BasicCalculatorSection(
     removeTrailingZero: Boolean,
     decimalPlaces: Int,
-    onNavigateToTrailing: () -> Unit
+    onNavigateToTrailing: () -> Unit,
+    onNavigateToDecimal: () -> Unit,
 ){
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5f))
     ) {
+        // Column
         Column(modifier = Modifier.padding(16.dp)) {
+
+            // Main headline
             Text(
                 text = "Basic Calculator",
                 style = MaterialTheme.typography.titleMedium,
@@ -63,23 +66,33 @@ fun BasicCalculatorSection(
         ) {
             Column {
                 Text(text = "Remove trailing zero", style = MaterialTheme.typography.bodyLarge)
-                Text(text = "Decimal Places: $decimalPlaces", style = MaterialTheme.typography.bodySmall)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = if (removeTrailingZero) "no" else "off", color = MaterialTheme.colorScheme.primary)
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable{ onNavigateToDecimal() }
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(text = "Decimal Places: $decimalPlaces", style = MaterialTheme.typography.bodySmall)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
             }
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrailingZeroDetailScreen(
     removeTrailingZero: Boolean,
-    decimalPlaces: Int,
     onToggleTrailing: (Boolean) -> Unit,
-    onDecimalChange: (Int) -> Unit,
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -96,7 +109,7 @@ fun TrailingZeroDetailScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             // On/off switch control unit
             Row(
@@ -123,7 +136,33 @@ fun TrailingZeroDetailScreen(
                     TextRow("3.04", "3") // อ้างอิงตามเลขที่แก้ในกระดาษแผ่นแรก
                 }
             }
+        }
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DecimalPlacesScreen(
+    decimalPlaces: Int,
+    onDecimalChange: (Int) -> Unit,
+    onBack: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Decimal Places") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             // The decimal point adjustment scale is consistent and uses the same logic system.
             Column {
                 Text(text = "Decimal Places", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -157,7 +196,8 @@ fun RatoCalculatorAppPreview() {
         BasicCalculatorSection(
             removeTrailingZero = true,
             decimalPlaces = 2,
-            onNavigateToTrailing = {}
+            onNavigateToTrailing = {},
+            onNavigateToDecimal = {}
         )
     }
 }
@@ -168,8 +208,18 @@ fun TrailingZeroDetailScreenPreview() {
     RatoCalculatorTheme {
         TrailingZeroDetailScreen(
             removeTrailingZero = true,
-            decimalPlaces = 3,
             onToggleTrailing = {},
+            onBack = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DecimalPlacesScreenPreview() {
+    RatoCalculatorTheme {
+        DecimalPlacesScreen(
+            decimalPlaces = 3,
             onDecimalChange = {},
             onBack = {}
         )

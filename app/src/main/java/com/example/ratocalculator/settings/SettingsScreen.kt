@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.ratocalculator.settings.Section.AboutDetailScreen
 import com.example.ratocalculator.settings.Section.AboutSection
 import com.example.ratocalculator.settings.Section.BasicCalculatorSection
+import com.example.ratocalculator.settings.Section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.Section.ResetSettingSection
 import com.example.ratocalculator.settings.Section.TrailingZeroDetailScreen
 
@@ -48,7 +49,8 @@ fun SettingsScreen(
                     BasicCalculatorSection(
                         removeTrailingZero = removeTrailingZero,
                         decimalPlaces = decimalPlaces,
-                        onNavigateToTrailing = { currentSubScreen = "trailing" }
+                        onNavigateToTrailing = { currentSubScreen = "trailing" },
+                        onNavigateToDecimal = { currentSubScreen = "decimal" },
                     )
                 }
 
@@ -72,8 +74,14 @@ fun SettingsScreen(
         if (currentSubScreen == "trailing") {
             TrailingZeroDetailScreen(
                 removeTrailingZero = removeTrailingZero,
-                decimalPlaces = decimalPlaces,
                 onToggleTrailing = { viewModel.updateRemoveTrailingZero(it) },
+                onBack = { currentSubScreen = null }
+            )
+        }
+
+        if (currentSubScreen == "decimal") {
+            DecimalPlacesScreen(
+                decimalPlaces = decimalPlaces,
                 onDecimalChange = { viewModel.updateDecimalPlaces(it) },
                 onBack = { currentSubScreen = null }
             )
