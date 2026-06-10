@@ -2,7 +2,7 @@ package com.example.ratocalculator.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ratocalculator.data.SettingRepository
+import com.example.ratocalculator.settings.repository.CalculatorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -11,31 +11,48 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val repository: SettingRepository // Hilti immediately plugged the data storage device directly into the system.
+    private val calculatorRepo: CalculatorRepository
+//    private val unitConverterRepo: UnitConverterRepository,
+//    private val languageRepo: LanguageRepository,
+//    private val themeRepo: ThemeRepository
 ) : ViewModel() {
 
-    // Convert raw data streams into a state on the Compose screen, ready to be viewed at any time.
-    val decimalPlaces = repository.decimalPlaces
+    // ─── 1.Basic Calculator ───
+    val decimalPlaces = calculatorRepo.decimalPlaces
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 2)
 
-    val removeTrailingZero = repository.removeTrailingZero
+    val removeTrailingZero = calculatorRepo.removeTrailingZero
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
-    // 1. Function when the user adjusts the decimal places.
-    fun updateDecimalPlaces(value: Int) {
-        viewModelScope.launch { repository.saveDecimalPlaces(value) }
+    fun updateDecimalPlaces(places: Int) {
+        viewModelScope.launch { calculatorRepo.saveDecimalPlaces(places) }
     }
 
-    // 2. Function when the user flips the switch to delete the last zero.
     fun updateRemoveTrailingZero(value: Boolean) {
-        viewModelScope.launch { repository.saveRemoveTrailingZero(value) }
+        viewModelScope.launch { calculatorRepo.saveRemoveTrailingZero(value) }
     }
 
-    // 3. The system reset function you need!! Restores to default settings and overwrites saves immediately.
-    fun resetToDefault() {
+    fun resetCalculatorToDefault() {
+        viewModelScope.launch { calculatorRepo.resetToDefault() }
+    }
+
+    fun resetAllToDefault() {
         viewModelScope.launch {
-            repository.saveDecimalPlaces(2)       // คืนค่ากลับเป็นทศนิยม 2 ตำแหน่ง
-            repository.saveRemoveTrailingZero(true) // คืนค่ากลับเป็นเปิดการลบเลขศูนย์ท้าย
+            // 1. Reset Calculator
+            calculatorRepo.resetToDefault()
+
         }
     }
+
+    // ─── 2.Unit Converter ───
+//    val unitState = unitConverterRepo.settingsFlow
+//    fun updateDefaultUnit(unit: String) = viewModelScope.launch { unitConverterRepo.saveDefaultUnit(unit) }
+
+    // ─── 3.Language ───
+//    val languageState = languageRepo.languageFlow
+//    fun updateLanguage(lang: String) = viewModelScope.launch { languageRepo.saveLanguage(lang) }
+
+    // ─── 4.Theme ───
+//    val themeState = themeRepo.themeFlow
+//    fun updateTheme(isDarkMode: Boolean) = viewModelScope.launch { themeRepo.saveTheme(isDarkMode) }
 }

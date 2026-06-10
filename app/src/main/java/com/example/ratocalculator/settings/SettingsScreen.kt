@@ -57,7 +57,9 @@ fun SettingsScreen(
                 // Reset: Reset Section
                 item {
                     ResetSettingSection(
-                        onResetClick = { viewModel.resetToDefault() }
+                        // Change from viewModel.resetToDefault() or resetCalculatorToDefault
+                        // Call the intermediate function we created in ViewModel
+                        onResetClick = { viewModel.resetAllToDefault() }
                     )
                 }
 
