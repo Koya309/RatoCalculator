@@ -53,7 +53,7 @@ fun BasicCalculatorSection(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.padding(8.dp))
+            Spacer(modifier = Modifier.padding(1.dp))
         }
         Row(
             modifier = Modifier
@@ -64,7 +64,10 @@ fun BasicCalculatorSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = "Remove trailing zero", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "Remove trailing zero",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = if (removeTrailingZero) "no" else "off", color = MaterialTheme.colorScheme.primary)
