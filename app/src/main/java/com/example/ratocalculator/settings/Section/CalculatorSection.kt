@@ -4,13 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,26 +42,28 @@ fun BasicCalculatorSection(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5f))
     ) {
         // Column
-        Column(modifier = Modifier.padding(16.dp)) {
-
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
             // Main headline
             Text(
                 text = "Basic Calculator",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Spacer(modifier = Modifier.padding(1.dp))
-        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable{ onNavigateToTrailing() }
-                .padding(vertical = 8.dp),
+                .padding(horizontal = 25.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column{
                 Text(
                     text = "Remove trailing zero",
                     style = MaterialTheme.typography.bodyLarge
@@ -77,16 +77,17 @@ fun BasicCalculatorSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable{ onNavigateToDecimal() }
-                .padding(vertical = 8.dp),
+                .padding(horizontal = 25.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = "Decimal Places: $decimalPlaces", style = MaterialTheme.typography.bodySmall)
+                Text(text = "Decimal Places", style = MaterialTheme.typography.bodyLarge)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                Text(text = "$decimalPlaces", style = MaterialTheme.typography.bodyLarge)
             }
+        }
         }
     }
 }
