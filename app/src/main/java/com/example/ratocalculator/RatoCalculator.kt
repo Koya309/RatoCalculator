@@ -51,33 +51,7 @@ fun RatoCalculator() {
             }
         }
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {},
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    if (drawerState.isClosed) drawerState.open()
-                                    else drawerState.close()
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "เมนูหลัก"
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                    //    containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                        navigationIconContentColor = MaterialTheme.colorScheme.primary
-                    )
-                )
-            }
-        ) { innerPadding ->
+        Scaffold { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -85,7 +59,14 @@ fun RatoCalculator() {
             ) {
                 CalculatorNavHost(
                     navController = navController,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    // ส่งลากฟังก์ชันเปิดเมนูเข้าไปใน NavHost เพื่อให้หน้าหลักอื่นๆ เรียกใช้ได้
+                    onOpenDrawer = {
+                        scope.launch {
+                            if (drawerState.isClosed) drawerState.open()
+                            else drawerState.close()
+                        }
+                    }
                 )
             }
         }

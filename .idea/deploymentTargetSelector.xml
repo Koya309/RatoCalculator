@@ -37,7 +37,7 @@
       </SelectionState>
       <SelectionState runConfigName="main">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-06-13T19:44:35.356624Z">
+        <DropdownSelection timestamp="2026-06-26T08:17:38.845184600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Koya\.android\avd\Pixel_6a.avd" />
