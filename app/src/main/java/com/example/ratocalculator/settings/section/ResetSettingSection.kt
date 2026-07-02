@@ -1,4 +1,4 @@
-package com.example.ratocalculator.settings.Section
+package com.example.ratocalculator.settings.section
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

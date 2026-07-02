@@ -23,16 +23,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -56,8 +60,10 @@ import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 import com.example.ratocalculator.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen(
+    onOpenDrawer: () -> Unit,
     calculatorViewModel: CalculatorViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -87,21 +93,42 @@ fun CalculatorScreen(
             }
         }
     ) {
-        CalculatorContent(
-            uiState = uiState,
-            decimalPlaces = decimalPlaces,
-            removeTrailingZero = removeTrailingZero,
-            onButtonClick = { label ->
-                calculatorViewModel.onButtonClick(
-                    label,
-                    decimalPlaces,
-                    removeTrailingZero
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Basic Calculator") },
+                    navigationIcon = {
+                        IconButton(onClick = onOpenDrawer) {
+                            Icon(Icons.Default.Menu, contentDescription = "เมนูหลัก")
+                        }
+                    }
                 )
-            },
-            onHistoryClick = {
-                scope.launch { drawerState.open() }
             }
-        )
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+
+            ) {
+
+                CalculatorContent(
+                    uiState = uiState,
+                    decimalPlaces = decimalPlaces,
+                    removeTrailingZero = removeTrailingZero,
+                    onButtonClick = { label ->
+                        calculatorViewModel.onButtonClick(
+                            label,
+                            decimalPlaces,
+                            removeTrailingZero
+                        )
+                    },
+                    onHistoryClick = {
+                        scope.launch { drawerState.open() }
+                    }
+                )
+            }
+        }
     }
 }
 

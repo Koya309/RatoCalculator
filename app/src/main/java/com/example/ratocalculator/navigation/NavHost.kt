@@ -12,9 +12,9 @@ import com.example.ratocalculator.feature.basic.CalculatorScreen
 import com.example.ratocalculator.feature.physics.PhysicsScreen
 import com.example.ratocalculator.feature.scientific.ScientificCalculatorScreen
 import com.example.ratocalculator.feature.unitconverter.UnitConverterScreen
-import com.example.ratocalculator.settings.Section.AboutDetailScreen
-import com.example.ratocalculator.settings.Section.DecimalPlacesScreen
-import com.example.ratocalculator.settings.Section.TrailingZeroDetailScreen
+import com.example.ratocalculator.settings.section.AboutDetailScreen
+import com.example.ratocalculator.settings.section.DecimalPlacesScreen
+import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
 import com.example.ratocalculator.settings.SettingsScreen
 import com.example.ratocalculator.settings.SettingsViewModel
 
@@ -31,7 +31,11 @@ fun CalculatorNavHost(
         modifier = modifier
     ) {
         // 1. หน้าจอเครื่องคิดเลขต่างๆ
-        composable("basic") { CalculatorScreen() }
+        composable("basic") {
+            CalculatorScreen(
+            onOpenDrawer = onOpenDrawer
+            )
+        }
         composable("scientific") { ScientificCalculatorScreen() }
         composable("physics") { PhysicsScreen() }
         composable("unit_converter") { UnitConverterScreen() }
@@ -39,6 +43,7 @@ fun CalculatorNavHost(
         // 2. หน้าหลักของ Settings (ใส่ Lambda สำหรับการเปลี่ยนหน้าย่อยตรงนี้)
         composable("settings") {
             SettingsScreen(
+                onOpenDrawer = onOpenDrawer,
                 onNavigateToTrailing = { navController.navigate("trailing") },
                 onNavigateToDecimal = { navController.navigate("decimal") },
                 onNavigateToAbout = { navController.navigate("about") }
@@ -53,7 +58,7 @@ fun CalculatorNavHost(
             TrailingZeroDetailScreen(
                 removeTrailingZero = removeTrailingZero,
                 onToggleTrailing = { viewModel.updateRemoveTrailingZero(it) },
-                onBack = { navController.popBackStack() } // พาย้อนกลับไปหน้า Settings หลัก
+                onBack = { navController.popBackStack() }
             )
         }
 
