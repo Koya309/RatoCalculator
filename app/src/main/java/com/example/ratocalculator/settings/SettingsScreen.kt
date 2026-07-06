@@ -29,7 +29,6 @@ import com.example.ratocalculator.settings.section.ResetSettingSection
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
-    onOpenDrawer: () -> Unit,
     onNavigateToTrailing: () -> Unit,
     onNavigateToDecimal: () -> Unit,
     onNavigateToAbout: () -> Unit
@@ -39,23 +38,6 @@ fun SettingsScreen(
     val removeTrailingZero by viewModel.removeTrailingZero.collectAsState(initial = true)
 
     // var currentSubScreen by remember { mutableStateOf<String?>(null) }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Settings") },
-                navigationIcon = {
-                    // 2. แทรกปุ่มแฮมเบอร์เกอร์และผูกเข้ากับฟังก์ชัน onOpenDrawer
-                    IconButton(onClick = onOpenDrawer) {
-                        Icon(Icons.Default.Menu, contentDescription = "เปิดเมนู")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-        ) {
 
             // If no sub-menu is selected, the main screen will display all sections according to the paper structure.
             //    if (currentSubScreen == null) {
@@ -97,8 +79,5 @@ fun SettingsScreen(
                     )
                 }
             }
-        }
-
     }
-}
 

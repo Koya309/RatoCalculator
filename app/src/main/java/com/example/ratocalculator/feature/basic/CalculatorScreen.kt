@@ -60,10 +60,8 @@ import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 import com.example.ratocalculator.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorScreen(
-    onOpenDrawer: () -> Unit,
     calculatorViewModel: CalculatorViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -93,44 +91,26 @@ fun CalculatorScreen(
             }
         }
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Basic Calculator") },
-                    navigationIcon = {
-                        IconButton(onClick = onOpenDrawer) {
-                            Icon(Icons.Default.Menu, contentDescription = "เมนูหลัก")
-                        }
-                    }
+        CalculatorContent(
+            uiState = uiState,
+            decimalPlaces = decimalPlaces,
+            removeTrailingZero = removeTrailingZero,
+            onButtonClick = { label ->
+                calculatorViewModel.onButtonClick(
+                    label,
+                    decimalPlaces,
+                    removeTrailingZero
                 )
+            },
+            onHistoryClick = {
+                scope.launch { drawerState.open() }
             }
-        ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-
-            ) {
-
-                CalculatorContent(
-                    uiState = uiState,
-                    decimalPlaces = decimalPlaces,
-                    removeTrailingZero = removeTrailingZero,
-                    onButtonClick = { label ->
-                        calculatorViewModel.onButtonClick(
-                            label,
-                            decimalPlaces,
-                            removeTrailingZero
-                        )
-                    },
-                    onHistoryClick = {
-                        scope.launch { drawerState.open() }
-                    }
-                )
-            }
-        }
+        )
     }
 }
+
+
+
 
 @Composable
 fun CalculatorContent(

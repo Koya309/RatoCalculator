@@ -23,7 +23,6 @@ fun CalculatorNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     startDestination: String = "basic",
-    onOpenDrawer: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -31,11 +30,7 @@ fun CalculatorNavHost(
         modifier = modifier
     ) {
         // 1. หน้าจอเครื่องคิดเลขต่างๆ
-        composable("basic") {
-            CalculatorScreen(
-            onOpenDrawer = onOpenDrawer
-            )
-        }
+        composable("basic") { CalculatorScreen() }
         composable("scientific") { ScientificCalculatorScreen() }
         composable("physics") { PhysicsScreen() }
         composable("unit_converter") { UnitConverterScreen() }
@@ -43,7 +38,6 @@ fun CalculatorNavHost(
         // 2. หน้าหลักของ Settings (ใส่ Lambda สำหรับการเปลี่ยนหน้าย่อยตรงนี้)
         composable("settings") {
             SettingsScreen(
-                onOpenDrawer = onOpenDrawer,
                 onNavigateToTrailing = { navController.navigate("trailing") },
                 onNavigateToDecimal = { navController.navigate("decimal") },
                 onNavigateToAbout = { navController.navigate("about") }

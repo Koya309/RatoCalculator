@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,10 +20,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ratocalculator.navigation.CalculatorNavHost
 import com.example.ratocalculator.navigation.NavigationDrawerContent
@@ -35,13 +38,17 @@ fun RatoCalculator() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val subScreens = listOf("trailing_zero", "decimal_places", "about")
+    val isSubScreen = currentRoute in subScreens
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text(
-                    stringResource(R.string.menu),
-                    modifier = Modifier.padding(16.dp))
+                Text(stringResource(R.string.menu), modifier = Modifier.padding(16.dp))
                 HorizontalDivider()
                 NavigationDrawerContent(
                     navController = navController,
@@ -51,22 +58,61 @@ fun RatoCalculator() {
             }
         }
     ) {
-        Scaffold { innerPadding ->
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        // 💡 3. เปลี่ยนหัวเรื่องด้านบนตามหน้าจอปัจจุบันอัตโนมัติ
+                        when (currentRoute) {
+                            "basic" -> Text("เครื่องคิดเลขพื้นฐาน")
+                            "scientific" -> Text("เครื่องคิดเลขวิทยาศาสตร์")
+                            "settings" -> Text("การตั้งค่า")
+                            "trailing_zero" -> Text("Remove trailing zero")
+                            else -> Text("Rato Calculator")
+                        }
+                    },
+                    navigationIcon = {
+                        // 💡 4. สลับไอคอนนำทางให้เองอัตโนมัติ!
+                        if (isSubScreen) {
+                            // อยู่หน้าย่อย ➡️ โชว์ปุ่มย้อนกลับสีส้ม/ดำตามสไตล์คุณ
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "ย้อนกลับ"
+                                )
+                            }
+                        } else {
+                            // อยู่หน้าหลักปกติ ➡️ โชว์ปุ่มเปิดเมนูด้านข้าง (Hamburger)
+                            IconButton(
+                                onClick = {
+                                    scope.launch {
+                                        if (drawerState.isClosed) drawerState.open()
+                                        else drawerState.close()
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = "เมนูหลัก"
+                                )
+                            }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+        ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(innerPadding) // 💡 ส่ง innerPadding ไปดันเนื้อหาใน NavHost หลบแถบ TopAppBar
             ) {
                 CalculatorNavHost(
                     navController = navController,
-                    modifier = Modifier.fillMaxSize(),
-                    // ส่งลากฟังก์ชันเปิดเมนูเข้าไปใน NavHost เพื่อให้หน้าหลักอื่นๆ เรียกใช้ได้
-                    onOpenDrawer = {
-                        scope.launch {
-                            if (drawerState.isClosed) drawerState.open()
-                            else drawerState.close()
-                        }
-                    }
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
