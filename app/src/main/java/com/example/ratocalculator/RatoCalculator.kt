@@ -41,7 +41,7 @@ fun RatoCalculator() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val subScreens = listOf("trailing_zero", "decimal_places", "about")
+    val subScreens = listOf("trailing", "decimal", "about")
     val isSubScreen = currentRoute in subScreens
 
     ModalNavigationDrawer(
@@ -62,7 +62,7 @@ fun RatoCalculator() {
             topBar = {
                 TopAppBar(
                     title = {
-                        // 💡 3. เปลี่ยนหัวเรื่องด้านบนตามหน้าจอปัจจุบันอัตโนมัติ
+                        // NavHost Main
                         when (currentRoute) {
                             "basic" -> Text("เครื่องคิดเลขพื้นฐาน")
                             "scientific" -> Text("เครื่องคิดเลขวิทยาศาสตร์")
@@ -72,9 +72,8 @@ fun RatoCalculator() {
                         }
                     },
                     navigationIcon = {
-                        // 💡 4. สลับไอคอนนำทางให้เองอัตโนมัติ!
+                        // Icon Nav for Back
                         if (isSubScreen) {
-                            // อยู่หน้าย่อย ➡️ โชว์ปุ่มย้อนกลับสีส้ม/ดำตามสไตล์คุณ
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -82,7 +81,7 @@ fun RatoCalculator() {
                                 )
                             }
                         } else {
-                            // อยู่หน้าหลักปกติ ➡️ โชว์ปุ่มเปิดเมนูด้านข้าง (Hamburger)
+                            // Menu
                             IconButton(
                                 onClick = {
                                     scope.launch {
@@ -108,7 +107,7 @@ fun RatoCalculator() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding) // 💡 ส่ง innerPadding ไปดันเนื้อหาใน NavHost หลบแถบ TopAppBar
+                    .padding(innerPadding) // innerPadding in NavHost Hide TopAppBar
             ) {
                 CalculatorNavHost(
                     navController = navController,

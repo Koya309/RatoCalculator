@@ -29,13 +29,13 @@ fun CalculatorNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        // 1. หน้าจอเครื่องคิดเลขต่างๆ
+        // 1. Main NavHost Calculator
         composable("basic") { CalculatorScreen() }
         composable("scientific") { ScientificCalculatorScreen() }
         composable("physics") { PhysicsScreen() }
         composable("unit_converter") { UnitConverterScreen() }
 
-        // 2. หน้าหลักของ Settings (ใส่ Lambda สำหรับการเปลี่ยนหน้าย่อยตรงนี้)
+        // 2. Main Screen Settings
         composable("settings") {
             SettingsScreen(
                 onNavigateToTrailing = { navController.navigate("trailing") },
@@ -44,31 +44,29 @@ fun CalculatorNavHost(
             )
         }
 
-        // 3. หน้าจอรายละเอียดหน่วยย่อย (ถอนตัวออกจาก Box/State มาเป็นหน้าเดี่ยวใน Navigation)
+        // Screen Trailing
         composable("trailing") {
             val viewModel: SettingsViewModel = hiltViewModel()
             val removeTrailingZero by viewModel.removeTrailingZero.collectAsState(initial = true)
 
             TrailingZeroDetailScreen(
                 removeTrailingZero = removeTrailingZero,
-                onToggleTrailing = { viewModel.updateRemoveTrailingZero(it) },
-                onBack = { navController.popBackStack() }
+                onToggleTrailing = { viewModel.updateRemoveTrailingZero(it) }
             )
         }
 
-        // หน้าจอ Decimal ที่แยกไว้ก็นำมาใส่ตรงนี้
+        // Screen Decimal
         composable("decimal") {
             val viewModel: SettingsViewModel = hiltViewModel()
             val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
 
             DecimalPlacesScreen(
                 decimalPlaces = decimalPlaces,
-                onDecimalChange = { viewModel.updateDecimalPlaces(it) },
-                onBack = { navController.popBackStack() }
+                onDecimalChange = { viewModel.updateDecimalPlaces(it) }
             )
         }
 
-        // หน้าจอ About ที่แยกไว้ก็นำมาใส่ตรงนี้
+        // About screen
         composable("about") {
             AboutDetailScreen(
                 onBack = { navController.popBackStack() }

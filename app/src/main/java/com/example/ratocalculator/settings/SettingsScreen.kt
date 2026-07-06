@@ -1,19 +1,12 @@
 package com.example.ratocalculator.settings
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,13 +34,15 @@ fun SettingsScreen(
 
             // If no sub-menu is selected, the main screen will display all sections according to the paper structure.
             //    if (currentSubScreen == null) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
                 item {
                     Text(
-                        "Settings",
+                        text = "Settings",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )

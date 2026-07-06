@@ -7,20 +7,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,52 +89,48 @@ fun BasicCalculatorSection(
 @Composable
 fun TrailingZeroDetailScreen(
     removeTrailingZero: Boolean,
-    onToggleTrailing: (Boolean) -> Unit,
-    onBack: () -> Unit
+    onToggleTrailing: (Boolean) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Remove trailing zero") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        // On/off switch control unit
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // On/off switch control unit
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = if (removeTrailingZero) "ON" else "OFF", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Switch(checked = removeTrailingZero, onCheckedChange = onToggleTrailing)
-            }
+            Text(
+                text = if (removeTrailingZero) "ON" else "OFF",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Switch(checked = removeTrailingZero, onCheckedChange = onToggleTrailing)
+        }
 
-            // The sample data table structure (ex | off | or | on)
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        //Text("ex", fontWeight = FontWeight.Bold)
-                        Text("OFF", color = Color.Gray)
-                        Text("Or", color = Color.Gray)
-                        Text("ON", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                    }
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                    TextRow("1.00", "1")
-                    TextRow("2.00", "2")
-                    TextRow("3.04", "3") // อ้างอิงตามเลขที่แก้ในกระดาษแผ่นแรก
+        // The sample data table structure (ex | off | or | on)
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    //Text("ex", fontWeight = FontWeight.Bold)
+                    Text("OFF", color = Color.Gray)
+                    Text("Or", color = Color.Gray)
+                    Text(
+                        "ON",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                TextRow("1.00", "1")
+                TextRow("2.00", "2")
+                TextRow("3.04", "3") // อ้างอิงตามเลขที่แก้ในกระดาษแผ่นแรก
             }
         }
     }
@@ -150,23 +140,13 @@ fun TrailingZeroDetailScreen(
 @Composable
 fun DecimalPlacesScreen(
     decimalPlaces: Int,
-    onDecimalChange: (Int) -> Unit,
-    onBack: () -> Unit
+    onDecimalChange: (Int) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Decimal Places") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
+
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             // The decimal point adjustment scale is consistent and uses the same logic system.
@@ -184,7 +164,7 @@ fun DecimalPlacesScreen(
             }
         }
     }
-}
+
 
 @Composable
 fun TextRow(offStr: String, onStr: String) {
@@ -215,7 +195,6 @@ fun TrailingZeroDetailScreenPreview() {
         TrailingZeroDetailScreen(
             removeTrailingZero = true,
             onToggleTrailing = {},
-            onBack = {}
         )
     }
 }
@@ -227,7 +206,6 @@ fun DecimalPlacesScreenPreview() {
         DecimalPlacesScreen(
             decimalPlaces = 3,
             onDecimalChange = {},
-            onBack = {}
         )
     }
 }
