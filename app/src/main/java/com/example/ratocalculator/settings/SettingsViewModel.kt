@@ -3,6 +3,7 @@ package com.example.ratocalculator.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ratocalculator.settings.repository.CalculatorRepository
+import com.example.ratocalculator.settings.repository.UnitConverterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -11,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val calculatorRepo: CalculatorRepository
-//    private val unitConverterRepo: UnitConverterRepository,
+    private val calculatorRepo: CalculatorRepository,
+    private val unitConverterRepo: UnitConverterRepository
 //    private val languageRepo: LanguageRepository,
 //    private val themeRepo: ThemeRepository
 ) : ViewModel() {
@@ -45,8 +46,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     // ─── 2.Unit Converter ───
-//    val unitState = unitConverterRepo.settingsFlow
-//    fun updateDefaultUnit(unit: String) = viewModelScope.launch { unitConverterRepo.saveDefaultUnit(unit) }
+    val sideBlock = unitConverterRepo.sideBlock
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
+
 
     // ─── 3.Language ───
 //    val languageState = languageRepo.languageFlow
