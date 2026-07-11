@@ -1,21 +1,29 @@
 package com.example.ratocalculator.feature.unitconverter
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ratocalculator.core.toSuperscript
+import com.example.ratocalculator.settings.repository.UnitConverterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.pow
 
 @HiltViewModel
-class UnitConverterViewModel @Inject constructor() : ViewModel() {
+class UnitConverterViewModel @Inject constructor(
+    private val unitConverterRepo: UnitConverterRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UnitConverterUiState())
     val uiState = _uiState.asStateFlow()
 
+    val isSideBLocked = unitConverterRepo.sideBlock
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     private var isUpdating = false
 
     fun onCategoryChanged(category: UnitCategory) {
@@ -39,6 +47,9 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
     fun onInputAChanged(value: String) {
         if (isUpdating) return
+
+        if (isSideBLocked.value) return
+
         _uiState.update { it.copy(sideA = it.sideA.copy(input = value)) }
         performConversion(fromA = true)
     }
@@ -56,7 +67,7 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
     fun onUnitBChanged(unit: UnitItem) {
         _uiState.update { it.copy(sideB = it.sideB.copy(unit = unit)) }
-        performConversion(fromA = false)
+        performConversion(fromA = true)
     }
 
     fun onPrefixAChanged(prefix: SIPrefix) {
@@ -66,7 +77,12 @@ class UnitConverterViewModel @Inject constructor() : ViewModel() {
 
     fun onPrefixBChanged(prefix: SIPrefix) {
         _uiState.update { it.copy(sideB = it.sideB.copy(prefix = prefix)) }
-        performConversion(fromA = false)
+
+        if (isSideBLocked.value){
+            performConversion(fromA = true)
+        }else {
+            performConversion(fromA = false)
+        }
     }
 
     private fun performConversion(fromA: Boolean) {

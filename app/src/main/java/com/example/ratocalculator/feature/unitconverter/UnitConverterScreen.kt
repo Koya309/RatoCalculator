@@ -42,6 +42,7 @@ fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val isSideBLocked by viewModel.isSideBLocked.collectAsState()
     val tabs = UnitCategory.entries
     val maxHeight = 40.dp * 5
 
@@ -107,6 +108,7 @@ fun UnitConverterScreen(
             prefixes = allSIPrefixes,
             units = state.availableUnits,
             maxHeight = maxHeight,
+            readOnly = isSideBLocked,
             onValueChange = { viewModel.onInputBChanged(it) },
             onPrefixSelected = viewModel::onPrefixBChanged,
             onUnitSelected = viewModel::onUnitBChanged
@@ -120,6 +122,7 @@ fun ConverterRow(
     prefixes: List<SIPrefix>,
     units: List<UnitItem>,
     maxHeight: Dp,
+    readOnly: Boolean = false,
     onValueChange: (String) -> Unit,
     onPrefixSelected: (SIPrefix) -> Unit,
     onUnitSelected: (UnitItem) -> Unit
@@ -140,6 +143,7 @@ fun ConverterRow(
                         onValueChange(value)
                     }
                 },
+                readOnly = readOnly,
                 singleLine = true,
                 modifier = Modifier.weight(3f),
                 keyboardOptions = KeyboardOptions(

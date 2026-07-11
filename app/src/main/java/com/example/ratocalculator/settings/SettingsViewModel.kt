@@ -49,6 +49,12 @@ class SettingsViewModel @Inject constructor(
     val sideBlock = unitConverterRepo.sideBlock
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
+    fun updateSideBlock(value: Boolean) {
+        viewModelScope.launch {
+            unitConverterRepo.saveSideBlock(value)
+        }
+    }
+
 
     // ─── 3.Language ───
 //    val languageState = languageRepo.languageFlow

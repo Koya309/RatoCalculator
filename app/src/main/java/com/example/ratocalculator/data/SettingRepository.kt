@@ -15,6 +15,8 @@ private val Context.dataStore by preferencesDataStore(name = "settings_pref")
 class SettingRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    // ─── 1.Basic Calculator ───
+
     // ตั้งชื่อกุญแจสำหรับล็อกช่องเก็บข้อมูลตามแบบในกระดาษของคุณ
     private val DECIMAL_PLACES_KEY = intPreferencesKey(name = "decimal_places")
     private val TRAILING_ZERO_KEY = booleanPreferencesKey(name = "remove_trailing_zero")
@@ -40,4 +42,23 @@ class SettingRepository @Inject constructor(
             pref[TRAILING_ZERO_KEY] = value
         }
     }
+
+    // ─── 2.Unit Converter ───
+
+    val sideBlock: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[SIDE_BLOCK_KEY] ?: false
+        }
+
+    suspend fun saveSideBlock(value: Boolean){
+        context.dataStore.edit { preferences ->
+            preferences[SIDE_BLOCK_KEY] = value
+        }
+    }
+
+    companion object {
+        val SIDE_BLOCK_KEY = booleanPreferencesKey("side_block")
+    }
+
+
 }
