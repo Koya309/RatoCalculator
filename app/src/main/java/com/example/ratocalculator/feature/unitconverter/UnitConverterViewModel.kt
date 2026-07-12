@@ -1,5 +1,7 @@
 package com.example.ratocalculator.feature.unitconverter
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ratocalculator.core.toSuperscript
@@ -7,6 +9,7 @@ import com.example.ratocalculator.settings.repository.UnitConverterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,6 +28,22 @@ class UnitConverterViewModel @Inject constructor(
     val isSideBLocked = unitConverterRepo.sideBlock
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     private var isUpdating = false
+
+    val isAdvancedEnabled : StateFlow<Boolean> = unitConverterRepo.isAdvancedPrefixEnabled
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
+
+    val visibleSIPrefixes : List<SIPrefix>
+        get() = if (isAdvancedEnabled.value){
+        allSIPrefixes
+    } else {
+        allSIPrefixes.filter { prefix ->
+            prefix.power in -9..9
+        }
+    }
 
     fun onCategoryChanged(category: UnitCategory) {
         val units = when (category) {

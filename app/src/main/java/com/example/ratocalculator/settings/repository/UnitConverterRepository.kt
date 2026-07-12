@@ -9,7 +9,13 @@ class UnitConverterRepository @Inject constructor(
 ){
     val sideBlock: Flow<Boolean> = repository.sideBlock
 
+    val isAdvancedPrefixEnabled: Flow<Boolean> = repository.isAdvancedPrefixEnabled
+
     suspend fun saveSideBlock(value: Boolean){
         repository.saveSideBlock(value)
+    }
+
+    suspend fun saveAdvancedPrefixEnabled(value: Boolean){
+        repository.saveAdvancedPrefixSetting(value)
     }
 }

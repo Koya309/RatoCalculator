@@ -1,5 +1,6 @@
 package com.example.ratocalculator.data
 
+import android.R.attr.value
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -15,13 +16,15 @@ private val Context.dataStore by preferencesDataStore(name = "settings_pref")
 class SettingRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    // ─── 1.Basic Calculator ───
-
-    // ตั้งชื่อกุญแจสำหรับล็อกช่องเก็บข้อมูลตามแบบในกระดาษของคุณ
+    //Everything is included in one place, and it's private for security
     private val DECIMAL_PLACES_KEY = intPreferencesKey(name = "decimal_places")
     private val TRAILING_ZERO_KEY = booleanPreferencesKey(name = "remove_trailing_zero")
+    private val SIDE_BLOCK_KEY = booleanPreferencesKey(name = "side_block")
+    private val ADVANCED_PREFIX_KEY = booleanPreferencesKey(name = "advanced_prefix")
 
-    // ดึงค่าออกมาส่งต่อเป็นท่อน้ำ (Flow) ให้ ViewModel นำไปใช้ต่อ
+
+    // ─── 1.Basic Calculator ───
+    // The values are extracted and passed (Flow) to the ViewModel fore further use
     val decimalPlaces: Flow<Int> = context.dataStore.data.map { pref ->
         pref[DECIMAL_PLACES_KEY] ?: 2
     }
@@ -30,7 +33,7 @@ class SettingRepository @Inject constructor(
         pref[TRAILING_ZERO_KEY] ?: true
     }
 
-    // เอาคำว่า async ออก เหลือแค่ suspend fun เพื่อให้ถูกต้องตามหลักของ Kotlin
+    // suspend fun to comply with the Kotlin rules
     suspend fun saveDecimalPlaces(value: Int) {
         context.dataStore.edit { pref ->
             pref[DECIMAL_PLACES_KEY] = value
@@ -50,15 +53,19 @@ class SettingRepository @Inject constructor(
             preferences[SIDE_BLOCK_KEY] ?: false
         }
 
+    val isAdvancedPrefixEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[ADVANCED_PREFIX_KEY] ?: false
+    }
+
     suspend fun saveSideBlock(value: Boolean){
         context.dataStore.edit { preferences ->
             preferences[SIDE_BLOCK_KEY] = value
         }
     }
 
-    companion object {
-        val SIDE_BLOCK_KEY = booleanPreferencesKey("side_block")
+    suspend fun saveAdvancedPrefixSetting(value: Boolean){
+        context.dataStore.edit { preferences ->
+            preferences[ADVANCED_PREFIX_KEY] = value
+        }
     }
-
-
 }
