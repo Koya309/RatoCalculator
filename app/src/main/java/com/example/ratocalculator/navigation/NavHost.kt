@@ -17,6 +17,8 @@ import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
 import com.example.ratocalculator.settings.SettingsScreen
 import com.example.ratocalculator.settings.SettingsViewModel
+import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
+import com.example.ratocalculator.settings.section.SideBlockScreen
 
 @Composable
 fun CalculatorNavHost(
@@ -40,7 +42,9 @@ fun CalculatorNavHost(
             SettingsScreen(
                 onNavigateToTrailing = { navController.navigate("trailing") },
                 onNavigateToDecimal = { navController.navigate("decimal") },
-                onNavigateToAbout = { navController.navigate("about") }
+                onNavigateToAbout = { navController.navigate("about") },
+                onNavigateToSideBlock = {navController.navigate("sideblock")},
+                onNavigateToAdvancedPrefix = {navController.navigate("advancedprefix")}
             )
         }
 
@@ -63,6 +67,24 @@ fun CalculatorNavHost(
             DecimalPlacesScreen(
                 decimalPlaces = decimalPlaces,
                 onDecimalChange = { viewModel.updateDecimalPlaces(it) }
+            )
+        }
+
+        composable("sideblock"){
+            val viewModel: SettingsViewModel = hiltViewModel()
+            val sideBlock by viewModel.sideBlock.collectAsState(initial = true)
+
+            SideBlockScreen(
+                sideBlock = sideBlock
+            )
+        }
+
+        composable("advancedprefix") {
+            val viewModel: SettingsViewModel = hiltViewModel()
+            val AdvancedPrefix by viewModel.AdvancedPrefixEnabled.collectAsState(initial = false)
+
+            AdvancedPrefixScreen(
+            //    AdvancedPrefix = AdvancedPrefix
             )
         }
 

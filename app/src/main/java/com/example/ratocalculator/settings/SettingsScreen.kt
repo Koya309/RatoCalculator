@@ -17,6 +17,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.settings.section.AboutSection
 import com.example.ratocalculator.settings.section.BasicCalculatorSection
 import com.example.ratocalculator.settings.section.ResetSettingSection
+import com.example.ratocalculator.settings.section.UnitConverterSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,11 +25,15 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
     onNavigateToTrailing: () -> Unit,
     onNavigateToDecimal: () -> Unit,
-    onNavigateToAbout: () -> Unit
+    onNavigateToAbout: () -> Unit,
+    onNavigateToSideBlock: () -> Unit,
+    onNavigateToAdvancedPrefix: () -> Unit
 
 ) {
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
     val removeTrailingZero by viewModel.removeTrailingZero.collectAsState(initial = true)
+    val sideBlock by viewModel.sideBlock.collectAsState(initial = true)
+    val isAdvancedPrefixEnabled by viewModel.AdvancedPrefixEnabled.collectAsState(initial = true)
 
     // var currentSubScreen by remember { mutableStateOf<String?>(null) }
 
@@ -55,6 +60,16 @@ fun SettingsScreen(
                         decimalPlaces = decimalPlaces,
                         onNavigateToTrailing = onNavigateToTrailing,
                         onNavigateToDecimal = onNavigateToDecimal,
+                    )
+                }
+
+                //2: Unit Converter
+                item {
+                    UnitConverterSection(
+                        sideBlock = sideBlock,
+                        isAdvancedPrefixEnabled = isAdvancedPrefixEnabled,
+                        onNavigateToSideBlock = onNavigateToSideBlock,
+                        onNavigateToAdvancedPrefix = onNavigateToAdvancedPrefix
                     )
                 }
 
