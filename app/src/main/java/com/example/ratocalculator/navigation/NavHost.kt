@@ -75,16 +75,19 @@ fun CalculatorNavHost(
             val sideBlock by viewModel.sideBlock.collectAsState(initial = true)
 
             SideBlockScreen(
-                sideBlock = sideBlock
+                sideBlock = sideBlock,
+                onSideBLock = {viewModel.updateSideBlock(it)}
             )
         }
 
         composable("advancedprefix") {
             val viewModel: SettingsViewModel = hiltViewModel()
-            val AdvancedPrefix by viewModel.AdvancedPrefixEnabled.collectAsState(initial = false)
+            val AdvancedPrefix by viewModel.AdvancedPrefix.collectAsState(initial = false)
 
             AdvancedPrefixScreen(
-            //    AdvancedPrefix = AdvancedPrefix
+                AdvancedPrefix = AdvancedPrefix,
+                onAdvancedPrefix = { viewModel.updateAdvancedPrefix(it) }
+
             )
         }
 

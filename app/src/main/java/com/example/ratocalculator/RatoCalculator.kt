@@ -41,7 +41,7 @@ fun RatoCalculator() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val subScreens = listOf("trailing", "decimal", "about")
+    val subScreens = listOf("trailing", "decimal", "about", "sideblock", "advancedprefix")
     val isSubScreen = currentRoute in subScreens
 
     ModalNavigationDrawer(
@@ -67,7 +67,6 @@ fun RatoCalculator() {
                             "basic" -> Text("เครื่องคิดเลขพื้นฐาน")
                             "scientific" -> Text("เครื่องคิดเลขวิทยาศาสตร์")
                             "settings" -> Text("การตั้งค่า")
-                            "trailing_zero" -> Text("Remove trailing zero")
                             else -> Text("Rato Calculator")
                         }
                     },

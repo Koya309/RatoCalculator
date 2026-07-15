@@ -49,14 +49,8 @@ class SettingsViewModel @Inject constructor(
     val sideBlock = unitConverterRepo.sideBlock
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
 
-    val AdvancedPrefixEnabled = unitConverterRepo.isAdvancedPrefixEnabled
+    val AdvancedPrefix = unitConverterRepo.AdvancedPrefix
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true )
-
-    fun updateAdvancedPrefixEnabled(value: Boolean) {
-        viewModelScope.launch {
-            unitConverterRepo.saveAdvancedPrefixEnabled(value)
-        }
-    }
 
     fun updateSideBlock(value: Boolean) {
         viewModelScope.launch {
@@ -64,6 +58,11 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun updateAdvancedPrefix(value: Boolean) {
+        viewModelScope.launch {
+            unitConverterRepo.saveAdvancedPrefix(value)
+        }
+    }
 
     // ─── 3.Language ───
 //    val languageState = languageRepo.languageFlow

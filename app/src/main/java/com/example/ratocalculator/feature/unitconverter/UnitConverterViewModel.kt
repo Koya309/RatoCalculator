@@ -29,7 +29,7 @@ class UnitConverterViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     private var isUpdating = false
 
-    val isAdvancedEnabled : StateFlow<Boolean> = unitConverterRepo.isAdvancedPrefixEnabled
+    val isAdvancedEnabled : StateFlow<Boolean> = unitConverterRepo.AdvancedPrefix
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

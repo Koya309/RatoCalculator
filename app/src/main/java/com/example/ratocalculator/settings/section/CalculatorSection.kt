@@ -34,12 +34,12 @@ fun BasicCalculatorSection(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5f))
-    ) {
+    ){
         // Column
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-        ) {
+        ){
             // Main headline
             Text(
                 text = "Basic Calculator",
@@ -48,40 +48,39 @@ fun BasicCalculatorSection(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable{ onNavigateToTrailing() }
-                .padding(horizontal = 25.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column{
-                Text(
-                    text = "Remove trailing zero",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable{ onNavigateToTrailing() }
+                    .padding(horizontal = 25.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Column{
+                    Text(
+                        text = "Remove trailing zero",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = if (removeTrailingZero) "no" else "off", color = MaterialTheme.colorScheme.primary)
+                }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = if (removeTrailingZero) "no" else "off", color = MaterialTheme.colorScheme.primary)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable{ onNavigateToDecimal() }
+                    .padding(horizontal = 25.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Column {
+                    Text(text = "Decimal Places", style = MaterialTheme.typography.bodyLarge)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "$decimalPlaces", style = MaterialTheme.typography.bodyLarge)
+                }
             }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable{ onNavigateToDecimal() }
-                .padding(horizontal = 25.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text(text = "Decimal Places", style = MaterialTheme.typography.bodyLarge)
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "$decimalPlaces", style = MaterialTheme.typography.bodyLarge)
-            }
-        }
         }
     }
 }
@@ -141,29 +140,28 @@ fun TrailingZeroDetailScreen(
 fun DecimalPlacesScreen(
     decimalPlaces: Int,
     onDecimalChange: (Int) -> Unit
-) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            // The decimal point adjustment scale is consistent and uses the same logic system.
-            Column {
-                Text(text = "Decimal Places", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Slider(
-                    value = decimalPlaces.toFloat(),
-                    onValueChange = { onDecimalChange(it.toInt()) },
-                    valueRange = 0f..5f,
-                    steps = 4
-                )
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    (0..5).forEach { Text(it.toString(), color = if(decimalPlaces == it) MaterialTheme.colorScheme.primary else Color.Gray) }
-                }
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+        ){
+        // The decimal point adjustment scale is consistent and uses the same logic system.
+        Column {
+            Text(text = "Decimal Places", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Slider(
+                value = decimalPlaces.toFloat(),
+                onValueChange = { onDecimalChange(it.toInt()) },
+                valueRange = 0f..5f,
+                steps = 4
+            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                (0..5).forEach { Text(it.toString(), color = if(decimalPlaces == it) MaterialTheme.colorScheme.primary else Color.Gray) }
             }
         }
     }
+}
 
 
 @Composable

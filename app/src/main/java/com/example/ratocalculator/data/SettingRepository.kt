@@ -53,8 +53,9 @@ class SettingRepository @Inject constructor(
             preferences[SIDE_BLOCK_KEY] ?: false
         }
 
-    val isAdvancedPrefixEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
-        preferences[ADVANCED_PREFIX_KEY] ?: false
+    val AdvancedPrefix: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[ADVANCED_PREFIX_KEY] ?: false
     }
 
     suspend fun saveSideBlock(value: Boolean){
@@ -63,7 +64,7 @@ class SettingRepository @Inject constructor(
         }
     }
 
-    suspend fun saveAdvancedPrefixSetting(value: Boolean){
+    suspend fun saveAdvancedPrefix(value: Boolean){
         context.dataStore.edit { preferences ->
             preferences[ADVANCED_PREFIX_KEY] = value
         }

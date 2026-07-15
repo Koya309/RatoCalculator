@@ -33,7 +33,7 @@ fun SettingsScreen(
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
     val removeTrailingZero by viewModel.removeTrailingZero.collectAsState(initial = true)
     val sideBlock by viewModel.sideBlock.collectAsState(initial = true)
-    val isAdvancedPrefixEnabled by viewModel.AdvancedPrefixEnabled.collectAsState(initial = true)
+    val AdvancedPrefix by viewModel.AdvancedPrefix.collectAsState(initial = true)
 
     // var currentSubScreen by remember { mutableStateOf<String?>(null) }
 
@@ -67,7 +67,7 @@ fun SettingsScreen(
                 item {
                     UnitConverterSection(
                         sideBlock = sideBlock,
-                        isAdvancedPrefixEnabled = isAdvancedPrefixEnabled,
+                        AdvancedPrefix = AdvancedPrefix,
                         onNavigateToSideBlock = onNavigateToSideBlock,
                         onNavigateToAdvancedPrefix = onNavigateToAdvancedPrefix
                     )
