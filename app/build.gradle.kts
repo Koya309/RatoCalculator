@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.ratocalculator"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.ratocalculator"
