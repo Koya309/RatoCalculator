@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.pow
@@ -27,6 +29,39 @@ class UnitConverterViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
     private var isUpdating = false
 
+    init {
+        viewModelScope.launch {
+            unitConverterRepo.savedConverterState.collect { saved ->
+                val currentCategory = try {
+                    UnitCategory.valueOf(saved.category)
+                } catch (e: Exception){
+                    UnitCategory.Mass
+                }
+                val units = when (currentCategory){
+                    UnitCategory.Mass -> massUnits
+                    UnitCategory.Length -> lengthUnits
+                    UnitCategory.Area -> areaUnits
+                    UnitCategory.Temperature -> temperatureUnits
+                    UnitCategory.Volume -> volumeUnits
+                }
+                val selectedUnitA = units.find { it.symbol == saved.unitA } ?: units.first()
+                val selectedPrefixA = allSIPrefixes.find { it.symbol == saved.prefixA } ?: allSIPrefixes.find { it.power == 0 } ?: SIPrefix(" ", "", 0)
+
+                val selectedUnitB = units.find { it.symbol == saved.unitB } ?: units.getOrNull(1) ?: units.first()
+                val selectedPrefixB = allSIPrefixes.find { it.symbol == saved.prefixB } ?: allSIPrefixes.find { it.power == 0 } ?: SIPrefix(" ", "", 0)
+
+                _uiState.update {
+                    it.copy(
+                        category = currentCategory,
+                        availableUnits = units,
+                        sideA = it.sideA.copy(prefix = selectedPrefixA, unit = selectedUnitA),
+                        sideB = it.sideB.copy(prefix = selectedPrefixB, unit = selectedUnitB)
+                    )
+                }
+            }
+        }
+    }
+
     val isAdvancedEnabled : StateFlow<Boolean> = unitConverterRepo.AdvancedPrefix
         .stateIn(
             scope = viewModelScope,
@@ -34,14 +69,21 @@ class UnitConverterViewModel @Inject constructor(
             initialValue = false
         )
 
-    val visibleSIPrefixes : List<SIPrefix>
-        get() = if (isAdvancedEnabled.value){
-        allSIPrefixes
-    } else {
-        allSIPrefixes.filter { prefix ->
-            prefix.power in -9..9
+    val visibleSIPrefixes : StateFlow<List<SIPrefix>> = isAdvancedEnabled
+        .map { advanced ->
+            if (advanced){
+                allSIPrefixes
+            } else {
+                allSIPrefixes.filter { prefix ->
+                    prefix.power in -3..9
+                }
+            }
         }
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = allSIPrefixes.filter { it.power in -3..9 }
+        )
 
     fun onCategoryChanged(category: UnitCategory) {
         val units = when (category) {
@@ -51,28 +93,35 @@ class UnitConverterViewModel @Inject constructor(
             UnitCategory.Temperature -> temperatureUnits
             UnitCategory.Volume -> volumeUnits
         }
+        val defaultUnitA = units.first()
+        val defaultUnitB = units.getOrNull(1) ?: units.first()
 
         _uiState.update {
             it.copy(
                 category = category,
                 availableUnits = units,
-                sideA = it.sideA.copy(unit = units.first(), input = ""),
-                sideB = it.sideB.copy(unit = units.getOrNull(1) ?: units.first(), input = "")
+                sideA = it.sideA.copy(unit = defaultUnitA, input = ""),
+                sideB = it.sideB.copy(unit = defaultUnitB, input = "")
+            )
+        }
+        viewModelScope.launch {
+            unitConverterRepo.saveConverterPreferences(
+                category = category.name,
+                unitA = defaultUnitA.symbol,
+                unitB = defaultUnitB.symbol
             )
         }
     }
 
     fun onInputAChanged(value: String) {
         if (isUpdating) return
-
-        if (isSideBLocked.value) return
-
         _uiState.update { it.copy(sideA = it.sideA.copy(input = value)) }
         performConversion(fromA = true)
     }
 
     fun onInputBChanged(value: String) {
         if (isUpdating) return
+        if (isSideBLocked.value) return
         _uiState.update { it.copy(sideB = it.sideB.copy(input = value)) }
         performConversion(fromA = false)
     }
@@ -80,16 +129,28 @@ class UnitConverterViewModel @Inject constructor(
     fun onUnitAChanged(unit: UnitItem) {
         _uiState.update { it.copy(sideA = it.sideA.copy(unit = unit)) }
         performConversion(fromA = true)
+
+        viewModelScope.launch {
+            unitConverterRepo.saveConverterPreferences(unitA = unit.symbol)
+        }
     }
 
     fun onUnitBChanged(unit: UnitItem) {
         _uiState.update { it.copy(sideB = it.sideB.copy(unit = unit)) }
         performConversion(fromA = true)
+
+        viewModelScope.launch {
+            unitConverterRepo.saveConverterPreferences(unitB = unit.symbol)
+        }
     }
 
     fun onPrefixAChanged(prefix: SIPrefix) {
         _uiState.update { it.copy(sideA = it.sideA.copy(prefix = prefix)) }
         performConversion(fromA = true)
+
+        viewModelScope.launch {
+            unitConverterRepo.saveConverterPreferences(prefixA = prefix.symbol)
+        }
     }
 
     fun onPrefixBChanged(prefix: SIPrefix) {
@@ -99,6 +160,9 @@ class UnitConverterViewModel @Inject constructor(
             performConversion(fromA = true)
         }else {
             performConversion(fromA = false)
+        }
+        viewModelScope.launch {
+            unitConverterRepo.saveConverterPreferences(prefixB = prefix.symbol)
         }
     }
 
