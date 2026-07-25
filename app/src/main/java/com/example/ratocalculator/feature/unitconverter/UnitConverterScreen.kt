@@ -1,18 +1,25 @@
 package com.example.ratocalculator.feature.unitconverter
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -29,6 +36,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -80,8 +90,8 @@ fun UnitConverterScreen(
                         text = { Text(category.displayName) }
                     )
                 }
-            })
-
+            }
+        )
         Spacer(Modifier.height(12.dp))
 
         // =========================
@@ -130,6 +140,22 @@ fun ConverterRow(
 ) {
     var prefixExpanded by remember { mutableStateOf(false) }
     var unitExpanded by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+
+    val inputValue = side.input.ifBlank { "0" }
+    val prefixSymbol = side.prefix.symbol
+    val prefixName = side.prefix.name
+    val unitSymbol = side.unit.symbol
+    val unitName = side.unit.name
+    val powerText = "10${toSuperscript(side.prefix.power)}"
+
+    val formats = CopyFormats(
+        prefixUnit = "$inputValue $prefixSymbol$unitSymbol".trim(),
+        powerUnit = "$inputValue x $powerText $unitSymbol",
+        fullNameUnit = "$inputValue $prefixName $unitName".trim()
+    )
 
     Column {
         Row(
@@ -209,20 +235,71 @@ fun ConverterRow(
 
         Spacer(Modifier.height(4.dp))
 
-        // 🔹 Text Show Result
-        Text(
-            text = buildString {
-                append(side.input.ifBlank { "0" })
-                append(" ")
-                append(side.prefix.name)
-                append(" ")
-                append(side.unit.name)
-            },
-            style = MaterialTheme.typography.bodyMedium
-        )
+        // Text Show Result + Copy Menu
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = formats.fullNameUnit,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f)
+            )
+            CopyUnitMenu(
+                formats = formats,
+                onCopy = { textToCopy ->
+                    clipboardManager.setText(AnnotatedString(textToCopy))
+                    Toast.makeText(context, "Copied: $textToCopy", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
     }
 }
 
+
+@Composable
+fun CopyUnitMenu(
+    formats: CopyFormats,
+    onCopy: (String) -> Unit
+){
+    var expanded by remember { mutableStateOf(false) }
+
+    Box{
+        IconButton(onClick = {expanded = true}) {
+            Icon(Icons.Default.ContentCopy, contentDescription = "Copy Options")
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            //Prefix Unit
+            DropdownMenuItem(
+                text = { Text("(${formats.prefixUnit})") },
+                onClick = {
+                    onCopy(formats.prefixUnit)
+                    expanded = false
+                }
+            )
+            //Power Unit
+            DropdownMenuItem(
+                text = { Text("(${formats.powerUnit})") },
+                onClick = {
+                    onCopy(formats.powerUnit)
+                    expanded = false
+                }
+            )
+            //Full Name Unit
+            DropdownMenuItem(
+                text = { Text("(${formats.fullNameUnit})") },
+                onClick = {
+                    onCopy(formats.fullNameUnit)
+                    expanded = false
+                }
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

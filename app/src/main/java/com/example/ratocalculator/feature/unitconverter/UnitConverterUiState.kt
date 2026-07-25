@@ -48,6 +48,19 @@ data class UnitConverterUiState(
     val sideB: SideState = SideState()
 )
 
+data class CopyFormats(
+    val prefixUnit: String = "",
+    val powerUnit: String = "",
+    val fullNameUnit: String =""
+)
+
+data class SideUiSide(
+    val value: String = "",
+    val unitSymbol: String = "",
+    val unitFullName: String = "",
+    val copyFormats: CopyFormats = CopyFormats()
+)
+
 val allSIPrefixes = listOf(
     SIPrefix("yotta", "Y", 24),
     SIPrefix("zetta", "Z", 21),

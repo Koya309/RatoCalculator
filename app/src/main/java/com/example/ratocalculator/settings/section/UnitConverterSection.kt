@@ -63,7 +63,7 @@ fun UnitConverterSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$sideBlock",
+                        text = if (sideBlock) "no" else "off",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -86,7 +86,7 @@ fun UnitConverterSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$AdvancedPrefix",
+                        text = if (AdvancedPrefix) "on" else "off",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

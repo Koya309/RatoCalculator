@@ -233,4 +233,19 @@ class UnitConverterViewModel @Inject constructor(
         return "$mantissa × 10$superExponent"
     }
 
+    private fun generateCopyFormats(
+        value: String,
+        symbol: String,
+        fullName: String,
+        powerText: String
+    ): CopyFormats{
+        if (value.isBlank()) return CopyFormats()
+
+        return CopyFormats(
+            prefixUnit = "$value $symbol",
+            powerUnit = "$value $powerText",
+            fullNameUnit = "$value $fullName"
+        )
+    }
+
 }
