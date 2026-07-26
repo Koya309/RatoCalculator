@@ -8,10 +8,13 @@ enum class UnitCategory(val displayName: String) {
     Area("Area")
 }
 
-enum class UnitDisplayMode(val displayName: String){
-    PREFIX("Prefix Unit"),
-    POWER("Power Unit"),
-    FULL_NAME("Full Name Unit")
+enum class UnitDisplayMode(
+    val displayName: String,
+    val description: String
+){
+    PREFIX("Prefix Unit", "แสดงหน่วยแบบคำนำหน้า เช่น 250 kg"),
+    POWER("Power Unit", "แสดงหน่วยแบบสัญลักษณ์สิบยกกำลัง เช่น 250 × 10³ g"),
+    FULL_NAME("Full Name Unit", "แสดงชื่อหน่วยเต็ม เช่น 250 kilo gram")
 }
 
 data class SIPrefix(

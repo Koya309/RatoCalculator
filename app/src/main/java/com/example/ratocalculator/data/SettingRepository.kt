@@ -81,7 +81,7 @@ class SettingRepository @Inject constructor(
             // to String ->  Enum Object (Protect App Crash If conversion is not possible.)
             try {
                 UnitDisplayMode.valueOf(savedName)
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 UnitDisplayMode.FULL_NAME
             }
         }

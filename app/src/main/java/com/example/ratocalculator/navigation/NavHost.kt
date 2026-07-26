@@ -12,6 +12,7 @@ import com.example.ratocalculator.feature.basic.CalculatorScreen
 import com.example.ratocalculator.feature.physics.PhysicsScreen
 import com.example.ratocalculator.feature.scientific.ScientificCalculatorScreen
 import com.example.ratocalculator.feature.unitconverter.UnitConverterScreen
+import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import com.example.ratocalculator.settings.section.AboutDetailScreen
 import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
@@ -19,6 +20,7 @@ import com.example.ratocalculator.settings.SettingsScreen
 import com.example.ratocalculator.settings.SettingsViewModel
 import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
 import com.example.ratocalculator.settings.section.SideBlockScreen
+import com.example.ratocalculator.settings.section.UnitDisplayModeScreen
 
 @Composable
 fun CalculatorNavHost(
@@ -40,11 +42,12 @@ fun CalculatorNavHost(
         // 2. Main Screen Settings
         composable("settings") {
             SettingsScreen(
+                onNavigateToAbout = { navController.navigate("about") },
                 onNavigateToTrailing = { navController.navigate("trailing") },
                 onNavigateToDecimal = { navController.navigate("decimal") },
-                onNavigateToAbout = { navController.navigate("about") },
                 onNavigateToSideBlock = {navController.navigate("sideblock")},
-                onNavigateToAdvancedPrefix = {navController.navigate("advancedprefix")}
+                onNavigateToAdvancedPrefix = {navController.navigate("advancedprefix")},
+                onNavigateToUnitDisplayMode = {navController.navigate("unitdisplaymode")}
             )
         }
 
@@ -88,6 +91,16 @@ fun CalculatorNavHost(
                 AdvancedPrefix = AdvancedPrefix,
                 onAdvancedPrefix = { viewModel.updateAdvancedPrefix(it) }
 
+            )
+        }
+
+        composable("unitdisplaymode") {
+            val viewModel: SettingsViewModel = hiltViewModel()
+            val displayMode by viewModel.unitDisplayMode.collectAsState(initial = UnitDisplayMode.FULL_NAME)
+
+            UnitDisplayModeScreen(
+                currentMode = displayMode,
+                onUnitDisplayMode = { viewModel.updateUnitDisplayMode(it) }
             )
         }
 

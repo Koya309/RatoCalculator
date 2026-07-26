@@ -41,7 +41,14 @@ fun RatoCalculator() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val subScreens = listOf("trailing", "decimal", "about", "sideblock", "advancedprefix")
+    val subScreens = listOf(
+        "trailing",
+        "decimal",
+        "about",
+        "sideblock",
+        "advancedprefix",
+        "unitdisplaymode"
+    )
     val isSubScreen = currentRoute in subScreens
 
     ModalNavigationDrawer(

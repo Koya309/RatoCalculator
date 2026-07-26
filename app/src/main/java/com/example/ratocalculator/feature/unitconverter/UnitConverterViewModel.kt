@@ -34,7 +34,7 @@ class UnitConverterViewModel @Inject constructor(
             unitConverterRepo.savedConverterState.collect { saved ->
                 val currentCategory = try {
                     UnitCategory.valueOf(saved.category)
-                } catch (e: Exception){
+                } catch (_: Exception){
                     UnitCategory.Mass
                 }
                 val units = when (currentCategory){
@@ -267,21 +267,6 @@ class UnitConverterViewModel @Inject constructor(
 
         val superExponent = toSuperscript(exponent)
         return "$mantissa × 10$superExponent"
-    }
-
-    private fun generateCopyFormats(
-        value: String,
-        symbol: String,
-        fullName: String,
-        powerText: String
-    ): CopyFormats{
-        if (value.isBlank()) return CopyFormats()
-
-        return CopyFormats(
-            prefixUnit = "$value $symbol",
-            powerUnit = "$value $powerText",
-            fullNameUnit = "$value $fullName"
-        )
     }
 
 }

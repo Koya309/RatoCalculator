@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import com.example.ratocalculator.settings.section.AboutSection
 import com.example.ratocalculator.settings.section.BasicCalculatorSection
 import com.example.ratocalculator.settings.section.ResetSettingSection
@@ -27,13 +28,15 @@ fun SettingsScreen(
     onNavigateToDecimal: () -> Unit,
     onNavigateToAbout: () -> Unit,
     onNavigateToSideBlock: () -> Unit,
-    onNavigateToAdvancedPrefix: () -> Unit
+    onNavigateToAdvancedPrefix: () -> Unit,
+    onNavigateToUnitDisplayMode: () -> Unit
 
 ) {
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
     val removeTrailingZero by viewModel.removeTrailingZero.collectAsState(initial = true)
     val sideBlock by viewModel.sideBlock.collectAsState(initial = true)
     val AdvancedPrefix by viewModel.AdvancedPrefix.collectAsState(initial = true)
+    val unitDisplayMode by viewModel.unitDisplayMode.collectAsState(initial = UnitDisplayMode.FULL_NAME)
 
     // var currentSubScreen by remember { mutableStateOf<String?>(null) }
 
@@ -68,8 +71,10 @@ fun SettingsScreen(
                     UnitConverterSection(
                         sideBlock = sideBlock,
                         AdvancedPrefix = AdvancedPrefix,
+                        unitDisplayMode = unitDisplayMode,
                         onNavigateToSideBlock = onNavigateToSideBlock,
-                        onNavigateToAdvancedPrefix = onNavigateToAdvancedPrefix
+                        onNavigateToAdvancedPrefix = onNavigateToAdvancedPrefix,
+                        onNavigateToUnitDisplayMode = onNavigateToUnitDisplayMode
                     )
                 }
 

@@ -84,7 +84,6 @@ fun BasicCalculatorSection(
         }
     }
 }
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrailingZeroDetailScreen(
     removeTrailingZero: Boolean,
@@ -135,7 +134,6 @@ fun TrailingZeroDetailScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DecimalPlacesScreen(
     decimalPlaces: Int,

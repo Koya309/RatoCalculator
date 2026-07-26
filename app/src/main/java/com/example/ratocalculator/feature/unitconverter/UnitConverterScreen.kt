@@ -1,5 +1,6 @@
 package com.example.ratocalculator.feature.unitconverter
 
+import android.content.ClipData
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,22 +31,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.ratocalculator.core.toSuperscript
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
+import com.example.ratocalculator.core.toSuperscript
+import kotlinx.coroutines.launch
 
 @Composable
 fun UnitConverterScreen(
@@ -57,7 +59,7 @@ fun UnitConverterScreen(
     val tabs = UnitCategory.entries
     val maxHeight = 40.dp * 5
 
-    var selectedTab by remember { mutableIntStateOf(state.category.ordinal) }
+    val displayMode by viewModel.unitDisplayMode.collectAsState()
 
     Column(
         modifier = Modifier
@@ -69,22 +71,21 @@ fun UnitConverterScreen(
         // 🔹 TAB BAR
         // =========================
         SecondaryTabRow(
-            selectedTabIndex = selectedTab,
+            selectedTabIndex = state.category.ordinal,
             modifier = Modifier,
             containerColor = TabRowDefaults.primaryContainerColor,
             contentColor = TabRowDefaults.primaryContentColor,
             indicator = {
                 TabRowDefaults.SecondaryIndicator(
-                    Modifier.tabIndicatorOffset(selectedTab)
+                    Modifier.tabIndicatorOffset(state.category.ordinal)
                 )
             },
             @Composable { HorizontalDivider() },
             {
-                tabs.forEachIndexed { index, category ->
+                tabs.forEachIndexed { _, category ->
                     Tab(
-                        selected = selectedTab == index,
+                        selected = state.category == category,
                         onClick = {
-                            selectedTab = index
                             viewModel.onCategoryChanged(category)
                         },
                         text = { Text(category.displayName) }
@@ -102,6 +103,8 @@ fun UnitConverterScreen(
             prefixes = visiblePrefixes,
             units = state.availableUnits,
             maxHeight = maxHeight,
+            displayMode = displayMode,
+            formatDisplayUnit = viewModel::formatDisplayUnit,
             onValueChange = {viewModel.onInputAChanged(it)},
             onPrefixSelected = viewModel::onPrefixAChanged,
             onUnitSelected = viewModel::onUnitAChanged
@@ -120,6 +123,8 @@ fun UnitConverterScreen(
             units = state.availableUnits,
             maxHeight = maxHeight,
             readOnly = isSideBLocked,
+            displayMode = displayMode,
+            formatDisplayUnit = viewModel::formatDisplayUnit,
             onValueChange = { viewModel.onInputBChanged(it) },
             onPrefixSelected = viewModel::onPrefixBChanged,
             onUnitSelected = viewModel::onUnitBChanged
@@ -134,6 +139,8 @@ fun ConverterRow(
     units: List<UnitItem>,
     maxHeight: Dp,
     readOnly: Boolean = false,
+    displayMode: UnitDisplayMode,
+    formatDisplayUnit: (String, SIPrefix, UnitItem, UnitDisplayMode) -> String,
     onValueChange: (String) -> Unit,
     onPrefixSelected: (SIPrefix) -> Unit,
     onUnitSelected: (UnitItem) -> Unit
@@ -142,7 +149,6 @@ fun ConverterRow(
     var unitExpanded by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
 
     val inputValue = side.input.ifBlank { "0" }
     val prefixSymbol = side.prefix.symbol
@@ -154,7 +160,14 @@ fun ConverterRow(
     val formats = CopyFormats(
         prefixUnit = "$inputValue $prefixSymbol$unitSymbol".trim(),
         powerUnit = "$inputValue x $powerText $unitSymbol",
-        fullNameUnit = "$inputValue $prefixName $unitName".trim()
+        fullNameUnit = "$inputValue $prefixName$unitName".trim()
+    )
+
+    val displayText = formatDisplayUnit(
+        side.input,
+        side.prefix,
+        side.unit,
+        displayMode
     )
 
     Column {
@@ -242,14 +255,13 @@ fun ConverterRow(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = formats.fullNameUnit,
+                text = displayText,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f)
             )
             CopyUnitMenu(
                 formats = formats,
                 onCopy = { textToCopy ->
-                    clipboardManager.setText(AnnotatedString(textToCopy))
                     Toast.makeText(context, "Copied: $textToCopy", Toast.LENGTH_SHORT).show()
                 }
             )
@@ -265,34 +277,49 @@ fun CopyUnitMenu(
 ){
     var expanded by remember { mutableStateOf(false) }
 
-    Box{
-        IconButton(onClick = {expanded = true}) {
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
             Icon(Icons.Default.ContentCopy, contentDescription = "Copy Options")
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            //Prefix Unit
+            // 1. Prefix Unit
             DropdownMenuItem(
-                text = { Text("(${formats.prefixUnit})") },
+                text = { Text(formats.prefixUnit) },
                 onClick = {
+                    scope.launch {
+                        val clipData = ClipData.newPlainText("prefix_unit", formats.prefixUnit)
+                        clipboard.setClipEntry(ClipEntry(clipData))
+                    }
                     onCopy(formats.prefixUnit)
                     expanded = false
                 }
             )
-            //Power Unit
+            // 2. Power Unit
             DropdownMenuItem(
-                text = { Text("(${formats.powerUnit})") },
+                text = { Text(formats.powerUnit) },
                 onClick = {
+                    scope.launch {
+                        val clipData = ClipData.newPlainText("power_unit", formats.powerUnit)
+                        clipboard.setClipEntry(ClipEntry(clipData))
+                    }
                     onCopy(formats.powerUnit)
                     expanded = false
                 }
             )
-            //Full Name Unit
+            // 3. Full Name Unit
             DropdownMenuItem(
-                text = { Text("(${formats.fullNameUnit})") },
+                text = { Text(formats.fullNameUnit) },
                 onClick = {
+                    scope.launch {
+                        val clipData = ClipData.newPlainText("fullname_unit", formats.fullNameUnit)
+                        clipboard.setClipEntry(ClipEntry(clipData))
+                    }
                     onCopy(formats.fullNameUnit)
                     expanded = false
                 }
