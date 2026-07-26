@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,6 +25,7 @@ class SettingRepository @Inject constructor(
     // ─── 2.Unit Converter ───
     private val SIDE_BLOCK_KEY = booleanPreferencesKey(name = "side_block")
     private val ADVANCED_PREFIX_KEY = booleanPreferencesKey(name = "advanced_prefix")
+    private val UNIT_DISPLAY_MODE = stringPreferencesKey(name = "unit_display_mode")
 
     // ─── 2-1. Save Unit Converter
     private val LAST_CATEGORY_KEY = stringPreferencesKey(name = "last_category")
@@ -71,6 +73,19 @@ class SettingRepository @Inject constructor(
             preferences[ADVANCED_PREFIX_KEY] ?: false
     }
 
+    val unitDisplayMode: Flow<UnitDisplayMode> = context.dataStore.data
+        .map { preferences ->
+            val savedName = preferences[UNIT_DISPLAY_MODE]
+                ?: UnitDisplayMode.FULL_NAME.name
+
+            // to String ->  Enum Object (Protect App Crash If conversion is not possible.)
+            try {
+                UnitDisplayMode.valueOf(savedName)
+            } catch (e: IllegalArgumentException) {
+                UnitDisplayMode.FULL_NAME
+            }
+        }
+
     suspend fun saveSideBlock(value: Boolean){
         context.dataStore.edit { preferences ->
             preferences[SIDE_BLOCK_KEY] = value
@@ -80,6 +95,13 @@ class SettingRepository @Inject constructor(
     suspend fun saveAdvancedPrefix(value: Boolean){
         context.dataStore.edit { preferences ->
             preferences[ADVANCED_PREFIX_KEY] = value
+        }
+    }
+
+    suspend fun saveUnitDisplayMode(mode: UnitDisplayMode) {
+        context.dataStore.edit { preferences ->
+            // save Enum (.name) in DataStore such PREFIX, POWER, FULL_NAME
+            preferences[UNIT_DISPLAY_MODE] = mode.name
         }
     }
 

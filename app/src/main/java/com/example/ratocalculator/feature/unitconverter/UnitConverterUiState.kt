@@ -8,6 +8,12 @@ enum class UnitCategory(val displayName: String) {
     Area("Area")
 }
 
+enum class UnitDisplayMode(val displayName: String){
+    PREFIX("Prefix Unit"),
+    POWER("Power Unit"),
+    FULL_NAME("Full Name Unit")
+}
+
 data class SIPrefix(
     val name: String,
     val symbol: String,

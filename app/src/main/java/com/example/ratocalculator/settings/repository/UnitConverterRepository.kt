@@ -2,6 +2,7 @@ package com.example.ratocalculator.settings.repository
 
 import com.example.ratocalculator.data.SettingRepository
 import com.example.ratocalculator.data.SettingRepository.SavedConverterState
+import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -14,12 +15,18 @@ class UnitConverterRepository @Inject constructor(
 
     val savedConverterState: Flow<SavedConverterState> = repository.savedConverterState
 
+    val unitDisplayMode : Flow<UnitDisplayMode> = repository.unitDisplayMode
+
     suspend fun saveSideBlock(value: Boolean){
         repository.saveSideBlock(value)
     }
 
     suspend fun saveAdvancedPrefix(value: Boolean){
         repository.saveAdvancedPrefix(value)
+    }
+
+    suspend fun saveUnitDisplayMode(mode: UnitDisplayMode){
+        repository.saveUnitDisplayMode(mode)
     }
 
     suspend fun saveConverterPreferences(

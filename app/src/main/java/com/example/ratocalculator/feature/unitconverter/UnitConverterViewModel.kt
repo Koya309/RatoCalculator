@@ -113,6 +113,13 @@ class UnitConverterViewModel @Inject constructor(
         }
     }
 
+    val unitDisplayMode: StateFlow<UnitDisplayMode> = unitConverterRepo.unitDisplayMode
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = UnitDisplayMode.FULL_NAME
+        )
+
     fun onInputAChanged(value: String) {
         if (isUpdating) return
         _uiState.update { it.copy(sideA = it.sideA.copy(input = value)) }
@@ -163,6 +170,35 @@ class UnitConverterViewModel @Inject constructor(
         }
         viewModelScope.launch {
             unitConverterRepo.saveConverterPreferences(prefixB = prefix.symbol)
+        }
+    }
+
+    fun formatDisplayUnit(
+        input: String,
+        prefix: SIPrefix,
+        unit: UnitItem,
+        displayMode: UnitDisplayMode
+    ): String {
+        val displayValue = input.ifBlank { "0" }
+        return when (displayMode) {
+            UnitDisplayMode.PREFIX -> {
+                // 250kg
+                "$displayValue ${prefix.symbol}${unit.symbol}".trim()
+            }
+
+            UnitDisplayMode.POWER -> {
+                // "250 × 10³ g"
+                if (prefix.power != 0){
+                    "$displayValue x 10${toSuperscript(prefix.power)} ${unit.symbol}"
+                } else {
+                    "$displayValue ${unit.symbol}"
+                }
+            }
+
+            UnitDisplayMode.FULL_NAME -> {
+                // "250 kilo gram"
+                "$displayValue ${prefix.name} ${unit.name}".trim()
+            }
         }
     }
 

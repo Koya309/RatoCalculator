@@ -2,6 +2,7 @@ package com.example.ratocalculator.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import com.example.ratocalculator.settings.repository.CalculatorRepository
 import com.example.ratocalculator.settings.repository.UnitConverterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,6 +53,9 @@ class SettingsViewModel @Inject constructor(
     val AdvancedPrefix = unitConverterRepo.AdvancedPrefix
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true )
 
+    val unitDisplayMode = unitConverterRepo.unitDisplayMode
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UnitDisplayMode.FULL_NAME)
+
     fun updateSideBlock(value: Boolean) {
         viewModelScope.launch {
             unitConverterRepo.saveSideBlock(value)
@@ -61,6 +65,12 @@ class SettingsViewModel @Inject constructor(
     fun updateAdvancedPrefix(value: Boolean) {
         viewModelScope.launch {
             unitConverterRepo.saveAdvancedPrefix(value)
+        }
+    }
+
+    fun updateUnitDisplayMode(mode: UnitDisplayMode){
+        viewModelScope.launch {
+            unitConverterRepo.saveUnitDisplayMode(mode)
         }
     }
 
