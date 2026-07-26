@@ -63,13 +63,6 @@ data class CopyFormats(
     val fullNameUnit: String =""
 )
 
-data class SideUiSide(
-    val value: String = "",
-    val unitSymbol: String = "",
-    val unitFullName: String = "",
-    val copyFormats: CopyFormats = CopyFormats()
-)
-
 val allSIPrefixes = listOf(
     SIPrefix("yotta", "Y", 24),
     SIPrefix("zetta", "Z", 21),

@@ -83,7 +83,7 @@ fun SettingsScreen(
                     ResetSettingSection(
                         // Change from viewModel.resetToDefault() or resetCalculatorToDefault
                         // Call the intermediate function we created in ViewModel
-                        onResetClick = { viewModel.resetAllToDefault() }
+                        onResetClick = { viewModel.resetCalculatorToDefault() }
                     )
                 }
 

@@ -7,15 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.ratocalculator.core.database.HistoryDao
 import com.example.ratocalculator.core.database.HistoryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.objecthunter.exp4j.ExpressionBuilder
+import javax.inject.Inject
 
 @HiltViewModel
 class CalculatorViewModel @Inject constructor(
