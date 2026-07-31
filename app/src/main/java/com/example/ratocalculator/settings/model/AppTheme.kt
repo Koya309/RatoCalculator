@@ -1,7 +1,7 @@
 package com.example.ratocalculator.settings.model
 
 enum class AppTheme(
-    val displayName: String
+    val displayThemeName: String
 ){
     SYSTEM("System Default"),
     LIGHT("Light Mode"),

@@ -4,8 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,12 +34,15 @@ fun BasicCalculatorSection(
 ){
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5f))
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ){
         // Column
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(16.dp)
         ){
             // Main headline
             Text(
@@ -47,6 +52,7 @@ fun BasicCalculatorSection(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -55,14 +61,16 @@ fun BasicCalculatorSection(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Column{
-                    Text(
-                        text = "Remove trailing zero",
-                        style = MaterialTheme.typography.bodyLarge
+            Column{
+                Text(
+                    text = "Remove trailing zero",
+                    style = MaterialTheme.typography.bodyLarge
                     )
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = if (removeTrailingZero) "no" else "off", color = MaterialTheme.colorScheme.primary)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = if (removeTrailingZero) "no" else "off",
+                    color = MaterialTheme.colorScheme.primary)
                 }
             }
             Row(

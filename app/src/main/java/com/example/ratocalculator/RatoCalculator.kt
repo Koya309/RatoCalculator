@@ -47,7 +47,8 @@ fun RatoCalculator() {
         "about",
         "sideblock",
         "advancedprefix",
-        "unitdisplaymode"
+        "unitdisplaymode",
+        "theme"
     )
     val isSubScreen = currentRoute in subScreens
 

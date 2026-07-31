@@ -18,8 +18,11 @@ import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
 import com.example.ratocalculator.settings.SettingsScreen
 import com.example.ratocalculator.settings.SettingsViewModel
+import com.example.ratocalculator.settings.model.AppTheme
 import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
 import com.example.ratocalculator.settings.section.SideBlockScreen
+import com.example.ratocalculator.settings.section.SystemSection
+import com.example.ratocalculator.settings.section.ThemeScreen
 import com.example.ratocalculator.settings.section.UnitDisplayModeScreen
 
 @Composable
@@ -47,7 +50,8 @@ fun CalculatorNavHost(
                 onNavigateToDecimal = { navController.navigate("decimal") },
                 onNavigateToSideBlock = {navController.navigate("sideblock")},
                 onNavigateToAdvancedPrefix = {navController.navigate("advancedprefix")},
-                onNavigateToUnitDisplayMode = {navController.navigate("unitdisplaymode")}
+                onNavigateToUnitDisplayMode = {navController.navigate("unitdisplaymode")},
+                onNavigateToTheme = {navController.navigate("theme")}
             )
         }
 
@@ -104,10 +108,19 @@ fun CalculatorNavHost(
             )
         }
 
+        composable("theme") {
+            val viewModel: SettingsViewModel = hiltViewModel()
+            val currentTheme by viewModel.appTheme.collectAsState(initial = AppTheme.SYSTEM)
+
+            ThemeScreen(
+                currentTheme = currentTheme,
+                onThemeSelected = { viewModel.updateAppTheme(it)}
+            )
+        }
+
         // About screen
         composable("about") {
             AboutDetailScreen(
-                onBack = { navController.popBackStack() }
             )
         }
     }

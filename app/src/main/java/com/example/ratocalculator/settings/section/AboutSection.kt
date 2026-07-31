@@ -43,19 +43,10 @@ fun AboutSection(onNavigateToAbout: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutDetailScreen(onBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("About") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } }
-            )
-        }
-    ) { innerPadding ->
+fun AboutDetailScreen() {
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(32.dp),
+            modifier = Modifier.fillMaxSize().padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -68,5 +59,5 @@ fun AboutDetailScreen(onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(32.dp))
             Button(onClick = {}) { Text("GitHub -> Koya 309") }
         }
-    }
+
 }

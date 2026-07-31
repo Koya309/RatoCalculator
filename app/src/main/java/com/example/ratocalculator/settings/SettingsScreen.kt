@@ -15,12 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
+import com.example.ratocalculator.settings.model.AppTheme
 import com.example.ratocalculator.settings.section.AboutSection
 import com.example.ratocalculator.settings.section.BasicCalculatorSection
 import com.example.ratocalculator.settings.section.ResetSettingSection
+import com.example.ratocalculator.settings.section.SystemSection
 import com.example.ratocalculator.settings.section.UnitConverterSection
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
@@ -29,7 +30,8 @@ fun SettingsScreen(
     onNavigateToAbout: () -> Unit,
     onNavigateToSideBlock: () -> Unit,
     onNavigateToAdvancedPrefix: () -> Unit,
-    onNavigateToUnitDisplayMode: () -> Unit
+    onNavigateToUnitDisplayMode: () -> Unit,
+    onNavigateToTheme:() -> Unit
 
 ) {
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
@@ -37,62 +39,71 @@ fun SettingsScreen(
     val sideBlock by viewModel.sideBlock.collectAsState(initial = true)
     val AdvancedPrefix by viewModel.AdvancedPrefix.collectAsState(initial = true)
     val unitDisplayMode by viewModel.unitDisplayMode.collectAsState(initial = UnitDisplayMode.FULL_NAME)
+    val currentTheme by viewModel.appTheme.collectAsState(initial = AppTheme.SYSTEM)
 
     // var currentSubScreen by remember { mutableStateOf<String?>(null) }
 
-            // If no sub-menu is selected, the main screen will display all sections according to the paper structure.
-            //    if (currentSubScreen == null) {
+    // If no sub-menu is selected, the main screen will display all sections according to the paper structure.
+    // if (currentSubScreen == null) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(all = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-                item {
-                    Text(
-                        text = "Settings",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
+            item {
+                Text(
+                    text = "Settings",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
                     )
                 }
 
-                // 1: Calculator Section
-                item {
-                    BasicCalculatorSection(
-                        removeTrailingZero = removeTrailingZero,
-                        decimalPlaces = decimalPlaces,
-                        onNavigateToTrailing = onNavigateToTrailing,
-                        onNavigateToDecimal = onNavigateToDecimal,
-                    )
-                }
+            // 1: Calculator Section
+            item {
+                BasicCalculatorSection(
+                    removeTrailingZero = removeTrailingZero,
+                    decimalPlaces = decimalPlaces,
+                    onNavigateToTrailing = onNavigateToTrailing,
+                    onNavigateToDecimal = onNavigateToDecimal,
+                )
+            }
 
-                //2: Unit Converter
-                item {
-                    UnitConverterSection(
-                        sideBlock = sideBlock,
-                        AdvancedPrefix = AdvancedPrefix,
-                        unitDisplayMode = unitDisplayMode,
-                        onNavigateToSideBlock = onNavigateToSideBlock,
-                        onNavigateToAdvancedPrefix = onNavigateToAdvancedPrefix,
-                        onNavigateToUnitDisplayMode = onNavigateToUnitDisplayMode
-                    )
-                }
+            //2: Unit Converter
+            item {
+                UnitConverterSection(
+                    sideBlock = sideBlock,
+                    AdvancedPrefix = AdvancedPrefix,
+                    unitDisplayMode = unitDisplayMode,
+                    onNavigateToSideBlock = onNavigateToSideBlock,
+                    onNavigateToAdvancedPrefix = onNavigateToAdvancedPrefix,
+                    onNavigateToUnitDisplayMode = onNavigateToUnitDisplayMode
+                )
+            }
 
-                // Reset: Reset Section
-                item {
-                    ResetSettingSection(
-                        // Change from viewModel.resetToDefault() or resetCalculatorToDefault
-                        // Call the intermediate function we created in ViewModel
-                        onResetClick = { viewModel.resetCalculatorToDefault() }
-                    )
-                }
+            // System
+            item {
+                SystemSection(
+                    currentTheme = currentTheme,
+                    onNavigateToTheme = onNavigateToTheme
+                )
+            }
 
-                // About Section
-                item {
-                    AboutSection(
-                        onNavigateToAbout = onNavigateToAbout
-                    )
-                }
+            // Reset: Reset Section
+            item {
+                ResetSettingSection(
+                    // Change from viewModel.resetToDefault() or resetCalculatorToDefault
+                    // Call the intermediate function we created in ViewModel
+                    onResetClick = { viewModel.resetCalculatorToDefault() }
+                )
+            }
+
+            // About Section
+            item {
+                AboutSection(
+                    onNavigateToAbout = onNavigateToAbout
+                )
             }
     }
+}
 
