@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
+import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
 import com.example.ratocalculator.settings.section.AboutSection
 import com.example.ratocalculator.settings.section.BasicCalculatorSection
@@ -31,7 +32,8 @@ fun SettingsScreen(
     onNavigateToSideBlock: () -> Unit,
     onNavigateToAdvancedPrefix: () -> Unit,
     onNavigateToUnitDisplayMode: () -> Unit,
-    onNavigateToTheme:() -> Unit
+    onNavigateToTheme:() -> Unit,
+    onNavigateToLanguage:() -> Unit
 
 ) {
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
@@ -40,6 +42,7 @@ fun SettingsScreen(
     val AdvancedPrefix by viewModel.AdvancedPrefix.collectAsState(initial = true)
     val unitDisplayMode by viewModel.unitDisplayMode.collectAsState(initial = UnitDisplayMode.FULL_NAME)
     val currentTheme by viewModel.appTheme.collectAsState(initial = AppTheme.SYSTEM)
+    val currentLanguage by viewModel.appLanguage.collectAsState(initial = AppLanguage.SYSTEM)
 
     // var currentSubScreen by remember { mutableStateOf<String?>(null) }
 
@@ -83,9 +86,11 @@ fun SettingsScreen(
 
             // System
             item {
-                SystemSection(
+                SystemSection( //Theme+Language
                     currentTheme = currentTheme,
-                    onNavigateToTheme = onNavigateToTheme
+                    currentLanguage = currentLanguage,
+                    onNavigateToTheme = onNavigateToTheme,
+                    onNavigateToLanguage = onNavigateToLanguage
                 )
             }
 

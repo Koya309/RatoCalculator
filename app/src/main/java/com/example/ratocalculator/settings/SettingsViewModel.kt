@@ -6,6 +6,7 @@ import com.example.ratocalculator.data.repository.CalculatorRepository
 import com.example.ratocalculator.data.repository.SystemRepository
 import com.example.ratocalculator.data.repository.UnitConverterRepository
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
+import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,19 @@ class SettingsViewModel @Inject constructor(
     fun updateAppTheme(theme: AppTheme) {
         viewModelScope.launch {
             systemRepo.saveAppTheme(theme)
+        }
+    }
+
+    val appLanguage: StateFlow<AppLanguage> = systemRepo.appLanguage
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = AppLanguage.SYSTEM
+        )
+
+    fun updateAppLanguage(language: AppLanguage){
+        viewModelScope.launch {
+            systemRepo.saveAppLanguage(language)
         }
     }
 

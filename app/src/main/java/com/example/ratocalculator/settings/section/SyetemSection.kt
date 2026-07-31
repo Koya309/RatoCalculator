@@ -20,12 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
 
 @Composable
 fun SystemSection(
     currentTheme: AppTheme,
+    currentLanguage: AppLanguage,
     onNavigateToTheme: () -> Unit,
+    onNavigateToLanguage: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -58,6 +61,25 @@ fun SystemSection(
                 )
                 Text(
                     text = currentTheme.displayThemeName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToLanguage() }
+                    .padding(horizontal = 25.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Language",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = currentLanguage.displayLanguageName,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -98,6 +120,46 @@ fun ThemeScreen(
                         AppTheme.SYSTEM -> "System Default"
                         AppTheme.LIGHT -> "Light Theme"
                         AppTheme.DARK -> "Dark Theme"
+                    },
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LanguageScreen(
+    currentLanguage: AppLanguage,
+    onLanguageSelected: (AppLanguage) -> Unit
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ){
+        AppLanguage.entries.forEach { language ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .selectable(
+                        selected = (language == currentLanguage),
+                        onClick = { onLanguageSelected(language) }
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (language == currentLanguage),
+                    onClick = { onLanguageSelected(language) }
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = when (language){
+                        AppLanguage.SYSTEM -> "System Default"
+                        AppLanguage.ENGLISH -> "English"
+                        AppLanguage.THAI -> "Thai"
                     },
                     style = MaterialTheme.typography.bodyLarge
                 )

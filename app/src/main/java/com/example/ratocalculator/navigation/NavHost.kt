@@ -18,8 +18,10 @@ import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
 import com.example.ratocalculator.settings.SettingsScreen
 import com.example.ratocalculator.settings.SettingsViewModel
+import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
 import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
+import com.example.ratocalculator.settings.section.LanguageScreen
 import com.example.ratocalculator.settings.section.SideBlockScreen
 import com.example.ratocalculator.settings.section.SystemSection
 import com.example.ratocalculator.settings.section.ThemeScreen
@@ -51,7 +53,8 @@ fun CalculatorNavHost(
                 onNavigateToSideBlock = {navController.navigate("sideblock")},
                 onNavigateToAdvancedPrefix = {navController.navigate("advancedprefix")},
                 onNavigateToUnitDisplayMode = {navController.navigate("unitdisplaymode")},
-                onNavigateToTheme = {navController.navigate("theme")}
+                onNavigateToTheme = {navController.navigate("theme")},
+                onNavigateToLanguage = {navController.navigate("language")}
             )
         }
 
@@ -115,6 +118,15 @@ fun CalculatorNavHost(
             ThemeScreen(
                 currentTheme = currentTheme,
                 onThemeSelected = { viewModel.updateAppTheme(it)}
+            )
+        }
+        composable("language") {
+            val viewModel: SettingsViewModel = hiltViewModel()
+            val currentLanguage by viewModel.appLanguage.collectAsState(initial = AppLanguage.SYSTEM)
+
+            LanguageScreen(
+                currentLanguage = currentLanguage,
+                onLanguageSelected = { viewModel.updateAppLanguage(it)}
             )
         }
 
