@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.ratocalculator.R
 
 @Composable
 fun ResetSettingSection(onResetClick: () -> Unit) {
@@ -37,8 +39,14 @@ fun ResetSettingSection(onResetClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("Reset Setting", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text("Reset Setting", style = MaterialTheme.typography.bodySmall)
+                Text(
+                    stringResource(R.string.reset_setting),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(stringResource(R.string.reset_setting),
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
             Button(
                 onClick = { showDialog = true },
@@ -49,6 +57,7 @@ fun ResetSettingSection(onResetClick: () -> Unit) {
         }
     }
 
+    //I haven't finished it yet. Sorry~
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },

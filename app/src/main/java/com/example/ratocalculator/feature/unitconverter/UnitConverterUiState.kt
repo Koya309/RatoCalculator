@@ -1,42 +1,44 @@
 package com.example.ratocalculator.feature.unitconverter
 
-enum class UnitCategory(val displayName: String) {
-    Mass("Mass"),
-    Length("Length"),
-    Temperature("Temperature"),
-    Volume("Volume"),
-    Area("Area")
+import androidx.annotation.StringRes
+import com.example.ratocalculator.R
+
+enum class UnitCategory(@StringRes val displayNameRes: Int) {
+    Mass(R.string.category_mass),
+    Length(R.string.category_length),
+    Temperature(R.string.category_temperature),
+    Volume(R.string.category_volume),
+    Area(R.string.category_area)
 }
 
 enum class UnitDisplayMode(
-    val displayName: String,
-    val description: String
-){
-    PREFIX("Prefix Unit", "แสดงหน่วยแบบคำนำหน้า เช่น 250 kg"),
-    POWER("Power Unit", "แสดงหน่วยแบบสัญลักษณ์สิบยกกำลัง เช่น 250 × 10³ g"),
-    FULL_NAME("Full Name Unit", "แสดงชื่อหน่วยเต็ม เช่น 250 kilo gram")
+    @StringRes val titleRes: Int,
+    @StringRes val descriptionRes: Int
+) {
+    PREFIX(R.string.display_mode_prefix_title, R.string.display_mode_prefix_desc),
+    POWER(R.string.display_mode_power_title, R.string.display_mode_power_desc),
+    FULL_NAME(R.string.display_mode_fullname_title, R.string.display_mode_fullname_desc)
 }
 
 data class SIPrefix(
-    val name: String,
+    @StringRes val nameRes: Int,
     val symbol: String,
     val power: Int
 ) {
     companion object {
-        val NONE = SIPrefix("", "", 0)
+        val NONE = SIPrefix(R.string.prefix_none, "", 0)
     }
 }
 
 data class UnitItem(
-    val name: String,
+    @StringRes val nameRes: Int,
     val symbol: String,
     val toBase: (Double) -> Double,
     val fromBase: (Double) -> Double
-
-){
-    companion object{
+) {
+    companion object {
         val DEFAULT = UnitItem(
-            name = "Select Unit",
+            nameRes = R.string.unit_select,
             symbol = "",
             toBase = { it },
             fromBase = { it }
@@ -60,140 +62,75 @@ data class UnitConverterUiState(
 data class CopyFormats(
     val prefixUnit: String = "",
     val powerUnit: String = "",
-    val fullNameUnit: String =""
+    val fullNameUnit: String = ""
 )
 
+// ==========================================
+// 🔹 SI Prefixes
+// ==========================================
 val allSIPrefixes = listOf(
-    SIPrefix("yotta", "Y", 24),
-    SIPrefix("zetta", "Z", 21),
-    SIPrefix("exa", "E", 18),
-    SIPrefix("peta", "P", 15),
-    SIPrefix("tera", "T", 12),
-    SIPrefix("giga", "G", 9),
-    SIPrefix("mega", "M", 6),
-    SIPrefix("kilo", "k", 3),
-    SIPrefix("hecto", "h", 2),
-    SIPrefix("deca", "da", 1),
-    SIPrefix(" ", "", 0),
-    SIPrefix("deci", "d", -1),
-    SIPrefix("centi", "c", -2),
-    SIPrefix("milli", "m", -3),
-    SIPrefix("micro", "µ", -6),
-    SIPrefix("nano", "n", -9),
-    SIPrefix("pico", "p", -12),
-    SIPrefix("femto", "f", -15),
-    SIPrefix("atto", "a", -18),
-    SIPrefix("zepto", "z", -21),
-    SIPrefix("yocto", "y", -24)
+    SIPrefix(R.string.prefix_yotta, "Y", 24),
+    SIPrefix(R.string.prefix_zetta, "Z", 21),
+    SIPrefix(R.string.prefix_exa, "E", 18),
+    SIPrefix(R.string.prefix_peta, "P", 15),
+    SIPrefix(R.string.prefix_tera, "T", 12),
+    SIPrefix(R.string.prefix_giga, "G", 9),
+    SIPrefix(R.string.prefix_mega, "M", 6),
+    SIPrefix(R.string.prefix_kilo, "k", 3),
+    SIPrefix(R.string.prefix_hecto, "h", 2),
+    SIPrefix(R.string.prefix_deca, "da", 1),
+    SIPrefix(R.string.prefix_none, "", 0),
+    SIPrefix(R.string.prefix_deci, "d", -1),
+    SIPrefix(R.string.prefix_centi, "c", -2),
+    SIPrefix(R.string.prefix_milli, "m", -3),
+    SIPrefix(R.string.prefix_micro, "µ", -6),
+    SIPrefix(R.string.prefix_nano, "n", -9),
+    SIPrefix(R.string.prefix_pico, "p", -12),
+    SIPrefix(R.string.prefix_femto, "f", -15),
+    SIPrefix(R.string.prefix_atto, "a", -18),
+    SIPrefix(R.string.prefix_zepto, "z", -21),
+    SIPrefix(R.string.prefix_yocto, "y", -24)
 )
 
+// ==========================================
+// 🔹 Unit List Definitions
+// ==========================================
 val massUnits = listOf(
-    UnitItem("gram", "g",
-        { it }, { it }
-    ),
-    UnitItem("pound", "lb",
-        { it * 453.592 }, { it / 453.592 }
-    ),
-    UnitItem("ounce", "oz",
-        { it * 28.3495 }, { it / 28.3495 }
-    ),
-    UnitItem("tonne", "t",
-        { it * 1_000_000 }, { it / 1_000_000 }
-    )
+    UnitItem(R.string.unit_gram, "g", { it }, { it }),
+    UnitItem(R.string.unit_pound, "lb", { it * 453.59237 }, { it / 453.59237 }),
+    UnitItem(R.string.unit_ounce, "oz", { it * 28.349523125 }, { it / 28.349523125 }),
+    UnitItem(R.string.unit_tonne, "t", { it * 1_000_000.0 }, { it / 1_000_000.0 })
 )
 
 val lengthUnits = listOf(
-    UnitItem("meter", "m",
-        toBase = { it },                    // หน่วยฐาน
-        fromBase = { it }
-    ),
-    UnitItem("Inch", "in",
-        toBase = { it * 0.0254 },           // 1 inch = 0.0254 m
-        fromBase = { it / 0.0254 }
-    ),
-    UnitItem("Foot", "ft",
-        toBase = { it * 0.3048 },           // 1 foot = 0.3048 m
-        fromBase = { it / 0.3048 }
-    ),
-    UnitItem("Yard", "yd",
-        toBase = { it * 0.9144 },           // 1 yard = 0.9144 m
-        fromBase = { it / 0.9144 }
-    ),
-    UnitItem("Mile", "mi",
-        toBase = { it * 1609.344 },         // 1 mile = 1609.344 m
-        fromBase = { it / 1609.344 }
-    )
+    UnitItem(R.string.unit_meter, "m", { it }, { it }),
+    UnitItem(R.string.unit_inch, "in", { it * 0.0254 }, { it / 0.0254 }),
+    UnitItem(R.string.unit_foot, "ft", { it * 0.3048 }, { it / 0.3048 }),
+    UnitItem(R.string.unit_yard, "yd", { it * 0.9144 }, { it / 0.9144 }),
+    UnitItem(R.string.unit_mile, "mi", { it * 1609.344 }, { it / 1609.344 })
 )
 
 val volumeUnits = listOf(
-    UnitItem("Liter", "L",
-        toBase = { it },                    // หน่วยฐาน
-        fromBase = { it }
-    ),
-    UnitItem("Cubic Meter", "m³",
-        toBase = { it * 1000.0 },           // 1 m³ = 1000 L
-        fromBase = { it / 1000.0 }
-    ),
-    UnitItem("US Gallon", "gal",
-        toBase = { it * 3.78541 },          // 1 gal ≈ 3.785 L
-        fromBase = { it / 3.78541 }
-    ),
-    UnitItem("US Quart", "qt",
-        toBase = { it * 0.94635 },          // 1 qt ≈ 0.946 L
-        fromBase = { it / 0.94635 }
-    ),
-    UnitItem("US Pint", "pt",
-        toBase = { it * 0.47318 },          // 1 pt ≈ 0.473 L
-        fromBase = { it / 0.47318 }
-    ),
-    UnitItem("US Cup", "c",
-        toBase = { it * 0.23659 },          // 1 cup ≈ 237 mL หรือ 0.236 L
-        fromBase = { it / 0.23659 }
-    ),
-    UnitItem("Fluid Ounce", "fl oz",
-        toBase = { it * 0.02957 },          // 1 fl oz ≈ 29.57 mL
-        fromBase = { it / 0.02957 }
-    )
+    UnitItem(R.string.unit_liter, "L", { it }, { it }),
+    UnitItem(R.string.unit_cubic_meter, "m³", { it * 1000.0 }, { it / 1000.0 }),
+    UnitItem(R.string.unit_us_gallon, "gal", { it * 3.785411784 }, { it / 3.785411784 }),
+    UnitItem(R.string.unit_us_quart, "qt", { it * 0.946352946 }, { it / 0.946352946 }),
+    UnitItem(R.string.unit_us_pint, "pt", { it * 0.473176473 }, { it / 0.473176473 }),
+    UnitItem(R.string.unit_us_cup, "c", { it * 0.2365882365 }, { it / 0.2365882365 }),
+    UnitItem(R.string.unit_fluid_ounce, "fl oz", { it * 0.0295735295625 }, { it / 0.0295735295625 })
 )
 
 val temperatureUnits = listOf(
-    UnitItem("Celsius", "°C",
-        toBase = { it },                   // ฐานคือ °C
-        fromBase = { it }
-    ),
-    UnitItem("Fahrenheit", "°F",
-        toBase = { (it - 32) * 5 / 9 },
-        fromBase = { it * 9 / 5 + 32 }
-    ),
-    UnitItem("Kelvin", "K",
-        toBase = { it - 273.15 },
-        fromBase = { it + 273.15 }
-    )
+    UnitItem(R.string.unit_celsius, "°C", { it }, { it }),
+    UnitItem(R.string.unit_fahrenheit, "°F", { (it - 32.0) * 5.0 / 9.0 }, { it * 9.0 / 5.0 + 32.0 }),
+    UnitItem(R.string.unit_kelvin, "K", { it - 273.15 }, { it + 273.15 })
 )
 
 val areaUnits = listOf(
-    UnitItem("Square Meter", "m²",
-        toBase = { it },                    // หน่วยฐาน
-        fromBase = { it }
-    ),
-    UnitItem("Hectare", "ha",
-        toBase = { it * 10_000.0 },         // 1 ha = 10_000 m²
-        fromBase = { it / 10_000.0 }
-    ),
-    UnitItem("Acre", "ac",
-        toBase = { it * 4046.856 },         // 1 acre ≈ 4046.86 m²
-        fromBase = { it / 4046.856 }
-    ),
-    UnitItem("Square Mile", "mi²",
-        toBase = { it * 2_589_988.11 },     // 1 mi² ≈ 2.59 km²
-        fromBase = { it / 2_589_988.11 }
-    ),
-    UnitItem("Square Foot", "ft²",
-        toBase = { it * 0.092903 },         // 1 ft² ≈ 0.0929 m²
-        fromBase = { it / 0.092903 }
-    ),
-    UnitItem("Square Inch", "in²",
-        toBase = { it * 0.00064516 },       // 1 in² = 6.4516 cm²
-        fromBase = { it / 0.00064516 }
-    )
+    UnitItem(R.string.unit_square_meter, "m²", { it }, { it }),
+    UnitItem(R.string.unit_hectare, "ha", { it * 10_000.0 }, { it / 10_000.0 }),
+    UnitItem(R.string.unit_acre, "ac", { it * 4046.8564224 }, { it / 4046.8564224 }),
+    UnitItem(R.string.unit_square_mile, "mi²", { it * 2_589_988.110336 }, { it / 2_589_988.110336 }),
+    UnitItem(R.string.unit_square_foot, "ft²", { it * 0.09290304 }, { it / 0.09290304 }),
+    UnitItem(R.string.unit_square_inch, "in²", { it * 0.00064516 }, { it / 0.00064516 })
 )

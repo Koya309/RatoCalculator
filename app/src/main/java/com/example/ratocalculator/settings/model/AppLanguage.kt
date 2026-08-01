@@ -1,9 +1,12 @@
 package com.example.ratocalculator.settings.model
 
+import androidx.annotation.StringRes
+import com.example.ratocalculator.R
+
 enum class AppLanguage(
-    val displayLanguageName: String
+    @StringRes val labelResId: Int
 ){
-    SYSTEM("System Default"),
-    ENGLISH("English"),
-    THAI("Thai")
+    SYSTEM(R.string.system_default),
+    ENGLISH(R.string.language_english),
+    THAI(R.string.language_thai)
 }

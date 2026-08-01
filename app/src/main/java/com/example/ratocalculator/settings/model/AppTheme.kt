@@ -1,9 +1,12 @@
 package com.example.ratocalculator.settings.model
 
+import androidx.annotation.StringRes
+import com.example.ratocalculator.R
+
 enum class AppTheme(
-    val displayThemeName: String
+    @StringRes val labelResId: Int
 ){
-    SYSTEM("System Default"),
-    LIGHT("Light Mode"),
-    DARK("Dark mode")
+    SYSTEM(R.string.system_default),
+    LIGHT(R.string.light),
+    DARK(R.string.dark)
 }

@@ -19,7 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.ratocalculator.R
 import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
 
@@ -42,9 +45,11 @@ fun SystemSection(
                 .padding(16.dp)
         ) {
             Text(
-                text = "System",
+                text = stringResource(R.string.system),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -56,11 +61,11 @@ fun SystemSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Theme",
+                    text = stringResource(R.string.theme),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = currentTheme.displayThemeName,
+                    text = stringResource(currentTheme.labelResId),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -75,11 +80,11 @@ fun SystemSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Language",
+                    text = stringResource(R.string.language),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = currentLanguage.displayLanguageName,
+                    text = stringResource(currentLanguage.labelResId),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -116,11 +121,7 @@ fun ThemeScreen(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = when (theme){
-                        AppTheme.SYSTEM -> "System Default"
-                        AppTheme.LIGHT -> "Light Theme"
-                        AppTheme.DARK -> "Dark Theme"
-                    },
+                    text = stringResource(theme.labelResId),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
@@ -156,11 +157,7 @@ fun LanguageScreen(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = when (language){
-                        AppLanguage.SYSTEM -> "System Default"
-                        AppLanguage.ENGLISH -> "English"
-                        AppLanguage.THAI -> "Thai"
-                    },
+                    text = stringResource(language.labelResId),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

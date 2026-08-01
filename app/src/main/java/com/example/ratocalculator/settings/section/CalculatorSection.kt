@@ -20,9 +20,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.ratocalculator.R
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 
 @Composable
@@ -46,7 +48,7 @@ fun BasicCalculatorSection(
         ){
             // Main headline
             Text(
-                text = "Basic Calculator",
+                text = stringResource(R.string.basic_calculator),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -63,13 +65,13 @@ fun BasicCalculatorSection(
             ){
             Column{
                 Text(
-                    text = "Remove trailing zero",
+                    text = stringResource(R.string.remove_trailing_zero),
                     style = MaterialTheme.typography.bodyLarge
                     )
                 }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = if (removeTrailingZero) "no" else "off",
+                    text = if (removeTrailingZero) stringResource(R.string.on) else stringResource(R.string.off),
                     color = MaterialTheme.colorScheme.primary)
                 }
             }
@@ -82,7 +84,10 @@ fun BasicCalculatorSection(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Column {
-                    Text(text = "Decimal Places", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = stringResource(R.string.decimal_places),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = "$decimalPlaces", style = MaterialTheme.typography.bodyLarge)
@@ -109,7 +114,7 @@ fun TrailingZeroDetailScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (removeTrailingZero) "ON" else "OFF",
+                text = if (removeTrailingZero) stringResource(R.string.on) else stringResource(R.string.off),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -124,10 +129,13 @@ fun TrailingZeroDetailScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     //Text("ex", fontWeight = FontWeight.Bold)
-                    Text("OFF", color = Color.Gray)
-                    Text("Or", color = Color.Gray)
-                    Text(
-                        "ON",
+                    Text(stringResource(R.string.off)
+                        , color = Color.Gray
+                    )
+                    Text(""
+                        , color = Color.Gray)
+
+                    Text(stringResource(R.string.on),
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
@@ -154,7 +162,6 @@ fun DecimalPlacesScreen(
         ){
         // The decimal point adjustment scale is consistent and uses the same logic system.
         Column {
-            Text(text = "Decimal Places", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Slider(
                 value = decimalPlaces.toFloat(),
                 onValueChange = { onDecimalChange(it.toInt()) },

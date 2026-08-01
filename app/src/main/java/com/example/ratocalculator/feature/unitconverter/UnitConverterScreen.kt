@@ -1,6 +1,7 @@
 package com.example.ratocalculator.feature.unitconverter
 
 import android.content.ClipData
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
@@ -40,12 +41,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.ratocalculator.core.theme.RatoCalculatorTheme
+import com.example.ratocalculator.R
 import com.example.ratocalculator.core.toSuperscript
 import kotlinx.coroutines.launch
 
@@ -66,37 +67,39 @@ fun UnitConverterScreen(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-
         // =========================
-        // 🔹 TAB BAR
+        // TAB BAR
         // =========================
-        SecondaryTabRow(
+        SecondaryScrollableTabRow(
             selectedTabIndex = state.category.ordinal,
-            modifier = Modifier,
             containerColor = TabRowDefaults.primaryContainerColor,
             contentColor = TabRowDefaults.primaryContentColor,
+            edgePadding = 16.dp,
             indicator = {
                 TabRowDefaults.SecondaryIndicator(
                     Modifier.tabIndicatorOffset(state.category.ordinal)
                 )
             },
-            @Composable { HorizontalDivider() },
-            {
-                tabs.forEachIndexed { _, category ->
-                    Tab(
-                        selected = state.category == category,
-                        onClick = {
-                            viewModel.onCategoryChanged(category)
-                        },
-                        text = { Text(category.displayName) }
-                    )
-                }
+            divider = { HorizontalDivider() }
+        ) {
+            tabs.forEach { category ->
+                Tab(
+                    selected = state.category == category,
+                    onClick = { viewModel.onCategoryChanged(category) },
+                    text = {
+                        Text(
+                            text = stringResource(id = category.displayNameRes),
+                            maxLines = 1
+                        )
+                    }
+                )
             }
-        )
+        }
+
         Spacer(Modifier.height(12.dp))
 
         // =========================
-        // 🔹 SIDE A (TOP)
+        // SIDE A (TOP)
         // =========================
         ConverterRow(
             side = state.sideA,
@@ -105,7 +108,7 @@ fun UnitConverterScreen(
             maxHeight = maxHeight,
             displayMode = displayMode,
             formatDisplayUnit = viewModel::formatDisplayUnit,
-            onValueChange = {viewModel.onInputAChanged(it)},
+            onValueChange = { viewModel.onInputAChanged(it) },
             onPrefixSelected = viewModel::onPrefixAChanged,
             onUnitSelected = viewModel::onUnitAChanged
         )
@@ -115,7 +118,7 @@ fun UnitConverterScreen(
         Spacer(Modifier.height(12.dp))
 
         // =========================
-        // 🔹 SIDE B (Bottom)
+        // SIDE B (BOTTOM)
         // =========================
         ConverterRow(
             side = state.sideB,
@@ -140,7 +143,7 @@ fun ConverterRow(
     maxHeight: Dp,
     readOnly: Boolean = false,
     displayMode: UnitDisplayMode,
-    formatDisplayUnit: (String, SIPrefix, UnitItem, UnitDisplayMode) -> String,
+    formatDisplayUnit: (Context, String, SIPrefix, UnitItem, UnitDisplayMode) -> String,
     onValueChange: (String) -> Unit,
     onPrefixSelected: (SIPrefix) -> Unit,
     onUnitSelected: (UnitItem) -> Unit
@@ -152,18 +155,20 @@ fun ConverterRow(
 
     val inputValue = side.input.ifBlank { "0" }
     val prefixSymbol = side.prefix.symbol
-    val prefixName = side.prefix.name
+    val prefixName = if (side.prefix.nameRes != 0) stringResource(id = side.prefix.nameRes) else ""
     val unitSymbol = side.unit.symbol
-    val unitName = side.unit.name
+    val unitName = if (side.unit.nameRes != 0) stringResource(id = side.unit.nameRes) else ""
     val powerText = "10${toSuperscript(side.prefix.power)}"
+    val toastFormat = stringResource(R.string.toast_copied)
 
     val formats = CopyFormats(
         prefixUnit = "$inputValue $prefixSymbol$unitSymbol".trim(),
-        powerUnit = "$inputValue x $powerText $unitSymbol",
-        fullNameUnit = "$inputValue $prefixName$unitName".trim()
+        powerUnit = if (side.prefix.power != 0) "$inputValue × $powerText $unitSymbol" else "$inputValue $unitSymbol",
+        fullNameUnit = "$inputValue $prefixName $unitName".trim()
     )
 
     val displayText = formatDisplayUnit(
+        context,
         side.input,
         side.prefix,
         side.unit,
@@ -174,7 +179,6 @@ fun ConverterRow(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             // 🔹 Input
             OutlinedTextField(
                 value = side.input,
@@ -205,12 +209,14 @@ fun ConverterRow(
                     modifier = Modifier.heightIn(max = maxHeight)
                 ) {
                     prefixes.forEach { prefix ->
+                        val pName = if (prefix.nameRes != 0) stringResource(id = prefix.nameRes) else ""
                         DropdownMenuItem(
                             text = {
-                                if (prefix.symbol.isBlank())
-                                    Text("— (no prefix)")
-                                else
-                                    Text("${prefix.symbol}  ${prefix.name}  10${toSuperscript(prefix.power)}")
+                                if (prefix.symbol.isBlank()) {
+                                    Text("— (${stringResource(R.string.prefix_none)})")
+                                } else {
+                                    Text("${prefix.symbol}  $pName  10${toSuperscript(prefix.power)}")
+                                }
                             },
                             onClick = {
                                 onPrefixSelected(prefix)
@@ -234,8 +240,9 @@ fun ConverterRow(
                     onDismissRequest = { unitExpanded = false }
                 ) {
                     units.forEach { unit ->
+                        val uName = if (unit.nameRes != 0) stringResource(id = unit.nameRes) else ""
                         DropdownMenuItem(
-                            text = { Text("${unit.symbol} (${unit.name})") },
+                            text = { Text("${unit.symbol} ($uName)") },
                             onClick = {
                                 onUnitSelected(unit)
                                 unitExpanded = false
@@ -262,33 +269,31 @@ fun ConverterRow(
             CopyUnitMenu(
                 formats = formats,
                 onCopy = { textToCopy ->
-                    Toast.makeText(context, "Copied: $textToCopy", Toast.LENGTH_SHORT).show()
+                    val message = toastFormat.format(textToCopy)
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             )
         }
     }
 }
 
-
 @Composable
 fun CopyUnitMenu(
     formats: CopyFormats,
     onCopy: (String) -> Unit
-){
+) {
     var expanded by remember { mutableStateOf(false) }
-
     val clipboard = LocalClipboard.current
     val scope = rememberCoroutineScope()
 
     Box {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.ContentCopy, contentDescription = "Copy Options")
+            Icon(Icons.Default.ContentCopy, contentDescription = stringResource(R.string.copy_options))
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            // 1. Prefix Unit
             DropdownMenuItem(
                 text = { Text(formats.prefixUnit) },
                 onClick = {
@@ -300,7 +305,6 @@ fun CopyUnitMenu(
                     expanded = false
                 }
             )
-            // 2. Power Unit
             DropdownMenuItem(
                 text = { Text(formats.powerUnit) },
                 onClick = {
@@ -312,7 +316,6 @@ fun CopyUnitMenu(
                     expanded = false
                 }
             )
-            // 3. Full Name Unit
             DropdownMenuItem(
                 text = { Text(formats.fullNameUnit) },
                 onClick = {
@@ -325,13 +328,5 @@ fun CopyUnitMenu(
                 }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RatoCalculatorTheme {
-        UnitConverterScreen()
     }
 }

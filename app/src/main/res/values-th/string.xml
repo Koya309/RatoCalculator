@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RatoCalculator</string>
+    <string name="basic_calculator">เครื่องคิดเลขพื้นฐาน</string>
+    <string name="scientific_calculator">เครื่องคิดเลขวิทยาศาสตร์</string>
+    <string name="physics_calculator">เครื่องคิดเลขฟิสิกส์</string>
+    <string name="components">ส่วนประกอบ</string>
+    <string name="unit_converter">แปลงหน่วย</string>
+    <string name="settings">ตั้งค่า</string>
+    <string name="menu">เมนู</string>
+    <string name="system">ระบบ</string>
+    <string name="theme">ธีม</string>
+    <string name="language">ภาษา</string>
+    <string name="system_default">ตามค่าเริ่มต้นระบบ</string>
+    <string name="language_english">อังกฤษ</string>
+    <string name="language_thai">ไทย</string>
+    <string name="back">ย้อนกลับ</string>
+    <string name="light">ธีมสว่าง</string>
+    <string name="dark">ธีมมืด</string>
+    <string name="on">เปิด</string>
+    <string name="off">ปิด</string>
+    <string name="about">เกี่ยวกับ</string>
+
+    <!-- Settings Sub-screens Key Mapping -->
+    <string name="remove_trailing_zero">ตัดศูนย์ส่วนเกิน</string>
+    <string name="trailing_zeros">ตัดศูนย์ส่วนเกิน</string>
+    <string name="decimal_places">ตำแหน่งทศนิยม</string>
+    <string name="reset_setting">คืนค่าเริ่มต้น</string>
+    <string name="unit_display_format">รูปแบบการแสดงผลหน่วย</string>
+    <string name="unit_display_mode">รูปแบบการแสดงผลหน่วย</string>
+    <string name="advanced_prefix">หน่วยคำนำหน้าขั้นสูง</string>
+    <string name="side_block">แถบข้าง</string>
+    <string name="history">ประวัติ</string>
+
+    <!-- Categories -->
+    <string name="category_mass">มวล</string>
+    <string name="category_length">ความยาว</string>
+    <string name="category_temperature">อุณหภูมิ</string>
+    <string name="category_volume">ปริมาตร</string>
+    <string name="category_area">พื้นที่</string>
+
+    <!-- Display Mode -->
+    <string name="display_mode_prefix_title">หน่วยคำนำหน้า</string>
+    <string name="display_mode_prefix_desc">แสดงหน่วยแบบคำนำหน้า เช่น 250 kg</string>
+    <string name="display_mode_power_title">หน่วยยกกำลัง</string>
+    <string name="display_mode_power_desc">แสดงหน่วยแบบสัญลักษณ์สิบยกกำลัง เช่น 250 × 10³ g</string>
+    <string name="display_mode_fullname_title">ชื่อหน่วยเต็ม</string>
+    <string name="display_mode_fullname_desc">แสดงชื่อหน่วยเต็ม เช่น 250 กรัม</string>
+
+    <!-- SI Prefixes -->
+    <string name="prefix_none"> </string>
+    <string name="prefix_yotta">ยอตตะ</string>
+    <string name="prefix_zetta">เซตตะ</string>
+    <string name="prefix_exa">เอกซะ</string>
+    <string name="prefix_peta">เพตะ</string>
+    <string name="prefix_tera">เทระ</string>
+    <string name="prefix_giga">จิกะ</string>
+    <string name="prefix_mega">เมกะ</string>
+    <string name="prefix_kilo">กิโล</string>
+    <string name="prefix_hecto">เฮกโต</string>
+    <string name="prefix_deca">เดคา</string>
+    <string name="prefix_deci">เดซิ</string>
+    <string name="prefix_centi">เซนติ</string>
+    <string name="prefix_milli">มิลลิ</string>
+    <string name="prefix_micro">ไมโคร</string>
+    <string name="prefix_nano">นาโน</string>
+    <string name="prefix_pico">พิโก</string>
+    <string name="prefix_femto">เฟมโต</string>
+    <string name="prefix_atto">อัตโต</string>
+    <string name="prefix_zepto">เซปโต</string>
+    <string name="prefix_yocto">ยอกโต</string>
+
+    <!-- Units -->
+    <string name="unit_select">เลือกหน่วย</string>
+    <string name="unit_gram">กรัม</string>
+    <string name="unit_pound">ปอนด์</string>
+    <string name="unit_ounce">ออนซ์</string>
+    <string name="unit_tonne">ตัน</string>
+
+    <string name="unit_meter">เมตร</string>
+    <string name="unit_inch">นิ้ว</string>
+    <string name="unit_foot">ฟุต</string>
+    <string name="unit_yard">หลา</string>
+    <string name="unit_mile">ไมล์</string>
+
+    <string name="unit_liter">ลิตร</string>
+    <string name="unit_cubic_meter">ลูกบาศก์เมตร</string>
+    <string name="unit_us_gallon">แกลลอน US</string>
+    <string name="unit_us_quart">ควอท US</string>
+    <string name="unit_us_pint">ไพนต์ US</string>
+    <string name="unit_us_cup">ถ้วยตวง US</string>
+    <string name="unit_fluid_ounce">ฟลูอิดออนซ์</string>
+
+    <string name="unit_celsius">เซลเซียส</string>
+    <string name="unit_fahrenheit">ฟาเรนไฮต์</string>
+    <string name="unit_kelvin">เคลวิน</string>
+
+    <string name="unit_square_meter">ตารางเมตร</string>
+    <string name="unit_hectare">เฮกตาร์</string>
+    <string name="unit_acre">เอเคอร์</string>
+    <string name="unit_square_mile">ตารางไมล์</string>
+    <string name="unit_square_foot">ตารางฟุต</string>
+    <string name="unit_square_inch">ตารางนิ้ว</string>
+
+    <!-- Actions & UI -->
+    <string name="copy_options">ตัวเลือกการคัดลอก</string>
+    <string name="toast_copied">คัดลอกแล้ว: %1$s</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="ok">ตกลง</string>
+</resources>

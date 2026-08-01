@@ -13,18 +13,17 @@ import com.example.ratocalculator.feature.physics.PhysicsScreen
 import com.example.ratocalculator.feature.scientific.ScientificCalculatorScreen
 import com.example.ratocalculator.feature.unitconverter.UnitConverterScreen
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
-import com.example.ratocalculator.settings.section.AboutDetailScreen
-import com.example.ratocalculator.settings.section.DecimalPlacesScreen
-import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
 import com.example.ratocalculator.settings.SettingsScreen
 import com.example.ratocalculator.settings.SettingsViewModel
 import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
+import com.example.ratocalculator.settings.section.AboutDetailScreen
 import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
+import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.LanguageScreen
 import com.example.ratocalculator.settings.section.SideBlockScreen
-import com.example.ratocalculator.settings.section.SystemSection
 import com.example.ratocalculator.settings.section.ThemeScreen
+import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
 import com.example.ratocalculator.settings.section.UnitDisplayModeScreen
 
 @Composable

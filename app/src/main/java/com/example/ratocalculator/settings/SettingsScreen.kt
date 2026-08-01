@@ -4,16 +4,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.ratocalculator.R
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
@@ -44,8 +45,6 @@ fun SettingsScreen(
     val currentTheme by viewModel.appTheme.collectAsState(initial = AppTheme.SYSTEM)
     val currentLanguage by viewModel.appLanguage.collectAsState(initial = AppLanguage.SYSTEM)
 
-    // var currentSubScreen by remember { mutableStateOf<String?>(null) }
-
     // If no sub-menu is selected, the main screen will display all sections according to the paper structure.
     // if (currentSubScreen == null) {
     LazyColumn(
@@ -56,7 +55,7 @@ fun SettingsScreen(
         ) {
             item {
                 Text(
-                    text = "Settings",
+                    text = stringResource(R.string.settings),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                     )

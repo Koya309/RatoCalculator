@@ -73,10 +73,22 @@ fun RatoCalculator() {
                     title = {
                         // NavHost Main
                         when (currentRoute) {
-                            "basic" -> Text("เครื่องคิดเลขพื้นฐาน")
-                            "scientific" -> Text("เครื่องคิดเลขวิทยาศาสตร์")
-                            "settings" -> Text("การตั้งค่า")
-                            else -> Text("Rato Calculator")
+                            "basic" -> Text(stringResource(R.string.basic_calculator))
+                            "scientific" -> Text(stringResource(R.string.scientific_calculator))
+                            "settings" -> Text(stringResource(R.string.settings))
+                            "unit_converter" -> Text(stringResource(R.string.unit_converter))
+                            "physics" -> Text(stringResource(R.string.physics_calculator))
+
+                            "trailing" -> Text(stringResource(R.string.remove_trailing_zero))
+                            "decimal" -> Text(stringResource(R.string.decimal_places))
+                            "about" -> Text(stringResource(R.string.about))
+                            "sideblock" -> Text(stringResource(R.string.side_block))
+                            "advancedprefix" -> Text(stringResource(R.string.advanced_prefix))
+                            "unitdisplaymode" -> Text(stringResource(R.string.unit_display_format))
+                            "theme" -> Text(stringResource(R.string.theme))
+                            "language" -> Text(stringResource(R.string.language))
+
+                            else -> Text(stringResource(R.string.app_name))
                         }
                     },
                     navigationIcon = {
@@ -85,7 +97,7 @@ fun RatoCalculator() {
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "ย้อนกลับ"
+                                    contentDescription = stringResource(R.string.back)
                                 )
                             }
                         } else {
@@ -100,7 +112,7 @@ fun RatoCalculator() {
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Menu,
-                                    contentDescription = "เมนูหลัก"
+                                    contentDescription = stringResource(R.string.menu)
                                 )
                             }
                         }

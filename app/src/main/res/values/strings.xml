@@ -4,7 +4,106 @@
     <string name="scientific_calculator">Scientific Calculator</string>
     <string name="physics_calculator">Physics Calculator</string>
     <string name="components">Components</string>
-    <string name="unit_converter">Unit converter</string>
+    <string name="unit_converter">Unit Converter</string>
     <string name="settings">Settings</string>
     <string name="menu">Menu</string>
+    <string name="system">System</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+    <string name="system_default">System Default</string>
+    <string name="language_english">English</string>
+    <string name="language_thai">Thai</string>
+    <string name="back">Back</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="about">About</string>
+
+    <!-- Settings Sub-screens Key Mapping -->
+    <string name="remove_trailing_zero">Remove trailing zero</string>
+    <string name="trailing_zeros">Trailing Zeros</string>
+    <string name="decimal_places">Decimal Places</string>
+    <string name="reset_setting">Reset setting</string>
+    <string name="unit_display_format">Unit Display Format</string>
+    <string name="unit_display_mode">Unit Display Mode</string>
+    <string name="advanced_prefix">Advanced Prefix</string>
+    <string name="side_block">Side Block</string>
+    <string name="history">History</string>
+
+    <!-- Categories -->
+    <string name="category_mass">Mass</string>
+    <string name="category_length">Length</string>
+    <string name="category_temperature">Temperature</string>
+    <string name="category_volume">Volume</string>
+    <string name="category_area">Area</string>
+
+    <!-- Display Mode -->
+    <string name="display_mode_prefix_title">Prefix Unit</string>
+    <string name="display_mode_prefix_desc">Display as prefix unit, e.g., 250 kg</string>
+    <string name="display_mode_power_title">Power Unit</string>
+    <string name="display_mode_power_desc">Display as 10^x notation, e.g., 250 × 10³ g</string>
+    <string name="display_mode_fullname_title">Full Name Unit</string>
+    <string name="display_mode_fullname_desc">Display full unit name, e.g., 250 kilogram</string>
+
+    <!-- SI Prefixes -->
+    <string name="prefix_none"> </string>
+    <string name="prefix_yotta">yotta</string>
+    <string name="prefix_zetta">zetta</string>
+    <string name="prefix_exa">exa</string>
+    <string name="prefix_peta">peta</string>
+    <string name="prefix_tera">tera</string>
+    <string name="prefix_giga">giga</string>
+    <string name="prefix_mega">mega</string>
+    <string name="prefix_kilo">kilo</string>
+    <string name="prefix_hecto">hecto</string>
+    <string name="prefix_deca">deca</string>
+    <string name="prefix_deci">deci</string>
+    <string name="prefix_centi">centi</string>
+    <string name="prefix_milli">milli</string>
+    <string name="prefix_micro">micro</string>
+    <string name="prefix_nano">nano</string>
+    <string name="prefix_pico">pico</string>
+    <string name="prefix_femto">femto</string>
+    <string name="prefix_atto">atto</string>
+    <string name="prefix_zepto">zepto</string>
+    <string name="prefix_yocto">yocto</string>
+
+    <!-- Units -->
+    <string name="unit_select">Select Unit</string>
+    <string name="unit_gram">gram</string>
+    <string name="unit_pound">pound</string>
+    <string name="unit_ounce">ounce</string>
+    <string name="unit_tonne">tonne</string>
+
+    <string name="unit_meter">meter</string>
+    <string name="unit_inch">inch</string>
+    <string name="unit_foot">foot</string>
+    <string name="unit_yard">yard</string>
+    <string name="unit_mile">mile</string>
+
+    <string name="unit_liter">liter</string>
+    <string name="unit_cubic_meter">cubic meter</string>
+    <string name="unit_us_gallon">US gallon</string>
+    <string name="unit_us_quart">US quart</string>
+    <string name="unit_us_pint">US pint</string>
+    <string name="unit_us_cup">US cup</string>
+    <string name="unit_fluid_ounce">fluid ounce</string>
+
+    <string name="unit_celsius">Celsius</string>
+    <string name="unit_fahrenheit">Fahrenheit</string>
+    <string name="unit_kelvin">Kelvin</string>
+
+    <string name="unit_square_meter">square meter</string>
+    <string name="unit_hectare">hectare</string>
+    <string name="unit_acre">acre</string>
+    <string name="unit_square_mile">square mile</string>
+    <string name="unit_square_foot">square foot</string>
+    <string name="unit_square_inch">square inch</string>
+
+    <!-- Actions & UI -->
+    <string name="copy_options">Copy Options</string>
+    <string name="toast_copied">Copied: %1$s</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>

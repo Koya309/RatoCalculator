@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -146,8 +147,7 @@ fun CalculatorContent(
             IconButton(onClick = onHistoryClick) {
                 Icon(
                     imageVector = Icons.Default.History,
-                    contentDescription = "History",
-                    tint = Color.Black
+                    contentDescription = stringResource(R.string.history),
                 )
             }
 
@@ -183,7 +183,7 @@ fun CalculatorContent(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (removeTrailingZero) "TZ: ON" else "TZ: OFF",
+                        text = if (removeTrailingZero) "ON" else "OFF",
                         color = if (removeTrailingZero) Color(0xFFDEFF9A) else Color.Gray,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold

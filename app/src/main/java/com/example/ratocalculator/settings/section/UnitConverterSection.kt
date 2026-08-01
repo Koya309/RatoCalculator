@@ -20,10 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.ratocalculator.R
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 import com.example.ratocalculator.feature.unitconverter.UnitConverterScreen
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
@@ -49,7 +51,7 @@ fun UnitConverterSection(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Unit Converter",
+                text = stringResource(R.string.unit_converter),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -66,7 +68,7 @@ fun UnitConverterSection(
             ) {
                 Column {
                     Text(
-                        text = "Side B Lock",
+                        text = stringResource(R.string.side_block),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -74,7 +76,7 @@ fun UnitConverterSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if (sideBlock) "no" else "off",
+                        text = if (sideBlock) stringResource(R.string.on) else stringResource(R.string.off),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -89,7 +91,7 @@ fun UnitConverterSection(
             ) {
                 Column {
                     Text(
-                        text = "Advanced Prefix",
+                        text = stringResource(R.string.advanced_prefix),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -97,7 +99,7 @@ fun UnitConverterSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if (AdvancedPrefix) "on" else "off",
+                        text = if (AdvancedPrefix) stringResource(R.string.on) else stringResource(R.string.off),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -111,11 +113,12 @@ fun UnitConverterSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Unit Display Format",
+                    text = stringResource(R.string.unit_display_format),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = unitDisplayMode.displayName, // โชว์ชื่อ Enum ที่เลือกอยู่ปัจจุบัน
+                    // 🟢 แก้ไขตรงนี้: ใช้ stringResource ดึงชื่อจาก titleRes
+                    text = stringResource(unitDisplayMode.titleRes),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -128,7 +131,7 @@ fun UnitConverterSection(
 fun SideBlockScreen(
     sideBlock: Boolean,
     onSideBLock: (Boolean) -> Unit
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,7 +144,7 @@ fun SideBlockScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (sideBlock) "ON" else "OFF",
+                text = if (sideBlock) stringResource(R.string.on) else stringResource(R.string.off),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -157,7 +160,7 @@ fun SideBlockScreen(
 fun AdvancedPrefixScreen(
     AdvancedPrefix: Boolean,
     onAdvancedPrefix: (Boolean) -> Unit
-){
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,7 +173,7 @@ fun AdvancedPrefixScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (AdvancedPrefix) "ON" else "OFF",
+                text = if (AdvancedPrefix) stringResource(R.string.on) else stringResource(R.string.off),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -194,12 +197,11 @@ fun UnitDisplayModeScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
-            text = "Unit Display Format",
+            text = stringResource(R.string.unit_display_format),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
-        // วนลูปสร้างรายการตัวเลือกตาม Enum.entries (หรือ values())
         UnitDisplayMode.entries.forEach { mode ->
             val isSelected = currentMode == mode
 
@@ -226,17 +228,17 @@ fun UnitDisplayModeScreen(
                 ) {
                     RadioButton(
                         selected = isSelected,
-                        onClick = null // onClick จัดการที่ Card ระดับนอกแล้ว
+                        onClick = null
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = mode.displayName,
+                            text = stringResource(mode.titleRes),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = mode.description,
+                            text = stringResource(mode.descriptionRes),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -249,9 +251,8 @@ fun UnitDisplayModeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun UnitConverterPreview(){
+fun UnitConverterPreview() {
     RatoCalculatorTheme {
-        UnitConverterScreen(
-        )
+        UnitConverterScreen()
     }
 }
