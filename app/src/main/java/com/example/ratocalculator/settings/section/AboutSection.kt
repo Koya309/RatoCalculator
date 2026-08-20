@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import com.example.ratocalculator.R
 
 @Composable
-fun AboutSection(onNavigateToAbout: () -> Unit) {
+fun AboutSection(
+    onNavigateToAbout: () -> Unit
+){
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier

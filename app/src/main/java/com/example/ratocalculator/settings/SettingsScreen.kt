@@ -34,7 +34,8 @@ fun SettingsScreen(
     onNavigateToAdvancedPrefix: () -> Unit,
     onNavigateToUnitDisplayMode: () -> Unit,
     onNavigateToTheme:() -> Unit,
-    onNavigateToLanguage:() -> Unit
+    onNavigateToLanguage:() -> Unit,
+    onNavigateResetToDefault: () -> Unit
 
 ) {
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
@@ -96,9 +97,9 @@ fun SettingsScreen(
             // Reset: Reset Section
             item {
                 ResetSettingSection(
+                    onNavigateResetToDefault = onNavigateResetToDefault
                     // Change from viewModel.resetToDefault() or resetCalculatorToDefault
                     // Call the intermediate function we created in ViewModel
-                    onResetClick = { viewModel.resetCalculatorToDefault() }
                 )
             }
 

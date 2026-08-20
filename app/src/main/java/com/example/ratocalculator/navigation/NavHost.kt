@@ -21,6 +21,8 @@ import com.example.ratocalculator.settings.section.AboutDetailScreen
 import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
 import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.LanguageScreen
+import com.example.ratocalculator.settings.section.ResetSettingSection
+import com.example.ratocalculator.settings.section.ResetToDefaultScreen
 import com.example.ratocalculator.settings.section.SideBlockScreen
 import com.example.ratocalculator.settings.section.ThemeScreen
 import com.example.ratocalculator.settings.section.TrailingZeroDetailScreen
@@ -53,7 +55,8 @@ fun CalculatorNavHost(
                 onNavigateToAdvancedPrefix = {navController.navigate("advancedprefix")},
                 onNavigateToUnitDisplayMode = {navController.navigate("unitdisplaymode")},
                 onNavigateToTheme = {navController.navigate("theme")},
-                onNavigateToLanguage = {navController.navigate("language")}
+                onNavigateToLanguage = {navController.navigate("language")},
+                onNavigateResetToDefault = {navController.navigate("reset_default")}
             )
         }
 
@@ -126,6 +129,15 @@ fun CalculatorNavHost(
             LanguageScreen(
                 currentLanguage = currentLanguage,
                 onLanguageSelected = { viewModel.updateAppLanguage(it)}
+            )
+        }
+
+        composable("reset_default"){
+            val viewModel: SettingsViewModel = hiltViewModel()
+
+            ResetToDefaultScreen(
+
+                onResetClick = {viewModel.resetCalculatorToDefault()}
             )
         }
 

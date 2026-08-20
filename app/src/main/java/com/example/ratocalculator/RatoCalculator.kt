@@ -49,7 +49,8 @@ fun RatoCalculator() {
         "advancedprefix",
         "unitdisplaymode",
         "theme",
-        "language"
+        "language",
+        "reset_default"
     )
     val isSubScreen = currentRoute in subScreens
 
@@ -87,6 +88,7 @@ fun RatoCalculator() {
                             "unitdisplaymode" -> Text(stringResource(R.string.unit_display_format))
                             "theme" -> Text(stringResource(R.string.theme))
                             "language" -> Text(stringResource(R.string.language))
+                            "reset_default" -> Text(stringResource(R.string.reset_setting))
 
                             else -> Text(stringResource(R.string.app_name))
                         }

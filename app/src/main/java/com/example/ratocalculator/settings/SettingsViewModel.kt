@@ -122,4 +122,11 @@ class SettingsViewModel @Inject constructor(
             unitConverterRepo.saveUnitDisplayMode(mode)
         }
     }
+
+    fun resetUnitConverterToDefault() {
+        viewModelScope.launch {
+            unitConverterRepo.saveSideBlock(false)
+            unitConverterRepo.saveAdvancedPrefix(false)
+        }
+    }
 }
