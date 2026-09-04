@@ -95,13 +95,11 @@ fun SettingsScreen(
             }
 
             // Reset: Reset Section
-            item {
-                ResetSettingSection(
-                    onNavigateResetToDefault = onNavigateResetToDefault
-                    // Change from viewModel.resetToDefault() or resetCalculatorToDefault
-                    // Call the intermediate function we created in ViewModel
-                )
-            }
+        item {
+            ResetSettingSection(
+                onNavigateResetToDefault = onNavigateResetToDefault
+            )
+        }
 
             // About Section
             item {

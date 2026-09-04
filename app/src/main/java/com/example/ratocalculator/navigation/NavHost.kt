@@ -21,7 +21,6 @@ import com.example.ratocalculator.settings.section.AboutDetailScreen
 import com.example.ratocalculator.settings.section.AdvancedPrefixScreen
 import com.example.ratocalculator.settings.section.DecimalPlacesScreen
 import com.example.ratocalculator.settings.section.LanguageScreen
-import com.example.ratocalculator.settings.section.ResetSettingSection
 import com.example.ratocalculator.settings.section.ResetToDefaultScreen
 import com.example.ratocalculator.settings.section.SideBlockScreen
 import com.example.ratocalculator.settings.section.ThemeScreen
@@ -132,13 +131,8 @@ fun CalculatorNavHost(
             )
         }
 
-        composable("reset_default"){
-            val viewModel: SettingsViewModel = hiltViewModel()
-
-            ResetToDefaultScreen(
-
-                onResetClick = {viewModel.resetCalculatorToDefault()}
-            )
+        composable("reset_default") {
+            ResetToDefaultScreen()
         }
 
         // About screen

@@ -15,6 +15,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class ResetOption {
+    BASIC_CALCULATOR,
+    UNIT_CONVERTER,
+    THEME_AND_LANGUAGE,
+    ALL_SETTINGS
+}
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val systemRepo: SystemRepository,
@@ -49,6 +56,44 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    // Reset
+    fun resetCalculatorToDefault() {
+        viewModelScope.launch {
+            calculatorRepo.saveDecimalPlaces(2)
+            calculatorRepo.saveRemoveTrailingZero(true)
+        }
+    }
+
+    fun resetUnitConverterToDefault() {
+        viewModelScope.launch {
+            unitConverterRepo.saveSideBlock(false)
+            unitConverterRepo.saveAdvancedPrefix(false)
+            unitConverterRepo.saveUnitDisplayMode(UnitDisplayMode.FULL_NAME)
+        }
+    }
+
+    fun resetThemeAndLanguageToDefault() {
+        viewModelScope.launch {
+            systemRepo.saveAppTheme(AppTheme.SYSTEM)
+            systemRepo.saveAppLanguage(AppLanguage.SYSTEM)
+        }
+    }
+
+    fun resetAllToDefault() {
+        resetCalculatorToDefault()
+        resetUnitConverterToDefault()
+        resetThemeAndLanguageToDefault()
+    }
+
+    fun resetByOption(option: ResetOption) {
+        when (option) {
+            ResetOption.BASIC_CALCULATOR -> resetCalculatorToDefault()
+            ResetOption.UNIT_CONVERTER -> resetUnitConverterToDefault()
+            ResetOption.THEME_AND_LANGUAGE -> resetThemeAndLanguageToDefault()
+            ResetOption.ALL_SETTINGS -> resetAllToDefault()
+        }
+    }
+
     // ─── 1.Basic Calculator ───
     val decimalPlaces: StateFlow<Int> = calculatorRepo.decimalPlaces
         .stateIn(
@@ -76,12 +121,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun resetCalculatorToDefault() {
-        viewModelScope.launch {
-            calculatorRepo.saveDecimalPlaces(2)
-            calculatorRepo.saveRemoveTrailingZero(true)
-        }
-    }
 
     // ─── 2.Unit Converter ───
     val sideBlock: StateFlow<Boolean> = unitConverterRepo.sideBlock
@@ -120,13 +159,6 @@ class SettingsViewModel @Inject constructor(
     fun updateUnitDisplayMode(mode: UnitDisplayMode) {
         viewModelScope.launch {
             unitConverterRepo.saveUnitDisplayMode(mode)
-        }
-    }
-
-    fun resetUnitConverterToDefault() {
-        viewModelScope.launch {
-            unitConverterRepo.saveSideBlock(false)
-            unitConverterRepo.saveAdvancedPrefix(false)
         }
     }
 }
