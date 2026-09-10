@@ -17,7 +17,7 @@ import com.example.ratocalculator.R
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
 
 @Composable
-fun ScientificCalculatorScreen() {
+fun SciCalculatorScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,6 +38,6 @@ fun ScientificCalculatorScreen() {
 @Composable
 fun GreetingPreview() {
     RatoCalculatorTheme {
-        ScientificCalculatorScreen()
+        SciCalculatorScreen()
     }
 }
