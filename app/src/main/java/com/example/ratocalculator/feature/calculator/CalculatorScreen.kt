@@ -1,5 +1,6 @@
-package com.example.ratocalculator.feature.basic
+package com.example.ratocalculator.feature.calculator
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,6 +55,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.R
 import com.example.ratocalculator.core.database.HistoryEntity
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
+import com.example.ratocalculator.core.utils.LockScreenOrientation
 import com.example.ratocalculator.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 
@@ -62,6 +64,8 @@ fun CalculatorScreen(
     calculatorViewModel: CalculatorViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR)
+
     val uiState by calculatorViewModel.uiState.collectAsState()
     val historyItems by calculatorViewModel.historyList.collectAsState()
     val decimalPlaces by settingsViewModel.decimalPlaces.collectAsState(initial = 2)

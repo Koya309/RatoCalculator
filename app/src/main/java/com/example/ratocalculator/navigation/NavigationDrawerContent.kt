@@ -27,14 +27,6 @@ fun NavigationDrawerContent(
             }
         )
         NavigationDrawerItem(
-            label = { Text(stringResource(R.string.scientific_calculator))},
-            selected = false,
-            onClick = {
-                navController.navigate("scientific")
-                scope.launch {drawerState.close()}
-            }
-        )
-        NavigationDrawerItem(
             label = { Text(stringResource(R.string.unit_converter))},
             selected = false,
             onClick = {

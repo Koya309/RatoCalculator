@@ -8,9 +8,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.ratocalculator.feature.basic.CalculatorScreen
+import com.example.ratocalculator.feature.calculator.CalculatorScreen
 import com.example.ratocalculator.feature.physics.PhysicsScreen
-import com.example.ratocalculator.feature.scientific.ScientificCalculatorScreen
 import com.example.ratocalculator.feature.unitconverter.UnitConverterScreen
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import com.example.ratocalculator.settings.SettingsScreen
@@ -40,7 +39,6 @@ fun CalculatorNavHost(
     ) {
         // 1. Main NavHost Calculator
         composable("basic") { CalculatorScreen() }
-        composable("scientific") { ScientificCalculatorScreen() }
         composable("physics") { PhysicsScreen() }
         composable("unit_converter") { UnitConverterScreen() }
 

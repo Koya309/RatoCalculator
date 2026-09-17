@@ -2,6 +2,7 @@ package com.example.ratocalculator.feature.unitconverter
 
 import android.content.ClipData
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,12 +49,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.R
 import com.example.ratocalculator.core.toSuperscript
+import com.example.ratocalculator.core.utils.LockScreenOrientation
 import kotlinx.coroutines.launch
 
 @Composable
 fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+
     val state by viewModel.uiState.collectAsState()
     val isSideBLocked by viewModel.isSideBLocked.collectAsState()
     val visiblePrefixes by viewModel.visibleSIPrefixes.collectAsState()

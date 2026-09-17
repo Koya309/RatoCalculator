@@ -1,4 +1,4 @@
-package com.example.ratocalculator.feature.basic
+package com.example.ratocalculator.feature.calculator
 
 data class CalculatorState(
     val input: String = "",

@@ -75,7 +75,6 @@ fun RatoCalculator() {
                         // NavHost Main
                         when (currentRoute) {
                             "basic" -> Text(stringResource(R.string.basic_calculator))
-                            "scientific" -> Text(stringResource(R.string.scientific_calculator))
                             "settings" -> Text(stringResource(R.string.settings))
                             "unit_converter" -> Text(stringResource(R.string.unit_converter))
                             "physics" -> Text(stringResource(R.string.physics_calculator))

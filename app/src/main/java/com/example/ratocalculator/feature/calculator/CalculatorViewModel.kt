@@ -1,4 +1,4 @@
-package com.example.ratocalculator.feature.basic
+package com.example.ratocalculator.feature.calculator
 
 
 import androidx.lifecycle.SavedStateHandle
