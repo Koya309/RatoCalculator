@@ -41,8 +41,6 @@ fun UnitConverterSection(
     onNavigateToAdvancedPrefix: () -> Unit,
     onNavigateToUnitDisplayMode: () -> Unit
 ) {
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(

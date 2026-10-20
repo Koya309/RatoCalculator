@@ -1,6 +1,5 @@
 package com.example.ratocalculator.settings.section
 
-import android.content.pm.ActivityInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,13 +29,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.ratocalculator.R
-import com.example.ratocalculator.core.utils.LockScreenOrientation
 
 @Composable
 fun AboutSection(
     onNavigateToAbout: () -> Unit
 ){
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Row(

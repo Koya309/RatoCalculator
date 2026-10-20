@@ -56,8 +56,6 @@ import kotlinx.coroutines.launch
 fun UnitConverterScreen(
     viewModel: UnitConverterViewModel = hiltViewModel()
 ) {
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-
     val state by viewModel.uiState.collectAsState()
     val isSideBLocked by viewModel.isSideBLocked.collectAsState()
     val visiblePrefixes by viewModel.visibleSIPrefixes.collectAsState()
@@ -71,9 +69,7 @@ fun UnitConverterScreen(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        // =========================
         // TAB BAR
-        // =========================
         SecondaryScrollableTabRow(
             selectedTabIndex = state.category.ordinal,
             containerColor = TabRowDefaults.primaryContainerColor,
@@ -102,9 +98,7 @@ fun UnitConverterScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // =========================
         // SIDE A (TOP)
-        // =========================
         ConverterRow(
             side = state.sideA,
             prefixes = visiblePrefixes,
@@ -121,9 +115,7 @@ fun UnitConverterScreen(
         HorizontalDivider()
         Spacer(Modifier.height(12.dp))
 
-        // =========================
         // SIDE B (BOTTOM)
-        // =========================
         ConverterRow(
             side = state.sideB,
             prefixes = visiblePrefixes,
@@ -183,7 +175,7 @@ fun ConverterRow(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 🔹 Input
+            // Input
             OutlinedTextField(
                 value = side.input,
                 onValueChange = { value ->
@@ -201,7 +193,7 @@ fun ConverterRow(
 
             Spacer(Modifier.width(8.dp))
 
-            // 🔹 Prefix Dropdown
+            // Prefix Dropdown
             Box {
                 OutlinedButton(onClick = { prefixExpanded = true }) {
                     Text(side.prefix.symbol.ifBlank { "—" })
@@ -233,7 +225,7 @@ fun ConverterRow(
 
             Spacer(Modifier.width(8.dp))
 
-            // 🔹 Unit Dropdown
+            // Unit Dropdown
             Box {
                 OutlinedButton(onClick = { unitExpanded = true }) {
                     Text(side.unit.symbol)

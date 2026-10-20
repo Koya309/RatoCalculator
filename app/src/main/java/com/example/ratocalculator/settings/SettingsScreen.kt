@@ -1,6 +1,5 @@
 package com.example.ratocalculator.settings
 
-import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.ratocalculator.R
-import com.example.ratocalculator.core.utils.LockScreenOrientation
 import com.example.ratocalculator.feature.unitconverter.UnitDisplayMode
 import com.example.ratocalculator.settings.model.AppLanguage
 import com.example.ratocalculator.settings.model.AppTheme
@@ -40,7 +38,6 @@ fun SettingsScreen(
     onNavigateResetToDefault: () -> Unit
 
 ) {
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val decimalPlaces by viewModel.decimalPlaces.collectAsState(initial = 2)
     val removeTrailingZero by viewModel.removeTrailingZero.collectAsState(initial = true)
     val sideBlock by viewModel.sideBlock.collectAsState(initial = true)

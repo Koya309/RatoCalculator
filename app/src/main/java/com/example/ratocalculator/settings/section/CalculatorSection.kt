@@ -1,6 +1,5 @@
 package com.example.ratocalculator.settings.section
 
-import android.content.pm.ActivityInfo
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ratocalculator.R
 import com.example.ratocalculator.core.theme.RatoCalculatorTheme
-import com.example.ratocalculator.core.utils.LockScreenOrientation
 
 @Composable
 fun BasicCalculatorSection(
@@ -36,8 +34,6 @@ fun BasicCalculatorSection(
     onNavigateToTrailing: () -> Unit,
     onNavigateToDecimal: () -> Unit,
 ){
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(

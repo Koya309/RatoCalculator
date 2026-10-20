@@ -41,8 +41,6 @@ fun ResetSettingSection(
     onNavigateResetToDefault: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-
     Card(
         modifier = modifier
             .fillMaxWidth()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">RatoCalculator</string>
-    <string name="basic_calculator">เครื่องคิดเลขพื้นฐาน</string>
+    <string name="basic_calculator">เครื่องคิดเลข</string>
     <string name="scientific_calculator">เครื่องคิดเลขวิทยาศาสตร์</string>
     <string name="physics_calculator">เครื่องคิดเลขฟิสิกส์</string>
     <string name="components">ส่วนประกอบ</string>

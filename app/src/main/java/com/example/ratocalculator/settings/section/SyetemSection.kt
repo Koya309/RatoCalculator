@@ -35,7 +35,6 @@ fun SystemSection(
     onNavigateToTheme: () -> Unit,
     onNavigateToLanguage: () -> Unit
 ) {
-    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
